@@ -29,40 +29,46 @@ Create table CM_Users (
     User_Password VARCHAR(50) NOT NULL,
     Created_By VARCHAR(25) Not NULL,
     Created_On DATE NOT NULL,
+	Updated_By VARCHAR(25) Not NULL,
+    Updated_On DATE NOT NULL,
     CONSTRAINT CM_UsersPK PRIMARY KEY (UserName),
     CONSTRAINT user_Created_by FOREIGN KEY (created_By)
+        REFERENCES CM_System.Cm_USERS (UserName),
+	CONSTRAINT user_Updated_by FOREIGN KEY (Updated_By)
         REFERENCES CM_System.Cm_USERS (UserName)
 );
 
-
+insert into cm_users values('lducray','Leslie','Ducray','c10327999@mydit.ie','Y','password','lducray',sysdate(),'lducray',sysdate());
 
 Create table CM_Roles (
-    Role_Id numeric Not NULL,
     Role_Name VARCHAR(20) NULL,
     Created_By VARCHAR(25) Not NULL,
     Created_On DATE NOT NULL,
-    CONSTRAINT CM_RolesPK PRIMARY KEY (Role_Id),
+    CONSTRAINT CM_RolesPK PRIMARY KEY (Role_Name),
     CONSTRAINT role_Created_by FOREIGN KEY (created_By)
         REFERENCES CM_System.Cm_USERS (UserName)
 );
 
+insert into CM_Roles values('admin','lducray',sysdate());
+insert into CM_Roles values('accounting','lducray',sysdate());
 
 
 
 Create table CM_User_Roles (
-    Role_Id numeric Not NULL,
+    Role_Name VARCHAR(20) Not NULL,
     UserName VARCHAR(25) Not NULL,
     Created_By VARCHAR(25) Not NULL,
     Created_On DATE NOT NULL,
-    CONSTRAINT CM_User_RolesPK PRIMARY KEY (Role_Id , UserName),
+    CONSTRAINT CM_User_RolesPK PRIMARY KEY (Role_Name , UserName),
     CONSTRAINT User_role_user FOREIGN KEY (UserName)
         REFERENCES CM_System.Cm_USERS (UserName),
     CONSTRAINT User_role_Created_by FOREIGN KEY (created_By)
         REFERENCES CM_System.Cm_USERS (UserName),
-    CONSTRAINT User_role_role_Id FOREIGN KEY (Role_Id)
-        REFERENCES CM_System.Cm_Roles (Role_Id)
+    CONSTRAINT User_role_role_name FOREIGN KEY (Role_Name)
+        REFERENCES CM_System.Cm_Roles (Role_Name)
 );
-
+ insert into cm_user_roles values ('admin','lducray','lducray',curdate());
+insert into cm_user_roles values('accounting','lducray','lducray',curdate());
 
 
 
@@ -95,21 +101,24 @@ create table Cm_Streams (
     Stream_Name varchar(20) not null,
     Support_Level int(1) not null,
     Stream_Active Char check (Stream_Active in ('Y' , 'y', 'N', 'n')),
-    Progression_Wait_Time int not null,
-    Attendance_Requirement varchar(30),
+    Progression_Time int ,
+	Regression_Time int ,
     Weekly_Max_Points numeric(2) not null,
-    Points_Conversion numeric(2 , 2 ) not null,
+    Points_Conversion numeric(4 , 2 ) not null,
     Created_By VARCHAR(25) Not NULL,
     Created_On DATE NOT NULL,
     CONSTRAINT Streams_Created_By FOREIGN KEY (created_By)
         REFERENCES CM_System.Cm_USERS (UserName)
 );
 
-
+insert into cm_streams values(1,'High Support',1,'Y',5,null,33,0.50,'lducray',curdate());
+insert into cm_streams values(2,'Progression',2,'Y',null,3,44,1,'lducray',curdate());
 
 create table CM_Client_Stream (
     Client_Id int Not NULL,
     Stream_Id int Not NULL,
+	Substance_Incrementor int,
+	Engagemnet_Incrementor int,
     Created_By VARCHAR(25) Not NULL,
     Created_On DATE NOT NULL,
     CONSTRAINT CS_Created_By FOREIGN KEY (created_By)
@@ -155,7 +164,10 @@ CREATE TABLE CM_Eligibility (
     Eligibility_Id int Not NULL,
     Eligibility_name varchar(25) not null,
     Active char not null check (active in ('Y' , 'y', 'N', 'n')),
-    Stream_Id int not null,
+	Amount numeric null,
+	min_value int,
+	max_value int,
+    Stream_Id int  null,
     Created_By VARCHAR(25) Not NULL,
     Created_On DATE NOT NULL,
     PRIMARY KEY (Eligibility_Id),
@@ -165,7 +177,10 @@ CREATE TABLE CM_Eligibility (
         REFERENCES CM_System.Cm_Streams (Stream_Id)
 );
 
-CREATE TABLE CM_Client_Elegibilities (
+insert into cm_eligibility values(1,'Withdraw Credits', 'Y', null, 20,null,null,'lducray',curdate());
+insert into cm_eligibility values(2,'Outings', 'Y', null, null,null,2,'lducray',curdate());
+
+CREATE TABLE CM_Client_eligibilities (
     Eligibility_Id int,
     Client_Id int,
     Created_By VARCHAR(25) Not NULL,
@@ -189,6 +204,11 @@ CREATE TABLE CM_Date_To_Clean (
         REFERENCES CM_System.Cm_Streams (Stream_Id)
 );
 
+insert into cm_date_to_clean values('green',7,'Y',1,1,3);
+insert into cm_date_to_clean values('yellow',7,'Y',2,1,3);
+insert into cm_date_to_clean values('red',7,'Y',3,1,3);
+
+
 CREATE TABLE CM_Client_Date_to_Clean (
     Id int not null auto_increment primary key,
     Client_Id int,
@@ -207,9 +227,8 @@ CREATE TABLE CM_Client_Date_to_Clean (
 
 CREATE TABLE CM_Substances (
     Substance varchar(30) primary key,
-    Awarded_Amount numeric(1 , 1 ) not null,
-    Start_Point int not null,
-    Max_Point int not null,
+    Reset_value int not null,
+    Max_value int not null,
     Active char not null check (Active in ('Y' , 'y', 'N', 'n')),
     Created_By VARCHAR(25) Not NULL,
     Created_On DATE NOT NULL,
