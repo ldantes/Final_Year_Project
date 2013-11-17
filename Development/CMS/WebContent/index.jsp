@@ -1,11 +1,10 @@
-<html>
     <head>
         		<title>Login</title>
 	</head>
 	
 	<body>
 		
-			<h1>Contingency Management System </h1><h3>v1.0.0</h3> ${username} ${userMessage}
+			<h1>Contingency Management System </h1><h3>v1.0.0</h3>  <p style="color:red">${userMessage}</p>
 			
 			<form id="loginForm" method="POST" action="UserServlet">
 	        	<input type="hidden" name="requestAction" value="login"/>
@@ -17,4 +16,3 @@
 			</form>		
 		
 	</body>
-</html>
