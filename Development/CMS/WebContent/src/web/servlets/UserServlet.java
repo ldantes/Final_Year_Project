@@ -2,7 +2,7 @@ package web.servlets;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
+
 
 import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
@@ -16,9 +16,8 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import model.beans.UserBean;
-import model.beans.UserRoleBean;
 import model.business.facade.UserFacade;
-import model.data.cmsQueryUsers;
+
 
 
 
@@ -29,6 +28,8 @@ File History
 09-NOV-2013	UserServlet is created to receive Login form
 16-NOV-2013 Redirection on successful login to Main page.
 16-NOV-2013 Set User session variables using the HttpServletRequest variable
+20-Nov-2013 Altered the User Roles to be attained through the DAO after querying login details.
+			UserRoles are user stored in a List of UserRole beans which are an attribute of a Userbean.
 		
 ************************************************************************************************/
 public class UserServlet extends HttpServlet {
@@ -68,7 +69,7 @@ public class UserServlet extends HttpServlet {
 		
 				case login:
 					UserBean 	userDetails 	=null;
-					List <UserRoleBean> userRoles 	=null;
+					
 									
 				try 
 				{
@@ -80,23 +81,23 @@ public class UserServlet extends HttpServlet {
 						
 						request.setAttribute("userDetails", userDetails);
 						session.setAttribute("userDetails", userDetails);	
-						userRoles = cmsQueryUsers.qryUserRoles(userDetails);
-						session.setAttribute("userRoles", userRoles);
+						
+						
 						boolean userAdmin=false;
 						boolean userAccountant=false;
 						boolean userReports = false;
 						 
-						 for (int i = 0 ; i> userRoles.size();i++){
+						 for (int i = 0 ; i> userDetails.getUserRoles().size();i++){
 							 
-							 if (userRoles.get(i).getRoleName().equals("admin")){
+							 if (userDetails.getUserRoles().get(i).getRoleName().equals("admin")){
 								 userAdmin=true;	
 							 }
 							 
-							 if (userRoles.get(i).getRoleName().equals("accountant")){
+							 if (userDetails.getUserRoles().get(i).getRoleName().equals("accountant")){
 								 userAccountant=true;	
 							 }
 							 
-							 if (userRoles.get(i).getRoleName().equals("reports")){
+							 if (userDetails.getUserRoles().get(i).getRoleName().equals("reports")){
 								 userReports=true;	
 							 }
 							 
@@ -108,7 +109,7 @@ public class UserServlet extends HttpServlet {
 						
 						
 						request.setAttribute("username", userDetails.getUserName());
-						request.setAttribute("userRoles", userRoles);
+						request.setAttribute("userRoles", userDetails.getUserRoles());
 						request.setAttribute("userMessage", userMessage);
 						
 						destination= "/ServiceUsersSrch.jsp";

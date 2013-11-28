@@ -1,0 +1,15 @@
+div_header {
+	
+	margin-bottom: 2px;
+	text-align: center;	
+	padding-top: 50px;		
+	padding-bottom: 12px;	
+ 	background: #70bf32;
+  	background: url('linear-gradient.png') 0 0 repeat-x;
+  	background: -webkit-linear-gradient(#a1e048, #6a942f);
+  	background:    -moz-linear-gradient(#a1e048, #6a942f);
+  	background:     -ms-linear-gradient(#a1e048, #6a942f);
+  	background:      -o-linear-gradient(#a1e048, #6a942f);
+  	background:         linear-gradient(#a1e048, #6a942f);
+}
+

@@ -4,10 +4,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import utilities.DataSourceManager;
 import model.beans.UserBean;
+import model.beans.UserRoleBean;
 import model.business.dao.UserDao;
+import model.data.cmsQueryUsers;
 
 
 
@@ -52,9 +55,12 @@ public class UserDaoImpl implements UserDao{
 					
 												
 				}	
+				List <UserRoleBean> userRoles 	=null;
+				userRoles = cmsQueryUsers.qryUserRoles(userDetails);
 				
+				userDetails.setUserRoles(userRoles);
 				
-					results.close();
+				results.close();
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

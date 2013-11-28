@@ -1,13 +1,25 @@
 package model.beans;
 
+import model.beans.UserRoleBean;
+import java.util.List;
+
 public class UserBean {
+	private String id="";
 	private String userName="";
 	private String firstName="";
 	private String surname="";
 	private String active="";
 	private String password="";	
 	private String email="";
+	private List<UserRoleBean> userRole;
 	
+	
+	public String getId(){
+		return id;
+	}	
+	public void setId(String id){		
+		this.id=id;		
+	}
 	
 	public String getUserName(){
 		return userName;
@@ -50,6 +62,12 @@ public class UserBean {
 		this.email = email;
 	}
 	
+	public List<UserRoleBean> getUserRoles() {
+		return userRole;
+	}
+	public void setUserRoles(List<UserRoleBean> userRole) {
+		this.userRole = userRole;
+	}
 	
 
 }
