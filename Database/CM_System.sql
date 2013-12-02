@@ -153,7 +153,7 @@ create table CM_Client_Attnd (
     Id int not null auto_increment primary key,
     Client_Id int Not NULL,
     UserName VARCHAR(25) Not NULL,
-    Note_Id int,
+   // Note_Id int,
     Time_date datetime,
     Attended Char check (Attended in ('Y' , 'y', 'N', 'n')),
     Attnd_Failed_Reason varchar(50),
