@@ -36,6 +36,12 @@
 		
   	</bean>
 	
+	<bean id="serviceUserDao" class="model.business.dao.impl.ServiceUserDaoImpl" /> 
+	<bean id="serviceUserFacade" class="model.business.facade.impl.ServiceUserFacadeImpl">
+		<property name="serviceUserDao">
+  			<ref bean="serviceUserDao" /> 
+  		</property>
+	</bean>
 	
 
 </beans>

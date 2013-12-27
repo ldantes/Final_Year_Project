@@ -55,10 +55,7 @@ public class UserDaoImpl implements UserDao{
 					
 												
 				}	
-				List <UserRoleBean> userRoles 	=null;
-				userRoles = cmsQueryUsers.qryUserRoles(userDetails);
 				
-				userDetails.setUserRoles(userRoles);
 				
 				results.close();
 				} catch (SQLException e) {

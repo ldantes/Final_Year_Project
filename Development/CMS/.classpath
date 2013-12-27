@@ -14,5 +14,14 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="DROOLS/Drools"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/json-lib-2.4-jdk15.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/jsr173_1.0_api.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/resolver.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/xbean.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/xbean_xpath.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/xmlbeans-qname.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/xmlpublic.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/xom-1.2.10.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

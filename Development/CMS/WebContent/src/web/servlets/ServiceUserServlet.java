@@ -38,7 +38,7 @@ public class ServiceUserServlet extends HttpServlet {
 	
 	private enum validActions
 	{
-	   srchServiceUser; 
+	   srchServiceUser, editServiceUser, updateServiceUser; 
 	}
 	
     public ServiceUserServlet() {
@@ -56,8 +56,11 @@ public class ServiceUserServlet extends HttpServlet {
 		String destination	= "/ServiceUsersSrch.jsp";
 		String jsp_path	= "/WEB-INF/jsp";
 		String userMessage	= null;
-		
+		HttpSession session = request.getSession(true);	
+		String logUserName 	= session.getAttribute("username").toString();
 		WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(this.getServletContext());
+		
+		serviceUserService service = new serviceUserService();
 			
 			
 			String action= request.getParameter("requestAction");	
@@ -67,12 +70,41 @@ public class ServiceUserServlet extends HttpServlet {
 		
 				case srchServiceUser:
 						String searchedName = request.getParameter("serviceUserName");
-						List<ServiceUserBean> searchedUsers = cmsQueryServiceUser.searchServiceUsers(searchedName);
+						List<ServiceUserBean> searchedUsers = cmsQueryServiceUser.searchServiceUsersByName(searchedName);
 						request.setAttribute("serviceUserResults", searchedUsers);
+						break;
+						
+				case editServiceUser:
+					String srchId = request.getParameter("serviceUserId");
+					if(srchId != "" || srchId != null  )
+					{
+						ServiceUserBean searchedUser = (ServiceUserBean) cmsQueryServiceUser.searchServiceUsersById( srchId);
+						destination	= "/editServiceUser.jsp";
+						request.setAttribute("serviceUser",searchedUser);
+						
+					}
+					break;
+				
+				case updateServiceUser:
+					service.setApplicationContext(applicationContext);
+					service.setRequest(request);
+				try {
+					service.updateServiceuser();
+					destination	= "/editServiceUser.jsp";
+					request.setAttribute("serviceUser",service.getServiceUserBean());
 					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NamingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+					break;
 					
 			}
 			
+			request.setAttribute("username", logUserName);
 			requestDispatch = request.getRequestDispatcher(jsp_path+destination);
 			requestDispatch.forward(request,response);
 	}

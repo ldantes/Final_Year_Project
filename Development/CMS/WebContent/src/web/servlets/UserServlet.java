@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 
+import java.util.List;
+
 import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -16,7 +18,9 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import model.beans.UserBean;
+import model.beans.UserRoleBean;
 import model.business.facade.UserFacade;
+import model.data.cmsQueryUsers;
 
 
 
@@ -65,7 +69,8 @@ public class UserServlet extends HttpServlet {
 			String action= request.getParameter("requestAction");	
 			
 			
-			switch (validActions.valueOf(action)){
+			switch (validActions.valueOf(action))
+			{
 		
 				case login:
 					UserBean 	userDetails 	=null;
@@ -73,31 +78,47 @@ public class UserServlet extends HttpServlet {
 									
 				try 
 				{
-					userDetails= userFacade.authenticateUser(request.getParameter("username"), request.getParameter("password"));
+					String usernameEnter = request.getParameter("username");
+					String passwordEntered = request.getParameter("password");
+					
+					if(usernameEnter != "" && passwordEntered != "" && usernameEnter != null && passwordEntered != null)
+					{
+						userDetails= userFacade.authenticateUser(usernameEnter, passwordEntered);
+					}
+					
 
-					if(userDetails != null){
+					if(userDetails != null)
+					{
 						session = request.getSession(true);
 						
 						
 						request.setAttribute("userDetails", userDetails);
-						session.setAttribute("userDetails", userDetails);	
+						session.setAttribute("username", userDetails.getUserName());	
+						
+						List <UserRoleBean> userRoles 	=null;
+						userRoles = cmsQueryUsers.qryUserRoles(userDetails);
+						userDetails.setUserRoles(userRoles);
 						
 						
 						boolean userAdmin=false;
 						boolean userAccountant=false;
 						boolean userReports = false;
 						 
-						 for (int i = 0 ; i> userDetails.getUserRoles().size();i++){
+						 for (int i = 0 ; i> userDetails.getUserRoles().size();i++)
+						 {
 							 
-							 if (userDetails.getUserRoles().get(i).getRoleName().equals("admin")){
+							 if (userDetails.getUserRoles().get(i).getRoleName().equals("admin"))
+							 {
 								 userAdmin=true;	
 							 }
 							 
-							 if (userDetails.getUserRoles().get(i).getRoleName().equals("accountant")){
+							 if (userDetails.getUserRoles().get(i).getRoleName().equals("accountant"))
+							 {
 								 userAccountant=true;	
 							 }
 							 
-							 if (userDetails.getUserRoles().get(i).getRoleName().equals("reports")){
+							 if (userDetails.getUserRoles().get(i).getRoleName().equals("reports"))
+							 {
 								 userReports=true;	
 							 }
 							 
@@ -113,11 +134,13 @@ public class UserServlet extends HttpServlet {
 						request.setAttribute("userMessage", userMessage);
 						
 						destination= "/ServiceUsersSrch.jsp";
+						
 					}
 					else
 					{
-						destination= "/test.jsp";	
-						userMessage= "Failure";
+						jsp_path	= "";
+						destination= "/index.jsp";	
+						userMessage= "Entered details do not match any active users";
 						request.setAttribute("userMessage", userMessage);
 					}
 				} 

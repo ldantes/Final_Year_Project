@@ -76,7 +76,7 @@ create table CM_Clients (
     client_id int NOT NULL AUTO_INCREMENT,
     primary key (client_id),
     Client_Name varchar(50) not null,
-    Client_DOB date not null,
+    Client_DOB varchar(10) not null,
     Client_Gender char null check (Client_Gender IN ('M' , 'm', 'F', 'f')),
     Client_Contact_No varchar(14) null,
     Client_Address varchar(100) null,

@@ -13,6 +13,7 @@
 
 <div class="div_header">
 	<h1 >Contingency Management System</h1>
+	<p align="right">Signed in as: ${username}</p>
 </div>
 
 </body>
