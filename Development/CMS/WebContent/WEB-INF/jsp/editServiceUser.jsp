@@ -8,13 +8,28 @@
 </head>
 <body>
     <%@include file="/header.jsp"%>
+	<script type="text/javascript" src="<c:url value="/resources/javascript/jsFunctions.js" />"></script>
 	
-	<h1>Edit ${serviceUser.name}</h1>
+	<h1>Edit Service user: </h1><h3 style="color:red">
+	<c:choose>
+		<c:when test="${serviceUser.name != null && serviceUser.name != ''}">
+		${serviceUser.name} (${serviceUser.id})
+		</c:when>
+		<c:otherwise>
+		New User
+		</c:otherwise>
+	
+	</c:choose>
+	</h3>
 	<hr/>
+	<table width="100%">
+	<tr>
+	<td width="50%">
 	<form id="editSelectServiceUser" action ="ServiceUserServlet" method="post">
 	<input type="hidden" name="requestAction" value="updateServiceUser"/>
-	<input type="hidden" name="srvUserid" value="${serviceUser.id}"/>${serviceUser.id} ${serviceUser.updatedBy} ${username} ${serviceUser.updatedOn}
+	<input type="hidden" name="srvUserid" value="${serviceUser.id}"/> 
 	<input type="hidden" name="username" value="${username}"/>
+	<div> <p style="color:red">${userMsg}</p></div>
 	<table>
 		<tr>
 			<td>
@@ -37,7 +52,29 @@
 				Gender: 
 			</td>
 			<td>
-				<input  name="srvUserGender" value="${serviceUser.gender}"/>
+				
+				<c:choose>
+				<c:when test="${serviceUser.gender=='M' || serviceUser.gender=='m'}">
+						<c:set var="M" value="checked"/>
+						<c:set var="F" value=""/>
+				</c:when>
+				<c:otherwise>
+						<c:set var="F" value="checked"/>
+						<c:set var="M" value=""/>
+				</c:otherwise>
+				</c:choose>
+				
+				Male:<input type="radio" name="srvUserGender" id="genderM" onClick="assignmentRadio(this.name);" value="M" ${M}/>
+				Female:<input type="radio" name="srvUserGender" id="genderF" onClick="assignmentRadio(this.name);" value="F" ${F}/>
+				
+			</td>
+		</tr>
+		<tr>
+			<td>
+				PPS Number: 
+			</td>
+			<td>
+				<input name="srvPPS" type="text" value=""/>
 				
 			</td>
 		</tr>
@@ -54,14 +91,14 @@
 				Address: 
 			</td>
 			<td>
-				<textarea name="srvUserAddress" maxLength="100" style="resize:none" rows="4">
+				<textarea name="srvUserAddress" maxLength="100" style="resize:none; overflow:hidden;" rows="4">
 				${serviceUser.address}
 				</textarea>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				Ethnicity: 
+				Ethnic Background: 
 			</td>
 			<td>
 				<input name="srvUserEthnicity" type="text" value="${serviceUser.ethnicity}"/>
@@ -91,7 +128,7 @@
 				Family Information: 
 			</td>
 			<td>
-				<textarea name="srvUserFamily" maxLength="100" style="resize:none" rows="5">
+				<textarea name="srvUserFamily" maxLength="100" style="resize:none; overflow:hidden;" rows="5" >
 				${serviceUser.familyInformation}
 				</textarea>
 			</td>
@@ -107,26 +144,55 @@
 	</table>
 	
 	</form>
+	</td>
+	<td>
+	<div>
+	<c:if test="${serviceUser.name != null && serviceUser.name != ''}">
+	<table>
+	<tr>
+	<th> Stream Details</th>
+	</tr>
+	<tr>
+	<td>Stream:</td>
+	<td>"${serviceUser.streamDetails['streamName']}" support level (${serviceUser.streamDetails['supportLevel']})</td>
+	</tr>
+	<tr>
+	<td>Substance Incrementor:</td>
+	<td>${serviceUser.streamDetails['substanceIncrementor']}</td>
+	</tr>
+	<tr>
+	<td>Engagement Incrementor:</td>
+	<td>${serviceUser.streamDetails['engagementIncrementor']}</td>
+	</tr>
+	<tr>
+	<td>Last Updated:</td>
+	<td>${serviceUser.streamDetails['updatedOn']}</td>
+	</tr>
+	<tr>
+	<td>
 	
-	<script>
-	 
-	  function genderRadio() {
+		<form name="newRequest" method="post">
+					<input type="hidden" name="action">
+					<input type="hidden" name="requestAction">
+					<input type="hidden" name="serviceUserId" value="${serviceUser.id}">
+					
+	</form>
+	<div>
+		
+		<a href="javascript:document.newRequest.requestAction.value='newSubstanceEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add New Behavioural/Substance results</a>
+		<br/>
+		<a href="javascript:document.newRequest.requestAction.value='newEngagmentEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add New Engagement/Meeting</a>
+	</div>	
+		
+	</td>	
+	</tr>
+	</table>
+	</c:if>
+	</div>
+	</td> 
+	</tr>
+	</table>
+	
 
-	        var radio_check_val = "";
-	        var i;
-	        for (i = 0; i < document.getElementsByName('srvUserGender').length; i++) {
-	            if (document.getElementsByName('srvUserGender')[i].checked) {
-	                radio_check_val = document.getElementsByName('srvUserGender')[i].value;
-	                document.getElementsByName('srvUserGender').value = radio_check_val;
-	                serviceUser.gender = radio_check_val;
-	            }
-
-	        }
-	       
-
-
-
-	    }
-	</script>
 </body>
 </html>

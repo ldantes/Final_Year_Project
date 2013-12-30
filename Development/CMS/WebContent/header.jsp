@@ -6,15 +6,31 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<link rel="stylesheet" type="text/css" href="/css/style.css" media="screen" />
+ <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/style.css" />" />
 
 </head>
 <body>
 
-<div class="div_header">
+<div class="header">
 	<h1 >Contingency Management System</h1>
-	<p align="right">Signed in as: ${username}</p>
+	<h3> version 1.0</h3>
 </div>
+	<c:if test="${username != null}">
+	<p align="right">Signed in as: ${username}</p>
+
+	<form name="navigationForm" method="post">
+					<input type="hidden" name="action">
+					<input type="hidden" name="requestAction">
+					<input type="hidden" name="serviceUserId">
+					
+	</form>
+	
+		<nav> 
+		<a href="javascript:document.navigationForm.requestAction.value='srchServiceUser';document.navigationForm.action='ServiceUserServlet';document.navigationForm.submit();">Search Service User</a> ||
+		<a href="javascript:document.navigationForm.requestAction.value='editServiceUser';document.navigationForm.action='ServiceUserServlet';document.navigationForm.serviceUserId='';document.navigationForm.submit();">Add Service User</a>  
+		</nav>
+	
+	</c:if>
 
 </body>
 </html>

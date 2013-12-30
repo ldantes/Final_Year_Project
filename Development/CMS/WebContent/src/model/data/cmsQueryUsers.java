@@ -70,4 +70,78 @@ public class cmsQueryUsers  {
 		
 		return userRoleBeans;
 	}
+	
+	public static List<UserBean> qryUsers(String active)
+	{
+		String 	funcExceptionErrorMsg 	= "qryUserRoles. ";
+		
+		List <UserBean> userBeans = new  ArrayList<UserBean>();
+		UserBean userBean = null;
+		Connection connection = null;		
+		Statement stmt = null;		
+		
+		try{
+			connection = DataSourceManager.getDataSource().getConnection();
+			stmt = connection.createStatement();			
+			String query = "SELECT `UserName`,"
+					+ " `User_FName`,"
+					+ " `User_SName`,"
+					+ " `User_Email`,"
+					+ " `User_Active`,"
+					+ " `User_Password`,"
+					+ " `Created_By`,"
+					+ " `Created_On`,"
+					+ " `Updated_By`,"
+					+ " `Updated_On` "
+					+ "FROM "
+					+ "`cm_users`";
+					
+			if (active != null)
+			{
+				query= query+ " where user_active='Y'";
+			}
+			ResultSet  results = stmt.executeQuery(query);
+			
+			while (results.next()) {
+				userBean = new UserBean();
+				userBean.setFirstName(results.getString("User_FName"));
+				userBean.setSurname(results.getString("User_SName"));
+				userBean.setEmail(results.getString("User_Email"));
+				userBean.setUserName(results.getString("UserName"));
+				userBean.setCreatedBy(results.getString("Created_By"));
+				userBean.setCreatedOn(results.getString("Created_On"));
+				userBean.setUpdatedBy(results.getString("Updated_By"));
+				userBean.setUpdatedOn(results.getString("Updated_On"));
+				
+				userBeans.add(userBean);				
+			}	
+			
+			results.close();
+		}
+		
+		catch (SQLException  e) {							
+			log.error(funcExceptionErrorMsg, e);
+						
+		} finally {
+			try {
+				if(stmt != null){
+					stmt.close();
+				}
+			} catch (SQLException sqle) {
+				log.error(funcExceptionErrorMsg, sqle);
+				
+			}
+			try {
+				if(connection != null){
+					connection.close();
+				}
+			} catch (SQLException sqle) {
+				log.error(funcExceptionErrorMsg, sqle);
+				
+			}
+		}
+		
+		
+		return userBeans;
+	}
 }

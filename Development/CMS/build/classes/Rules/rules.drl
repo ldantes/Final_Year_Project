@@ -1,0 +1,9 @@
+
+
+
+rule "streamAssign" 
+dialect "mvel" 
+agenda-group "stream" 
+when $c : ServiceUser(streamId == null) 
+then $c.streamDetails.setStreamName = 1 
+end 

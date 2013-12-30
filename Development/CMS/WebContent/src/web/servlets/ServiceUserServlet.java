@@ -17,7 +17,11 @@ import javax.servlet.http.HttpSession;
 
 import web.services.serviceUserService;
 import model.beans.ServiceUserBean;
+import model.beans.SubstanceBean;
+import model.beans.UserBean;
 import model.data.cmsQueryServiceUser;
+import model.data.cmsQuerySubstance;
+import model.data.cmsQueryUsers;
 
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -38,7 +42,7 @@ public class ServiceUserServlet extends HttpServlet {
 	
 	private enum validActions
 	{
-	   srchServiceUser, editServiceUser, updateServiceUser; 
+	   srchServiceUser, editServiceUser, updateServiceUser, newSubstanceEntry, insertNewSubstanceResult, newEngagmentEntry , insertNewAttendance; 
 	}
 	
     public ServiceUserServlet() {
@@ -69,38 +73,120 @@ public class ServiceUserServlet extends HttpServlet {
 			switch (validActions.valueOf(action)){
 		
 				case srchServiceUser:
-						String searchedName = request.getParameter("serviceUserName");
-						List<ServiceUserBean> searchedUsers = cmsQueryServiceUser.searchServiceUsersByName(searchedName);
-						request.setAttribute("serviceUserResults", searchedUsers);
+						if ( request.getParameter("serviceUserName") != null)
+						{
+							String searchedName = request.getParameter("serviceUserName");
+							List<ServiceUserBean> searchedUsers = cmsQueryServiceUser.searchServiceUsersByName(searchedName);
+							request.setAttribute("serviceUserResults", searchedUsers);
+						}
+						destination	= "/ServiceUsersSrch.jsp";
 						break;
 						
 				case editServiceUser:
 					String srchId = request.getParameter("serviceUserId");
-					if(srchId != "" || srchId != null  )
+					if(srchId != "" && srchId != null  )
 					{
 						ServiceUserBean searchedUser = (ServiceUserBean) cmsQueryServiceUser.searchServiceUsersById( srchId);
 						destination	= "/editServiceUser.jsp";
 						request.setAttribute("serviceUser",searchedUser);
 						
 					}
+					else
+					{
+						ServiceUserBean serviceUser = new ServiceUserBean();
+						serviceUser.setId("");
+						destination	= "/editServiceUser.jsp";
+						request.setAttribute("serviceUser",serviceUser);
+					}
 					break;
 				
 				case updateServiceUser:
 					service.setApplicationContext(applicationContext);
 					service.setRequest(request);
-				try {
-					service.updateServiceuser();
-					destination	= "/editServiceUser.jsp";
-					request.setAttribute("serviceUser",service.getServiceUserBean());
+					String servId =request.getParameter("srvUserid");
+					if( servId != null && servId.length() != 0)
+					{
+						try {
+							service.updateServiceuser();
+							destination	= "/editServiceUser.jsp";
+							request.setAttribute("serviceUser",service.getServiceUserBean());
+							userMessage =service.userMessage;
+							request.setAttribute("userMsg",userMessage);
+							
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (NamingException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					else
+					{
+						service.newServiceUser();
+						destination	= "/editServiceUser.jsp";
+						request.setAttribute("serviceUser",service.getServiceUserBean());
+						userMessage =service.userMessage;
+						request.setAttribute("userMsg",userMessage);
+					}
 					
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (NamingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+						break;
+						
+				case newSubstanceEntry:
+					
+					service.setApplicationContext(applicationContext);
+					service.setRequest(request);
+					String id = request.getParameter("serviceUserId");
+					service.setReferenceInformation(id);
+					
+					request.setAttribute("serviceUser",service.getServiceUserBean());
+					request.setAttribute("substanceBeans",service.substanceBeans);
+					request.setAttribute("userBeans",service.userBeans);
+					request.setAttribute("previousResultsBeans",cmsQuerySubstance.qryServiceUserResults(id));
+					destination="/editViewSubstance.jsp";
 					break;
+					
+				case insertNewSubstanceResult:
+					service.setApplicationContext(applicationContext);
+					service.setRequest(request);
+					service.newSubstanceResult();
+										
+					request.setAttribute("serviceUser",service.getServiceUserBean());
+//					request.setAttribute("substanceBeans",service.substanceBeans);
+//					request.setAttribute("userBeans",service.userBeans);
+//					request.setAttribute("previousResultsBeans",cmsQuerySubstance.qryServiceUserResults(service.getServiceUserBean().getId()));
+					userMessage =service.userMessage;
+					request.setAttribute("userMsg",userMessage);
+					destination="/editServiceUser.jsp";
+					break;
+					
+					
+				case newEngagmentEntry:
+					
+					service.setApplicationContext(applicationContext);
+					service.setRequest(request);
+					String id2 = request.getParameter("serviceUserId");
+					service.setReferenceInformation(id2);
+					
+					request.setAttribute("serviceUser",service.getServiceUserBean());
+					request.setAttribute("attendanceDetails",service.attendanceDetails);
+					
+					destination="/editViewAttendance.jsp";
+					break;
+				
+				case insertNewAttendance:
+					
+					service.setApplicationContext(applicationContext);
+					service.setRequest(request);
+					service.newAttendance();
+										
+					request.setAttribute("serviceUser",service.getServiceUserBean());
+					userMessage =service.userMessage;
+					request.setAttribute("userMsg",userMessage);
+					destination="/editServiceUser.jsp";
+					
+					
+				
 					
 			}
 			

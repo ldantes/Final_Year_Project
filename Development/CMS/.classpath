@@ -13,7 +13,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="DROOLS/Drools"/>
+	<classpathentry exported="true" kind="con" path="DROOLS/Drools"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/json-lib-2.4-jdk15.jar"/>
 	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/gson-2.2.4.jar"/>
 	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/jsr173_1.0_api.jar"/>
@@ -23,5 +23,27 @@
 	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/xmlbeans-qname.jar"/>
 	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/xmlpublic.jar"/>
 	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/xom-1.2.10.jar"/>
+	<classpathentry kind="lib" path="F:/Program Files/eclipse-SDK-4.4M2-win32-x86_64/eclipse/plugins/org.drools.eclipse_5.5.0.Final.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/json-lib-2.4-jdk15.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/spring.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/commons-pool-1.4.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/jurt.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/activation.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/commons-beanutils-1.8.0.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/commons-dbcp-1.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/jstl.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/juh.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/standard.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/drools-decisiontables.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/droolsjbpm-ide-common.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/drools-jsr94.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/drools-templates.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/drools-compiler.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/drools-core.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/org.drools.eclipse_5.5.0.Final.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/gson-2.2.4-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/gson-2.2.4-sources.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

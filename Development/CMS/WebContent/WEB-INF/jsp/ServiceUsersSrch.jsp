@@ -21,6 +21,8 @@
 	<form id ="serviceUserSelect" method="post" action="ServiceUserServlet">
 	<input type="hidden" name="requestAction" value="editServiceUser"/>
 	<input type="hidden" name="serviceUserId" value=""/>
+	<c:choose>
+	<c:when test="${serviceUserResults != null && fn:length(serviceUserResults) != 0}">
 	<table width="100%" border="1">
 	<tr><th>Name</th><th>Date of Birth</th><th>Created By</th></tr>
 	
@@ -33,7 +35,13 @@
 	</tr>
 	
 	</c:forEach>
+
 	</table>
+	</c:when>
+	<c:otherwise>
+		No results found!
+	</c:otherwise>
+	</c:choose>
 	</form>
 	</c:if>
 </body>

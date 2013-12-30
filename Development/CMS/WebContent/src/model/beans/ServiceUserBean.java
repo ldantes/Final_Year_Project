@@ -17,6 +17,19 @@ public class ServiceUserBean{
 	private String createdOn="";
 	private String updatedOn="";
 	private String updatedBy="";
+	private StreamBean streamDetails;
+	private AttendanceBean attendanceDetails;
+	private SubstanceBean substanceDetails;
+	
+	
+	public StreamBean getStreamDetails(){
+		return streamDetails;
+	}
+	
+	public void setStreamDetails(StreamBean streamDetails)
+	{
+		this.streamDetails = streamDetails;
+	}
 	
 	
 	public String getId() {
@@ -103,6 +116,22 @@ public class ServiceUserBean{
 	}
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public SubstanceBean getSubstanceDetails() {
+		return substanceDetails;
+	}
+
+	public void setSubstanceDetails(SubstanceBean substanceDetails) {
+		this.substanceDetails = substanceDetails;
+	}
+
+	public AttendanceBean getAttendanceDetails() {
+		return attendanceDetails;
+	}
+
+	public void setAttendanceDetails(AttendanceBean attendanceDetails) {
+		this.attendanceDetails = attendanceDetails;
 	}
 	
 	

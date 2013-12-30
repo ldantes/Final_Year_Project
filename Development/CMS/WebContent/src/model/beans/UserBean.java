@@ -1,6 +1,7 @@
 package model.beans;
 
 import model.beans.UserRoleBean;
+
 import java.util.List;
 
 public class UserBean {
@@ -11,6 +12,10 @@ public class UserBean {
 	private String active="";
 	private String password="";	
 	private String email="";
+	private String createdBy;
+	private String createdOn;
+	private String updatedBy;
+	private String updatedOn;
 	private List<UserRoleBean> userRole;
 	
 	
@@ -67,6 +72,30 @@ public class UserBean {
 	}
 	public void setUserRoles(List<UserRoleBean> userRole) {
 		this.userRole = userRole;
+	}
+	public String getCreatedBy() {
+		return createdBy;
+	}
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+	public String getCreatedOn() {
+		return createdOn;
+	}
+	public void setCreatedOn(String createdOn) {
+		this.createdOn = createdOn;
+	}
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+	public String getUpdatedOn() {
+		return updatedOn;
+	}
+	public void setUpdatedOn(String updatedOn) {
+		this.updatedOn = updatedOn;
 	}
 	
 

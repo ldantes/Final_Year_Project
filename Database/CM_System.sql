@@ -39,6 +39,7 @@ Create table CM_Users (
 );
 
 insert into cm_users values('lducray','Leslie','Ducray','c10327999@mydit.ie','Y','password','lducray',sysdate(),'lducray',sysdate());
+insert into cm_users values('jsmith','John','Smith','c10327784@mydit.ie','Y','password','lducray',sysdate(),'lducray',sysdate());
 
 Create table CM_Roles (
     Role_Name VARCHAR(20) NULL,
@@ -121,7 +122,11 @@ create table CM_Client_Stream (
 	Engagemnet_Incrementor int,
     Created_By VARCHAR(25) Not NULL,
     Created_On DATE NOT NULL,
+	Updated_By VARCHAR(25) Not NULL,
+    Updated_On DATE NOT NULL,
     CONSTRAINT CS_Created_By FOREIGN KEY (created_By)
+        REFERENCES CM_System.Cm_USERS (UserName),
+ CONSTRAINT CS_Updated_By FOREIGN KEY (updated_By)
         REFERENCES CM_System.Cm_USERS (UserName),
     CONSTRAINT CS_Client_Id FOREIGN KEY (Client_id)
         REFERENCES CM_System.CM_Clients (client_id),
@@ -153,10 +158,11 @@ create table CM_Client_Attnd (
     Id int not null auto_increment primary key,
     Client_Id int Not NULL,
     UserName VARCHAR(25) Not NULL,
-   // Note_Id int,
-    Time_date datetime,
+   #Note_Id int,
+    Time_date varchar(20),
     Attended Char check (Attended in ('Y' , 'y', 'N', 'n')),
     Attnd_Failed_Reason varchar(50),
+	Valid_Reason Char check (Attended in ('Y' , 'y', 'N', 'n')),
     Treatment_review_meeting Char check (user_active in ('Y' , 'y', 'N', 'n'))
 );
 
@@ -236,11 +242,15 @@ CREATE TABLE CM_Substances (
         REFERENCES CM_System.Cm_USERS (UserName)
 );
 
+insert into cm_substances values ('Opiate', 0, 4, 'Y', 'lducray', curdate());
+insert into cm_substances values ('Stimulant', 0, 4, 'Y', 'lducray', curdate());
+insert into cm_substances values ('Benzodiazepine', 0, 4, 'Y', 'lducray', curdate());
+
 CREATE TABLE CM_Client_Test_Results (
     Id int not null auto_increment primary key,
     Client_Id int,
     Substance varchar(30),
-    Result char check (Result in ('Y' , 'y', 'N', 'n')),
+    Result char check (Result in ('P' , 'p', 'F', 'f')),
     Administered_By VARCHAR(25) Not NULL,
     Administered_On DATE NOT NULL,
     Created_By VARCHAR(25) Not NULL,

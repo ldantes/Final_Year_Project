@@ -9,7 +9,7 @@ package rules
 
 
 
-rule "Your First Rule"
+rule "assignStream"
 
     when 
         //conditions
