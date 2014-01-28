@@ -7,7 +7,8 @@ public class AttendanceBean {
 	private String username;
 	private String timeDate;
 	private String attended;
-	private String validReason;
+	private String participation;
+	private String validReason = "";
 	private String attndFailedReason;
 	private String treatmentReviewMeeting;
 	
@@ -58,6 +59,12 @@ public class AttendanceBean {
 	}
 	public void setValidReason(String validReason) {
 		this.validReason = validReason;
+	}
+	public String getParticipation() {
+		return participation;
+	}
+	public void setParticipation(String participation) {
+		this.participation = participation;
 	}
 
 }

@@ -1,8 +1,10 @@
 package model.business.facade.impl;
 
 import model.beans.AttendanceBean;
+import model.beans.NoteBean;
 import model.beans.ServiceUserBean;
 import model.beans.SubstanceBean;
+import model.beans.TransactionBean;
 import model.business.dao.ServiceUserDao;
 import model.business.facade.ServiceUserFacade;
 
@@ -35,6 +37,14 @@ public class ServiceUserFacadeImpl implements ServiceUserFacade
 	public void newAttendance(AttendanceBean attendanceBean){
 		serviceUserDao.insertNewAttendance(attendanceBean);
 	};
+	
+	public void adjustBalance(TransactionBean transaction){
+		serviceUserDao.adjustBalance(transaction);
+	};
+	
+	public void addNewNote(NoteBean note){
+		serviceUserDao.addNewNote(note);
+	}
 }
 
 	

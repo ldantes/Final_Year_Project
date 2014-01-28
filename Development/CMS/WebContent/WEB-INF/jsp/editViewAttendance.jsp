@@ -42,13 +42,15 @@
 		<tr>
 			<td>Meeting attended:</td>
 			<td>Yes:<input type="radio" name="attended" id="passed" onClick="assignmentRadio(this.name);" value="Y"/>
-				No:<input type="radio" name="attended" id="failed" onClick="assignmentRadio(this.name);" value="N" /></td>
+				No:<input type="radio" name="attended" id="failed" onClick="assignmentRadio(this.name);" value="N" />
+				<input type="radio" name="attended" id="default" onClick="assignmentRadio(this.name);" value="" style="display:none" checked="checked"/></td>
 			
 		</tr>
 		<tr>
 			<td>Meaningful participation:</td>
 			<td>Yes:<input type="radio" name="particaption" id="passed" onClick="assignmentRadio(this.name);" value="Y"/>
-				No:<input type="radio" name="particaption" id="failed" onClick="assignmentRadio(this.name);" value="N" /></td>
+				No:<input type="radio" name="particaption" id="failed" onClick="assignmentRadio(this.name);" value="N" />
+				<input type="radio" name="particaption" id="default" onClick="assignmentRadio(this.name);" value="" style="display:none" checked="checked"/></td>
 			
 		</tr>
 		<tr>
@@ -62,13 +64,15 @@
 		<tr>
 			<td>Valid reason for absence:</td>
 			<td>Yes:<input type="radio" name="reasonValid" id="passed" onClick="assignmentRadio(this.name);" value="Y"/>
-				No:<input type="radio" name="reasonValid" id="failed" onClick="assignmentRadio(this.name);" value="N" /></td>
-			
+				No:<input type="radio" name="reasonValid" id="failed" onClick="assignmentRadio(this.name);" value="N" />
+				<input type="radio" name="reasonValid" id="default" onClick="assignmentRadio(this.name);" value="" style="display:none" checked="checked"/></td>
+				
 		</tr>
 		<tr>
 			<td>Review Meeting:</td>
 			<td>Yes:<input type="radio" name="reviewMeeting" id="passed" onClick="assignmentRadio(this.name);" value="Y"/>
-				No:<input type="radio" name="reviewMeeting" id="failed" onClick="assignmentRadio(this.name);" value="N" /></td>
+				No:<input type="radio" name="reviewMeeting" id="failed" onClick="assignmentRadio(this.name);" value="N" />
+				<input type="radio" name="reviewMeeting" id="default" onClick="assignmentRadio(this.name);" value="" style="display:none" checked="checked"/></td>
 			
 		</tr>
 		<tr>
@@ -86,11 +90,11 @@
 	
 	<div class="inline" >
 	<h2>PREVIOUS ATTENDANCES</h2>
-	<table style="padding:5px">
+	<table style="padding:5px " border="1">
 		
 		<c:choose>
 		<c:when test="${attendanceDetails != null &&  fn.length(attendanceDetails) != 0}">
-		<tr><th>Member of Staff	</th><th>Professional</th><th>Attended</th><th>Time/Date</th><th>Reason for absence</th><th>Valid reason for absence</th><th>Review meeting</th></tr>
+		<tr><th>Member of Staff	</th><th>Professional</th><th>Attended</th><th>Time/Date</th><th>Active participation</th><th>Reason for absence</th><th>Valid reason for absence</th><th>Review meeting</th></tr>
 		<c:forEach var="results" items="${attendanceDetails}">
 		<tr><td>${results.username}</td>
 			<td></td>
@@ -111,6 +115,7 @@
 			</td>
 			
 		<td>${results.timeDate}</td>
+		<td>${results.participation}</td>
 		<td>${results.attndFailedReason}</td>
 		<td>
 			<c:choose>

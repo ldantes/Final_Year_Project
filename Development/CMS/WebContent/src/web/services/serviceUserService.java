@@ -1,5 +1,7 @@
 package web.services;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -8,8 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import model.beans.AttendanceBean;
+import model.beans.NoteBean;
 import model.beans.ServiceUserBean;
 import model.beans.SubstanceBean;
+import model.beans.TransactionBean;
 import model.beans.UserBean;
 import model.business.facade.ServiceUserFacade;
 import model.data.cmsQueryAttendance;
@@ -19,6 +23,8 @@ import model.data.cmsQueryUsers;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
+
+import utilities.DataSourceManager;
 
 public class serviceUserService{
 	
@@ -78,6 +84,7 @@ public class serviceUserService{
 		serviceUserBean.setGender(request.getParameter("srvUserGender").toString());
 		serviceUserBean.setDoB(request.getParameter("srvUserDOB").toString());
 		serviceUserBean.setAddress(request.getParameter("srvUserAddress").toString());
+		serviceUserBean.setPps(request.getParameter("srvPPS").toString());
 		serviceUserBean.setContactNumber(request.getParameter("srvUserContactactNumber").toString());
 		serviceUserBean.setEthnicity(request.getParameter("srvUserEthnicity").toString());
 		serviceUserBean.setNationality(request.getParameter("srvUserNationality").toString());
@@ -128,6 +135,8 @@ public class serviceUserService{
 		attendanceBean.setTimeDate(request.getParameter("attndDate")+" "+request.getParameter("attndTime"));
 		attendanceBean.setAttndFailedReason(request.getParameter("missedReason"));
 		attendanceBean.setValidReason(request.getParameter("reasonValid"));
+		attendanceBean.setParticipation(request.getParameter("particaption"));
+		attendanceBean.setParticipation(request.getParameter("particaption"));
 		attendanceBean.setTreatmentReviewMeeting(request.getParameter("reviewMeeting"));
 			
 		ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
@@ -138,6 +147,114 @@ public class serviceUserService{
 		this.userMessage="Service Test results successfull added";
 	
 			
+	}
+	
+	public void adjustBalance() 
+	{
+		String id = request.getParameter("serviceUserId");
+		
+		TransactionBean transaction = new TransactionBean();
+		
+		transaction.setAccount_Id(id);
+		
+		if(request.getParameter("credit")!= null && request.getParameter("credit").length() != 0)
+		{
+			transaction.setAmount_Credited(request.getParameter("credit"));	
+		}
+		
+		if(request.getParameter("withdraw")!= null && request.getParameter("withdraw").length() != 0)
+		{
+			transaction.setAmount_Withdrawn(request.getParameter("withdraw"));	
+		}
+		transaction.setApproved_By(request.getParameter("username"));
+			
+			
+		ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
+		serviceUserFacade.adjustBalance(transaction);
+		
+		this.serviceUserBean = cmsQueryServiceUser.searchServiceUsersById(id);
+		
+		this.userMessage="Account successfully adjusted";
+	
+	
+			
+	}
+
+	public void adjustServiceSubstanceIncr(ServiceUserBean serviceuser) {
+		
+			String fuctionName ="adjustServiceSubstanceIncr";
+		    Connection connection = null;	
+			CallableStatement stmt =null;
+			System.out.println( "adjustServiceSubstanceIncr");
+			
+			try {
+						
+					
+						
+						
+					connection = DataSourceManager.getDataSource().getConnection();		
+					stmt = connection.prepareCall("{call cm_system.adjust_subsaccum(?,?,?)}");			
+					stmt.setString(1, serviceuser.getId());		
+					stmt.setInt(2, serviceuser.getStreamDetails().getSubstanceIncrementor());	
+					stmt.registerOutParameter(3,java.sql.Types.VARCHAR);			
+					stmt.executeQuery();			
+							
+					if (stmt.getString(3).equals("OK")== false){
+										
+					}
+				}
+			catch (SQLException  e) {							
+				
+							
+			} finally {
+				try {
+					if(stmt != null){
+						stmt.close();
+					}
+				} catch (SQLException sqle) {
+					
+					
+				}
+				try {
+					if(connection != null){
+						connection.close();
+					}
+				} catch (SQLException sqle) {
+					
+					
+				}
+			}
+			
+			System.out.println( "Done");
+		
+	}
+
+	public void addNewNote() {
+		
+		NoteBean note = new NoteBean();
+		note.setClient_Id(request.getParameter("serviceUserId").toString());
+		note.setUserName(request.getParameter("username").toString());
+		note.setNote(request.getParameter("note").toString());
+		
+		
+		ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
+		serviceUserFacade.addNewNote(note);
+		
+		
+		
+	}
+
+	public void updateNote() {
+
+		NoteBean note = new NoteBean();
+		note.setClient_Id(request.getParameter("serviceUserId").toString());
+		note.setUserName(request.getParameter("username").toString());
+		note.setId(request.getParameter("noteId").toString());
+		note.setNote(request.getParameter(""+note.getId()+"").toString());
+		
+		ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
+		serviceUserFacade.addNewNote(note);
+		
 	}
 	
 }

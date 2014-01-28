@@ -1,5 +1,7 @@
 package model.beans;
 
+import java.util.List;
+
 
 public class ServiceUserBean{
     
@@ -9,6 +11,7 @@ public class ServiceUserBean{
 	private String gender ="";
 	private String contactNumber="";
 	private String address="";
+	private String pps="";
 	private String ethnicity="";
 	private String nationality="";
 	private String occupation="";
@@ -18,8 +21,9 @@ public class ServiceUserBean{
 	private String updatedOn="";
 	private String updatedBy="";
 	private StreamBean streamDetails;
-	private AttendanceBean attendanceDetails;
-	private SubstanceBean substanceDetails;
+	private List<AttendanceBean> attendanceDetails;
+	private List<SubstanceBean> substanceDetails;
+	private List<NoteBean> notes;
 	
 	
 	public StreamBean getStreamDetails(){
@@ -118,22 +122,38 @@ public class ServiceUserBean{
 		this.updatedBy = updatedBy;
 	}
 
-	public SubstanceBean getSubstanceDetails() {
+	public List<SubstanceBean> getSubstanceDetails() {
 		return substanceDetails;
 	}
 
-	public void setSubstanceDetails(SubstanceBean substanceDetails) {
+	public void setSubstanceDetails(List<SubstanceBean> substanceDetails) {
 		this.substanceDetails = substanceDetails;
 	}
 
-	public AttendanceBean getAttendanceDetails() {
+	public List<AttendanceBean> getAttendanceDetails() {
 		return attendanceDetails;
 	}
 
-	public void setAttendanceDetails(AttendanceBean attendanceDetails) {
+	public void setAttendanceDetails(List<AttendanceBean> attendanceDetails) {
 		this.attendanceDetails = attendanceDetails;
 	}
-	
+
+	public String getPps() {
+		return pps;
+	}
+
+	public void setPps(String pps) {
+		this.pps = pps;
+	}
+
+	public List<NoteBean> getNotes() {
+		return notes;
+	}
+
+	public void setNotes(List<NoteBean> notes) {
+		this.notes = notes;
+	}
+
 	
 	
 }

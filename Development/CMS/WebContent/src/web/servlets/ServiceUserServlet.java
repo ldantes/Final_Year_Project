@@ -16,15 +16,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import web.services.serviceUserService;
+import model.beans.AccountBean;
 import model.beans.ServiceUserBean;
 import model.beans.SubstanceBean;
 import model.beans.UserBean;
+import model.data.cmsQueryAccount;
 import model.data.cmsQueryServiceUser;
 import model.data.cmsQuerySubstance;
 import model.data.cmsQueryUsers;
 
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import Rules.SubstanceRules;
 
 
 /**
@@ -42,7 +46,7 @@ public class ServiceUserServlet extends HttpServlet {
 	
 	private enum validActions
 	{
-	   srchServiceUser, editServiceUser, updateServiceUser, newSubstanceEntry, insertNewSubstanceResult, newEngagmentEntry , insertNewAttendance; 
+	   srchServiceUser, editServiceUser, updateServiceUser, newSubstanceEntry, insertNewSubstanceResult, newEngagmentEntry , insertNewAttendance, viewAccount, newTransaction, viewNotes,newNote, updateNote; 
 	}
 	
     public ServiceUserServlet() {
@@ -65,7 +69,7 @@ public class ServiceUserServlet extends HttpServlet {
 		WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(this.getServletContext());
 		
 		serviceUserService service = new serviceUserService();
-			
+		String id = request.getParameter("serviceUserId");	
 			
 			String action= request.getParameter("requestAction");	
 			
@@ -136,7 +140,7 @@ public class ServiceUserServlet extends HttpServlet {
 					
 					service.setApplicationContext(applicationContext);
 					service.setRequest(request);
-					String id = request.getParameter("serviceUserId");
+					id = request.getParameter("serviceUserId");
 					service.setReferenceInformation(id);
 					
 					request.setAttribute("serviceUser",service.getServiceUserBean());
@@ -158,6 +162,8 @@ public class ServiceUserServlet extends HttpServlet {
 					userMessage =service.userMessage;
 					request.setAttribute("userMsg",userMessage);
 					destination="/editServiceUser.jsp";
+					ServiceUserBean serviceuser = SubstanceRules.adjustSubstanceAccumaltor();
+					service.adjustServiceSubstanceIncr(serviceuser);
 					break;
 					
 					
@@ -165,8 +171,8 @@ public class ServiceUserServlet extends HttpServlet {
 					
 					service.setApplicationContext(applicationContext);
 					service.setRequest(request);
-					String id2 = request.getParameter("serviceUserId");
-					service.setReferenceInformation(id2);
+					id = request.getParameter("serviceUserId");
+					service.setReferenceInformation(id);
 					
 					request.setAttribute("serviceUser",service.getServiceUserBean());
 					request.setAttribute("attendanceDetails",service.attendanceDetails);
@@ -184,6 +190,55 @@ public class ServiceUserServlet extends HttpServlet {
 					userMessage =service.userMessage;
 					request.setAttribute("userMsg",userMessage);
 					destination="/editServiceUser.jsp";
+					break;
+					
+				case viewAccount:
+					
+					AccountBean accountDetails = cmsQueryAccount.srvUserAccount(request.getParameter("serviceUserId"));
+					
+					request.setAttribute("accountDetails", accountDetails );
+					request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(request.getParameter("serviceUserId")) );
+					destination="/viewAccount.jsp";
+					break;
+					
+				case newTransaction:
+					
+					service.setApplicationContext(applicationContext);
+					service.setRequest(request);
+					service.adjustBalance();
+					AccountBean accountDetails2 = cmsQueryAccount.srvUserAccount(request.getParameter("serviceUserId"));
+					request.setAttribute("accountDetails", accountDetails2 );
+					request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(request.getParameter("serviceUserId")) );
+					destination="/viewAccount.jsp";
+					break;
+					
+				case viewNotes:
+					id = request.getParameter("serviceUserId");
+					request.setAttribute("notes",cmsQueryServiceUser.qryServiceUserNotes(id));
+					request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(id) );
+					destination="/viewNotes.jsp";
+					break;
+					
+				case newNote:
+					
+					service.setApplicationContext(applicationContext);
+					service.setRequest(request);
+					service.addNewNote();
+					id = request.getParameter("serviceUserId");
+					request.setAttribute("notes",cmsQueryServiceUser.qryServiceUserNotes(id));
+					request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(id) );
+					destination="/viewNotes.jsp";
+					break;
+					
+				case updateNote:
+					service.setApplicationContext(applicationContext);
+					service.setRequest(request);
+					service.updateNote();
+					id = request.getParameter("serviceUserId");
+					request.setAttribute("notes",cmsQueryServiceUser.qryServiceUserNotes(id));
+					request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(id) );
+					destination="/viewNotes.jsp";
+					break;
 					
 					
 				

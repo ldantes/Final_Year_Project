@@ -25,6 +25,7 @@ Create table CM_Users (
     User_FName VARCHAR(20) NULL,
     User_SName VARCHAR(20) NULL,
     User_Email VARCHAR(50) NULL,
+	User_Proffession VARCHAR(50) Not NULL,
     User_Active Char check (user_active in ('Y' , 'y', 'N', 'n')),
     User_Password VARCHAR(50) NOT NULL,
     Created_By VARCHAR(25) Not NULL,
@@ -38,8 +39,8 @@ Create table CM_Users (
         REFERENCES CM_System.Cm_USERS (UserName)
 );
 
-insert into cm_users values('lducray','Leslie','Ducray','c10327999@mydit.ie','Y','password','lducray',sysdate(),'lducray',sysdate());
-insert into cm_users values('jsmith','John','Smith','c10327784@mydit.ie','Y','password','lducray',sysdate(),'lducray',sysdate());
+insert into cm_users values('lducray','Leslie','Ducray','c10327999@mydit.ie','Psycologist','Y','password','lducray',sysdate(),'lducray',sysdate());
+insert into cm_users values('jsmith','John','Smith','c10327784@mydit.ie','Lab technician','Y','password','lducray',sysdate(),'lducray',sysdate());
 
 Create table CM_Roles (
     Role_Name VARCHAR(20) NULL,
@@ -80,6 +81,7 @@ create table CM_Clients (
     Client_DOB varchar(10) not null,
     Client_Gender char null check (Client_Gender IN ('M' , 'm', 'F', 'f')),
     Client_Contact_No varchar(14) null,
+	Client_PPSNo varchar(10),
     Client_Address varchar(100) null,
     Client_Nationality varchar(40) null,
     Client_Ethnicity varchar(40) null,
@@ -161,6 +163,7 @@ create table CM_Client_Attnd (
    #Note_Id int,
     Time_date varchar(20),
     Attended Char check (Attended in ('Y' , 'y', 'N', 'n')),
+	participated Char check (Attended in ('Y' , 'y', 'N', 'n')),
     Attnd_Failed_Reason varchar(50),
 	Valid_Reason Char check (Attended in ('Y' , 'y', 'N', 'n')),
     Treatment_review_meeting Char check (user_active in ('Y' , 'y', 'N', 'n'))
@@ -285,8 +288,8 @@ CREATE TABLE CM_Accounts (
 CREATE TABLE CM_Transactions (
     Id int not null auto_increment primary key,
     Account_Id int,
-    Amount_Withdrawn numeric(2 , 2 ),
-    Amount_Credited numeric(2 , 2 ),
+    Amount_Withdrawn numeric(5 , 2 ),
+    Amount_Credited numeric(5 , 2 ),
     Approved_By VARCHAR(25) Not NULL,
     Date_of_Transaction date not null,
     CONSTRAINT Trans_Approved_by FOREIGN KEY (Approved_By)

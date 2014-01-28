@@ -13,9 +13,12 @@ import java.util.ArrayList;
 
 
 
+
+
 import org.apache.log4j.Logger;
 
 import utilities.DataSourceManager;
+import model.beans.NoteBean;
 import model.beans.ServiceUserBean;
 import model.beans.StreamBean;
 
@@ -23,6 +26,7 @@ import model.beans.StreamBean;
 public class cmsQueryServiceUser{
 	
 	private static Logger log = Logger.getLogger(cmsQueryServiceUser.class);
+	
 	public static List<ServiceUserBean> searchServiceUsersByName(String srchName){
 			
 		String 	funcExceptionErrorMsg 	= "searchServiceUsers. ";
@@ -40,6 +44,7 @@ public class cmsQueryServiceUser{
 						+ "    Client_Gender,"
 						+ "    Client_Contact_No,"
 						+ "    Client_Address,"
+						+ "		Client_PPSNo ,"
 						+ "    Client_Nationality,"
 						+ "    Client_Ethnicity,"
 						+ "    Client_Occupation,"
@@ -49,7 +54,8 @@ public class cmsQueryServiceUser{
 						+ "    Updated_By,"
 						+ "    Updated_On "
 						+ " FROM    cm_clients "
-						+ " where   UPPER(client_name) like UPPER('%"+srchName+"%') ";
+						+ " where   UPPER(client_name) like UPPER('%"+srchName+"%') "
+								+ " order by client_name";
 				ResultSet  results = stmt.executeQuery(query);
 				
 				while (results.next()) {
@@ -58,6 +64,7 @@ public class cmsQueryServiceUser{
 					serviceUser.setName(results.getString("Client_Name"));
 					serviceUser.setDoB(String.valueOf(results.getString("Client_DOB")));
 					serviceUser.setGender(results.getString("Client_Gender"));
+					serviceUser.setPps(results.getString("Client_PPSNo"));
 					serviceUser.setContactNumber(results.getString("Client_Contact_No"));
 					serviceUser.setAddress(results.getString("Client_Address"));
 					serviceUser.setEthnicity(results.getString("Client_Ethnicity"));
@@ -124,6 +131,7 @@ public class cmsQueryServiceUser{
 							+ "    c.Client_Contact_No,"
 							+ "    c.Client_Address,"
 							+ "    c.Client_Nationality,"
+							+ "		Client_PPSNo ,"
 							+ "    c.Client_Ethnicity,"
 							+ "    c.Client_Occupation,"
 							+ "    c.Client_Family_Info,"
@@ -158,6 +166,7 @@ public class cmsQueryServiceUser{
 						serviceUser.setDoB(String.valueOf(results.getString("Client_DOB")));
 						serviceUser.setGender(results.getString("Client_Gender"));
 						serviceUser.setContactNumber(results.getString("Client_Contact_No"));
+						serviceUser.setPps(results.getString("Client_PPSNo"));
 						serviceUser.setAddress(results.getString("Client_Address"));
 						serviceUser.setEthnicity(results.getString("Client_Ethnicity"));
 						serviceUser.setNationality(results.getString("Client_Nationality"));
@@ -170,9 +179,9 @@ public class cmsQueryServiceUser{
 						streamBean.setStreamId(results.getString("stream_id"));
 						streamBean.setStreamName(results.getString("stream_name"));
 						streamBean.setSupportLevel(results.getString("support_level"));
-						streamBean.setEngagementIncrementor(results.getString("Engagemnet_Incrementor"));
-						streamBean.setSubstanceIncrementor(results.getString("substance_Incrementor"));
-						streamBean.setMaxPoints(results.getString("weekly_max_points"));
+						streamBean.setEngagementIncrementor(results.getInt("Engagemnet_Incrementor"));
+						streamBean.setSubstanceIncrementor(results.getInt("substance_Incrementor"));
+						streamBean.setMaxPoints(results.getInt("weekly_max_points"));
 						streamBean.setCreatedBy(results.getString("stream_createdBy"));
 						streamBean.setCreatedOn(String.valueOf(results.getDate("stream_createdOn")));
 						streamBean.setUpdateBy(results.getString("stream_updatedBy"));
@@ -208,6 +217,70 @@ public class cmsQueryServiceUser{
 				
 				
 			return serviceUser;
+			
+			
+		}
+		
+		
+		public static List<NoteBean> qryServiceUserNotes(String srchID )
+		{
+		
+			String 	funcExceptionErrorMsg 	= "qryServiceUserNotes. ";
+				
+				
+				List<NoteBean> notes = null;
+				NoteBean note = null;
+				Connection connection = null;		
+				Statement stmt = null;		
+				
+				try{
+					connection = DataSourceManager.getDataSource().getConnection();
+					stmt = connection.createStatement();			
+					String query = "SELECT `Id`, `Client_Id`, `UserName`, `Note`, `Created_By`, `Created_On`, `Updated_On` FROM `cm_system`.`cm_client_notes` where client_id ="+srchID+"  order by id desc, updated_on desc " ;
+					
+					ResultSet  results = stmt.executeQuery(query);
+					notes = new  ArrayList<NoteBean>();
+					while (results.next()) {
+						note = new NoteBean();
+						note.setId(results.getString("Id"));
+						note.setClient_Id(results.getString("Client_Id"));
+						note.setUserName(results.getString("UserName"));
+						note.setNote(results.getString("Note"));
+						note.setCreated_By(results.getString("Created_By"));
+						note.setCreated_On(results.getString("Created_On"));
+						note.setUpdated_On(results.getString("Updated_On"));
+						notes.add(note);
+						
+					
+					}	
+					
+					results.close();
+				}
+				
+				catch (SQLException  e) {							
+					log.error(funcExceptionErrorMsg, e);
+								
+				} finally {
+					try {
+						if(stmt != null){
+							stmt.close();
+						}
+					} catch (SQLException sqle) {
+						log.error(funcExceptionErrorMsg, sqle);
+						
+					}
+					try {
+						if(connection != null){
+							connection.close();
+						}
+					} catch (SQLException sqle) {
+						log.error(funcExceptionErrorMsg, sqle);
+						
+					}
+				}	
+				
+				
+				return notes;
 			
 			
 		}

@@ -5,9 +5,9 @@ public class StreamBean {
 	private String streamId="";
 	private String streamName="";
 	private String supportLevel="";
-	private String maxPoints="";
-	private String substanceIncrementor="";
-	private String engagementIncrementor="";
+	private int maxPoints=0;
+	private int substanceIncrementor=0;
+	private int engagementIncrementor=0;
 	private String createdBy="";
 	private String createdOn="";
 	private String updateBy="";
@@ -31,22 +31,22 @@ public class StreamBean {
 	public void setSupportLevel(String supportLevel) {
 		this.supportLevel = supportLevel;
 	}
-	public String getMaxPoints() {
+	public int getMaxPoints() {
 		return maxPoints;
 	}
-	public void setMaxPoints(String maxPoints) {
+	public void setMaxPoints(int maxPoints) {
 		this.maxPoints = maxPoints;
 	}
-	public String getSubstanceIncrementor() {
+	public int getSubstanceIncrementor() {
 		return substanceIncrementor;
 	}
-	public void setSubstanceIncrementor(String substanceIncrementor) {
+	public void setSubstanceIncrementor(int substanceIncrementor) {
 		this.substanceIncrementor = substanceIncrementor;
 	}
-	public String getEngagementIncrementor() {
+	public int getEngagementIncrementor() {
 		return engagementIncrementor;
 	}
-	public void setEngagementIncrementor(String engagementIncrementor) {
+	public void setEngagementIncrementor(int engagementIncrementor) {
 		this.engagementIncrementor = engagementIncrementor;
 	}
 	public String getCreatedBy() {

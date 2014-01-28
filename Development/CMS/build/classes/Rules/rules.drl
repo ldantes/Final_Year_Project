@@ -1,9 +1,23 @@
+package com.comp.drools;
+
+import model.beans.StreamBean;
+import Rules.SubstanceRules;
 
 
 
-rule "streamAssign" 
-dialect "mvel" 
-agenda-group "stream" 
-when $c : ServiceUser(streamId == null) 
-then $c.streamDetails.setStreamName = 1 
-end 
+rule "accumalator less than range"
+
+      when
+
+            $stream : StreamBean( substanceIncrementor >= 0)
+
+      then
+
+            System.out.println("***********"+$stream.getSubstanceIncrementor());
+			
+			$stream.setSubstanceIncrementor($stream.getSubstanceIncrementor()+1);
+			System.out.println("***********"+$stream.getSubstanceIncrementor());
+            insert($stream.getSubstanceIncrementor());        
+
+end
+

@@ -36,7 +36,7 @@
 				Full Name: 
 			</td>
 			<td>
-				<input name="srvUsername" type="text" value="${serviceUser.name}"/>
+				<input name="srvUsername" required type="text" value="${serviceUser.name}"/>
 			</td>
 		</tr>
 		<tr>
@@ -44,7 +44,7 @@
 				Date of Birth
 			</td>
 			<td>
-				<input name="srvUserDOB" type="date" value="${serviceUser.doB}"/>
+				<input name="srvUserDOB" required type="date" value="${serviceUser.doB}"/>
 			</td>
 		</tr>
 		<tr>
@@ -74,7 +74,7 @@
 				PPS Number: 
 			</td>
 			<td>
-				<input name="srvPPS" type="text" value=""/>
+				<input name="srvPPS" required type="text" value="${serviceUser.pps}"/>
 				
 			</td>
 		</tr>
@@ -83,7 +83,7 @@
 				Contact Number: 
 			</td>
 			<td>
-				<input name="srvUserContactactNumber" type="tel" value="${serviceUser.contactNumber}" maxlength ="14"/>
+				<input name="srvUserContactactNumber" required type="tel" value="${serviceUser.contactNumber}" maxlength ="14"/>
 			</td>
 		</tr>
 		<tr>
@@ -91,7 +91,7 @@
 				Address: 
 			</td>
 			<td>
-				<textarea name="srvUserAddress" maxLength="100" style="resize:none; overflow:hidden;" rows="4">
+				<textarea name="srvUserAddress" required maxLength="100" style="resize:none; overflow:hidden;" rows="4">
 				${serviceUser.address}
 				</textarea>
 			</td>
@@ -182,6 +182,10 @@
 		<a href="javascript:document.newRequest.requestAction.value='newSubstanceEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add New Behavioural/Substance results</a>
 		<br/>
 		<a href="javascript:document.newRequest.requestAction.value='newEngagmentEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add New Engagement/Meeting</a>
+		<br/>
+		<a href="javascript:document.newRequest.requestAction.value='viewAccount';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">View Account</a>
+		<br/>
+		<a href="javascript:document.newRequest.requestAction.value='viewNotes';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">View notes</a>
 	</div>	
 		
 	</td>	

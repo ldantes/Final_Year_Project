@@ -17,6 +17,7 @@ Declare _nationality varchar(30);
 Declare _familyinfo varchar(30);
 Declare _occupation varchar(30);
 Declare _username varchar(30);
+Declare _pps varchar(10);
 
 
 select EXTRACTVALUE (serviceUserXml, '*/name') into _name  ;
@@ -29,6 +30,7 @@ select EXTRACTVALUE (serviceUserXml, '*/nationality') into _nationality  ;
 select EXTRACTVALUE (serviceUserXml, '*/familyinfo') into _familyinfo  ;
 select EXTRACTVALUE (serviceUserXml, '*/occupation') into _occupation  ;
 select EXTRACTVALUE (serviceUserXml, '*/username') into _username  ;
+select EXTRACTVALUE (serviceUserXml, '*/pps') into _pps  ;
 
 SET sql_safe_updates=0;
 
@@ -44,7 +46,8 @@ insert into cm_clients (client_name,
 						created_by,
 						created_on,
 						updated_by,
-						updated_on )
+						updated_on, 
+						Client_PPSNo)
 values( _name,
 						 _dob,
 						_gender,
@@ -57,9 +60,25 @@ values( _name,
 						_username,
 						curdate(),
 						_username,
-						curdate());
+						curdate(), _pps);
 commit;
+
 insert into cm_client_stream values (LAST_INSERT_ID(),1,0,0, _username, curdate(),_username, curdate());
+
+INSERT INTO `cm_system`.`cm_accounts`
+(`Account_Id`,
+`Account_Balance`,
+`Active`,
+`Updated_By`,
+`Updated_On`,
+`Created_By`,
+`Created_On`)
+VALUES
+(LAST_INSERT_ID(),
+0,
+'Y',
+ _username, curdate(),_username, curdate());
+
 set okayReturn := 'OK';
 SELECT LAST_INSERT_ID() into serviceuserID;
 END

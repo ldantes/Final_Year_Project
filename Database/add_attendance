@@ -14,6 +14,7 @@ Declare _attended char(1);
 Declare _missedreason varchar(50);
 Declare _validreason char(1);
 Declare _reviewmeeting char(1);
+Declare _participated char(1);
 
 
 select EXTRACTVALUE (serviceUserXml, '*/serviceuser') into _serviceUser  ;
@@ -23,6 +24,7 @@ select EXTRACTVALUE (serviceUserXml, '*/attended') into _attended  ;
 select EXTRACTVALUE (serviceUserXml, '*/missedreason') into _missedreason  ;
 select EXTRACTVALUE (serviceUserXml, '*/validreason') into _validreason  ;
 select EXTRACTVALUE (serviceUserXml, '*/reviewmeeting') into _reviewmeeting  ;
+select EXTRACTVALUE (serviceUserXml, '*/participation') into _participated  ;
 
 
 INSERT INTO `cm_system`.`cm_client_attnd`(
@@ -32,6 +34,7 @@ INSERT INTO `cm_system`.`cm_client_attnd`(
 		`Attended`,
 		`Attnd_Failed_Reason`,
 		valid_reason,
+		participated,
 		`Treatment_review_meeting`)
 VALUES(
 		_serviceUser,
@@ -40,6 +43,7 @@ VALUES(
 		_attended,
 		_missedreason,
 		_validreason,
+		_participated,
 		_reviewmeeting);
 commit;
 

@@ -16,8 +16,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import model.beans.AttendanceBean;
+import model.beans.NoteBean;
 import model.beans.ServiceUserBean;
 import model.beans.SubstanceBean;
+import model.beans.TransactionBean;
 import model.business.dao.ServiceUserDao;
 import model.data.cmsQueryServiceUser;
 import model.data.cmsQuerySubstance;
@@ -241,6 +243,108 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		
 	}
 	
+	public void adjustBalance(TransactionBean transaction)
+	{
+		String fuctionName ="adjustBalance";
+	    Connection connection = null;	
+		CallableStatement stmt =null;
+		
+		
+		try {
+					
+				
+					
+					
+				connection = DataSourceManager.getDataSource().getConnection();		
+				stmt = connection.prepareCall("{call cm_system.adjust_balance(?,?,?,?,?)}");			
+				stmt.setString(1, transaction.getAccount_Id());		
+				stmt.setString(2, transaction.getAmount_Credited());	
+				stmt.setString(3, transaction.getAmount_Withdrawn());	
+				stmt.setString(4, transaction.getApproved_By());	
+				stmt.registerOutParameter(5,java.sql.Types.VARCHAR);			
+				stmt.executeQuery();			
+						
+				if (stmt.getString(5).equals("OK")== false){
+									
+				}
+			}
+		catch (SQLException  e) {							
+			log.error(fuctionName, e);
+						
+		} finally {
+			try {
+				if(stmt != null){
+					stmt.close();
+				}
+			} catch (SQLException sqle) {
+				log.error(fuctionName, sqle);
+				
+			}
+			try {
+				if(connection != null){
+					connection.close();
+				}
+			} catch (SQLException sqle) {
+				log.error(fuctionName, sqle);
+				
+			}
+		}
+		
+	}
+	
+	public void addNewNote(NoteBean note)
+	{
+		String fuctionName ="addNewNote";
+	    Connection connection = null;	
+		CallableStatement stmt =null;
+		
+		
+		try {
+					
+				connection = DataSourceManager.getDataSource().getConnection();		
+				stmt = connection.prepareCall("{call cm_system.newNote(?,?,?,?,?)}");			
+				stmt.setString(1, note.getClient_Id());	
+				if(note.getId() != null )
+				{
+					stmt.setString(2, note.getId());	
+				}
+				else
+				{
+					stmt.setString(2, "0");	
+				}
+				stmt.setString(3, note.getNote());	
+				stmt.setString(4, note.getUserName());	
+				stmt.registerOutParameter(5,java.sql.Types.VARCHAR);			
+				stmt.executeQuery();			
+						
+				if (stmt.getString(5).equals("OK")== false){
+									
+				}
+			}
+		catch (SQLException  e) {							
+			log.error(fuctionName, e);
+						
+		} finally {
+			try {
+				if(stmt != null){
+					stmt.close();
+				}
+			} catch (SQLException sqle) {
+				log.error(fuctionName, sqle);
+				
+			}
+			try {
+				if(connection != null){
+					connection.close();
+				}
+			} catch (SQLException sqle) {
+				log.error(fuctionName, sqle);
+				
+			}
+		}
+		
+	}
+	
 	
 	private String ConvertAttendanceeToXML(AttendanceBean attendanceBean) {
 		String xml ="";
@@ -268,6 +372,8 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 	        root.appendChild(node6);
 	        Node node7 = doc.createElement("reviewmeeting");
 	        root.appendChild(node7);
+	        Node node8 = doc.createElement("participation");
+	        root.appendChild(node8);
 	       
 	        
 	       
@@ -279,6 +385,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 	        node5.appendChild(doc.createTextNode(attendanceBean.getAttndFailedReason()));
 	        node6.appendChild(doc.createTextNode(attendanceBean.getValidReason()));
 	        node7.appendChild(doc.createTextNode(attendanceBean.getTreatmentReviewMeeting()));
+	        node8.appendChild(doc.createTextNode(attendanceBean.getParticipation()));
 	        
 	        xml = XMLFunctions.xmlToString(doc);
 		}
@@ -376,6 +483,8 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 	        root.appendChild(node10);
 	        Node node11 = doc.createElement("username");
 	        root.appendChild(node11);
+	        Node node12 = doc.createElement("pps");
+	        root.appendChild(node12);
 	        
 	       
 	        	        
@@ -390,6 +499,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 	        node9.appendChild(doc.createTextNode(serviceuserbean.getFamilyInformation()));
 	        node10.appendChild(doc.createTextNode(serviceuserbean.getOccupation()));
 	        node11.appendChild(doc.createTextNode(serviceuserbean.getUpdatedBy()));
+	        node12.appendChild(doc.createTextNode(serviceuserbean.getPps()));
 	        	        
 			//convert xml to string
 	        xml = XMLFunctions.xmlToString(doc);

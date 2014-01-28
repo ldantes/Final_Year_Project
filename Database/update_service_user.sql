@@ -17,6 +17,7 @@ Declare _nationality varchar(30);
 Declare _familyinfo varchar(30);
 Declare _occupation varchar(30);
 Declare _username varchar(30);
+Declare _pps varchar(10);
 
 select EXTRACTVALUE (serviceUserXml, '*/id') into _id  ;
 select EXTRACTVALUE (serviceUserXml, '*/name') into _name  ;
@@ -29,6 +30,7 @@ select EXTRACTVALUE (serviceUserXml, '*/nationality') into _nationality  ;
 select EXTRACTVALUE (serviceUserXml, '*/familyinfo') into _familyinfo  ;
 select EXTRACTVALUE (serviceUserXml, '*/occupation') into _occupation  ;
 select EXTRACTVALUE (serviceUserXml, '*/username') into _username  ;
+select EXTRACTVALUE (serviceUserXml, '*/pps') into _pps  ;
 
 SET sql_safe_updates=0;
 
@@ -42,7 +44,8 @@ update cm_clients set 	client_name = _name,
 						client_occupation = _occupation,
 						client_family_info = _familyinfo,
 						updated_by = _username,
-						updated_on = curdate()
+						updated_on = curdate(),
+						Client_PPSNo = _pps
 				
  where client_id = _id;
 commit;

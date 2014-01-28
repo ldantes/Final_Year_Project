@@ -101,7 +101,7 @@ public class cmsQuerySubstance {
 						+ " s.`Active` FROM cm_client_test_results r,"
 						+ " cm_substances s where s.substance = r.substance"
 						+ " and client_id = "+id
-						+ " order by r.`Administered_On` desc ";
+						+ " order by r.`Administered_On` desc , r.id desc";
 
 				
 
