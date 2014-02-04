@@ -65,189 +65,203 @@ public class ServiceUserServlet extends HttpServlet {
 		String jsp_path	= "/WEB-INF/jsp";
 		String userMessage	= null;
 		HttpSession session = request.getSession(true);	
-		String logUserName 	= session.getAttribute("username").toString();
-		WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(this.getServletContext());
-		
-		serviceUserService service = new serviceUserService();
-		String id = request.getParameter("serviceUserId");	
+		if(session.getAttribute("username").toString() != null)
+		{
+			String logUserName 	= session.getAttribute("username").toString();
 			
-			String action= request.getParameter("requestAction");	
+			WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(this.getServletContext());
 			
-			
-			switch (validActions.valueOf(action)){
-		
-				case srchServiceUser:
-						if ( request.getParameter("serviceUserName") != null)
-						{
-							String searchedName = request.getParameter("serviceUserName");
-							List<ServiceUserBean> searchedUsers = cmsQueryServiceUser.searchServiceUsersByName(searchedName);
-							request.setAttribute("serviceUserResults", searchedUsers);
-						}
-						destination	= "/ServiceUsersSrch.jsp";
-						break;
-						
-				case editServiceUser:
-					String srchId = request.getParameter("serviceUserId");
-					if(srchId != "" && srchId != null  )
-					{
-						ServiceUserBean searchedUser = (ServiceUserBean) cmsQueryServiceUser.searchServiceUsersById( srchId);
-						destination	= "/editServiceUser.jsp";
-						request.setAttribute("serviceUser",searchedUser);
-						
-					}
-					else
-					{
-						ServiceUserBean serviceUser = new ServiceUserBean();
-						serviceUser.setId("");
-						destination	= "/editServiceUser.jsp";
-						request.setAttribute("serviceUser",serviceUser);
-					}
-					break;
+			serviceUserService service = new serviceUserService();
+			String id = request.getParameter("serviceUserId");	
 				
-				case updateServiceUser:
-					service.setApplicationContext(applicationContext);
-					service.setRequest(request);
-					String servId =request.getParameter("srvUserid");
-					if( servId != null && servId.length() != 0)
-					{
-						try {
-							service.updateServiceuser();
+				String action= request.getParameter("requestAction");	
+				
+				
+				switch (validActions.valueOf(action)){
+			
+					case srchServiceUser:
+							if ( request.getParameter("serviceUserName") != null)
+							{
+								String searchedName = request.getParameter("serviceUserName");
+								List<ServiceUserBean> searchedUsers = cmsQueryServiceUser.searchServiceUsersByName(searchedName);
+								request.setAttribute("serviceUserResults", searchedUsers);
+							}
+							destination	= "/ServiceUsersSrch.jsp";
+							break;
+							
+					case editServiceUser:
+						String srchId = request.getParameter("serviceUserId");
+						if(srchId != "" && srchId != null  )
+						{
+							service.setReferenceInformation(srchId);
+							
+							destination	= "/editServiceUser.jsp";
+							request.setAttribute("serviceUser",service.getServiceUserBean());
+							
+						}
+						else
+						{
+							ServiceUserBean serviceUser = new ServiceUserBean();
+							serviceUser.setId("");
+							destination	= "/editServiceUser.jsp";
+							request.setAttribute("serviceUser",serviceUser);
+						}
+						break;
+					
+					case updateServiceUser:
+						service.setApplicationContext(applicationContext);
+						service.setRequest(request);
+						String servId =request.getParameter("srvUserid");
+						if( servId != null && servId.length() != 0)
+						{
+							try {
+								service.updateServiceuser();
+								destination	= "/editServiceUser.jsp";
+								request.setAttribute("serviceUser",service.getServiceUserBean());
+								userMessage =service.userMessage;
+								request.setAttribute("userMsg",userMessage);
+								
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (NamingException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						else
+						{
+							service.newServiceUser();
 							destination	= "/editServiceUser.jsp";
 							request.setAttribute("serviceUser",service.getServiceUserBean());
 							userMessage =service.userMessage;
 							request.setAttribute("userMsg",userMessage);
-							
-						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (NamingException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
 						}
-					}
-					else
-					{
-						service.newServiceUser();
-						destination	= "/editServiceUser.jsp";
+						
+							break;
+							
+					case newSubstanceEntry:
+						
+						service.setApplicationContext(applicationContext);
+						service.setRequest(request);
+						id = request.getParameter("serviceUserId");
+						service.setReferenceInformation(id);
+						
+						request.setAttribute("serviceUser",service.getServiceUserBean());
+						request.setAttribute("substanceBeans",service.substanceBeans);
+						request.setAttribute("userBeans",service.userBeans);
+						request.setAttribute("previousResultsBeans",cmsQuerySubstance.qryServiceUserResults(id));
+						destination="/editViewSubstance.jsp";
+						break;
+						
+					case insertNewSubstanceResult:
+						service.setApplicationContext(applicationContext);
+						service.setRequest(request);
+						service.newSubstanceResult();
+											
+						request.setAttribute("serviceUser",service.getServiceUserBean());
+//						request.setAttribute("substanceBeans",service.substanceBeans);
+//						request.setAttribute("userBeans",service.userBeans);
+//						request.setAttribute("previousResultsBeans",cmsQuerySubstance.qryServiceUserResults(service.getServiceUserBean().getId()));
+						userMessage =service.userMessage;
+						request.setAttribute("userMsg",userMessage);
+						destination="/editServiceUser.jsp";
+						
+					//	service.adjustServiceSubstanceIncr(serviceuser);
+						break;
+						
+						
+					case newEngagmentEntry:
+						
+						service.setApplicationContext(applicationContext);
+						service.setRequest(request);
+						id = request.getParameter("serviceUserId");
+						service.setReferenceInformation(id);
+						
+						request.setAttribute("serviceUser",service.getServiceUserBean());
+						request.setAttribute("attendanceDetails",service.attendanceDetails);
+						
+						destination="/editViewAttendance.jsp";
+						break;
+					
+					case insertNewAttendance:
+						
+						String logUserProfession 	= session.getAttribute("userprofession").toString();
+						service.setApplicationContext(applicationContext);
+						service.setRequest(request);
+						service.newAttendance(logUserProfession);
+											
 						request.setAttribute("serviceUser",service.getServiceUserBean());
 						userMessage =service.userMessage;
 						request.setAttribute("userMsg",userMessage);
-					}
-					
+						destination="/editServiceUser.jsp";
 						break;
 						
-				case newSubstanceEntry:
+					case viewAccount:
+						
+						AccountBean accountDetails = cmsQueryAccount.srvUserAccount(request.getParameter("serviceUserId"));
+						
+						request.setAttribute("accountDetails", accountDetails );
+						request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(request.getParameter("serviceUserId")) );
+						destination="/viewAccount.jsp";
+						break;
+						
+					case newTransaction:
+						
+						service.setApplicationContext(applicationContext);
+						service.setRequest(request);
+						service.adjustBalance();
+						AccountBean accountDetails2 = cmsQueryAccount.srvUserAccount(request.getParameter("serviceUserId"));
+						request.setAttribute("accountDetails", accountDetails2 );
+						request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(request.getParameter("serviceUserId")) );
+						destination="/viewAccount.jsp";
+						break;
+						
+					case viewNotes:
+						id = request.getParameter("serviceUserId");
+						request.setAttribute("notes",cmsQueryServiceUser.qryServiceUserNotes(id));
+						request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(id) );
+						destination="/viewNotes.jsp";
+						break;
+						
+					case newNote:
+						
+						service.setApplicationContext(applicationContext);
+						service.setRequest(request);
+						service.addNewNote();
+						id = request.getParameter("serviceUserId");
+						request.setAttribute("notes",cmsQueryServiceUser.qryServiceUserNotes(id));
+						request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(id) );
+						destination="/viewNotes.jsp";
+						break;
+						
+					case updateNote:
+						service.setApplicationContext(applicationContext);
+						service.setRequest(request);
+						service.updateNote();
+						id = request.getParameter("serviceUserId");
+						request.setAttribute("notes",cmsQueryServiceUser.qryServiceUserNotes(id));
+						request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(id) );
+						destination="/viewNotes.jsp";
+						break;
+						
+						
 					
-					service.setApplicationContext(applicationContext);
-					service.setRequest(request);
-					id = request.getParameter("serviceUserId");
-					service.setReferenceInformation(id);
-					
-					request.setAttribute("serviceUser",service.getServiceUserBean());
-					request.setAttribute("substanceBeans",service.substanceBeans);
-					request.setAttribute("userBeans",service.userBeans);
-					request.setAttribute("previousResultsBeans",cmsQuerySubstance.qryServiceUserResults(id));
-					destination="/editViewSubstance.jsp";
-					break;
-					
-				case insertNewSubstanceResult:
-					service.setApplicationContext(applicationContext);
-					service.setRequest(request);
-					service.newSubstanceResult();
-										
-					request.setAttribute("serviceUser",service.getServiceUserBean());
-//					request.setAttribute("substanceBeans",service.substanceBeans);
-//					request.setAttribute("userBeans",service.userBeans);
-//					request.setAttribute("previousResultsBeans",cmsQuerySubstance.qryServiceUserResults(service.getServiceUserBean().getId()));
-					userMessage =service.userMessage;
-					request.setAttribute("userMsg",userMessage);
-					destination="/editServiceUser.jsp";
-					ServiceUserBean serviceuser = SubstanceRules.adjustSubstanceAccumaltor();
-					service.adjustServiceSubstanceIncr(serviceuser);
-					break;
-					
-					
-				case newEngagmentEntry:
-					
-					service.setApplicationContext(applicationContext);
-					service.setRequest(request);
-					id = request.getParameter("serviceUserId");
-					service.setReferenceInformation(id);
-					
-					request.setAttribute("serviceUser",service.getServiceUserBean());
-					request.setAttribute("attendanceDetails",service.attendanceDetails);
-					
-					destination="/editViewAttendance.jsp";
-					break;
+						
+				}
 				
-				case insertNewAttendance:
-					
-					service.setApplicationContext(applicationContext);
-					service.setRequest(request);
-					service.newAttendance();
-										
-					request.setAttribute("serviceUser",service.getServiceUserBean());
-					userMessage =service.userMessage;
-					request.setAttribute("userMsg",userMessage);
-					destination="/editServiceUser.jsp";
-					break;
-					
-				case viewAccount:
-					
-					AccountBean accountDetails = cmsQueryAccount.srvUserAccount(request.getParameter("serviceUserId"));
-					
-					request.setAttribute("accountDetails", accountDetails );
-					request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(request.getParameter("serviceUserId")) );
-					destination="/viewAccount.jsp";
-					break;
-					
-				case newTransaction:
-					
-					service.setApplicationContext(applicationContext);
-					service.setRequest(request);
-					service.adjustBalance();
-					AccountBean accountDetails2 = cmsQueryAccount.srvUserAccount(request.getParameter("serviceUserId"));
-					request.setAttribute("accountDetails", accountDetails2 );
-					request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(request.getParameter("serviceUserId")) );
-					destination="/viewAccount.jsp";
-					break;
-					
-				case viewNotes:
-					id = request.getParameter("serviceUserId");
-					request.setAttribute("notes",cmsQueryServiceUser.qryServiceUserNotes(id));
-					request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(id) );
-					destination="/viewNotes.jsp";
-					break;
-					
-				case newNote:
-					
-					service.setApplicationContext(applicationContext);
-					service.setRequest(request);
-					service.addNewNote();
-					id = request.getParameter("serviceUserId");
-					request.setAttribute("notes",cmsQueryServiceUser.qryServiceUserNotes(id));
-					request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(id) );
-					destination="/viewNotes.jsp";
-					break;
-					
-				case updateNote:
-					service.setApplicationContext(applicationContext);
-					service.setRequest(request);
-					service.updateNote();
-					id = request.getParameter("serviceUserId");
-					request.setAttribute("notes",cmsQueryServiceUser.qryServiceUserNotes(id));
-					request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(id) );
-					destination="/viewNotes.jsp";
-					break;
-					
-					
-				
-					
-			}
+				request.setAttribute("username", logUserName);
+				requestDispatch = request.getRequestDispatcher(jsp_path+destination);
+				requestDispatch.forward(request,response);
 			
-			request.setAttribute("username", logUserName);
-			requestDispatch = request.getRequestDispatcher(jsp_path+destination);
+		}
+		else
+		{
+			requestDispatch = request.getRequestDispatcher("index.jsp");
+			request.setAttribute("userMsg","session timedout");
 			requestDispatch.forward(request,response);
+		}
+		
 	}
 
 }

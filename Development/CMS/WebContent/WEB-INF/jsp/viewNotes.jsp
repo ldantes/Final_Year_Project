@@ -89,7 +89,7 @@
 											<textarea name="${result.id}" id="${result.id}" maxlength=500  readonly="readonly" style="resize:none;" cols="50" rows="5">${result.note}</textarea>
 											<a href="javascript:edit(${result.id});">edit</a>
 											<div id="submitdiv+${result.id}" style="display:none;" >
-												<input type="button" value="submitdiv+${result.id}" onclick="javascript:var f = document.getElementById('updateNote'); f.noteId.value='${result.id}';f.submit();" />
+												<input type="button" value="Update" onclick="javascript:var f = document.getElementById('updateNote'); f.noteId.value='${result.id}';f.submit();" />
 											</div>
 											<br>
 											

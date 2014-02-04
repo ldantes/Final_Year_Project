@@ -10,6 +10,7 @@ public class UserBean {
 	private String firstName="";
 	private String surname="";
 	private String active="";
+	private String profession="";	
 	private String password="";	
 	private String email="";
 	private String createdBy;
@@ -96,6 +97,12 @@ public class UserBean {
 	}
 	public void setUpdatedOn(String updatedOn) {
 		this.updatedOn = updatedOn;
+	}
+	public String getProfession() {
+		return profession;
+	}
+	public void setProfession(String profession) {
+		this.profession = profession;
 	}
 	
 

@@ -2,15 +2,17 @@ package model.beans;
 
 public class AttendanceBean {
 	
-	private String id;
-	private String srvUserId;
-	private String username;
-	private String timeDate;
-	private String attended;
-	private String participation;
+	private String id = "";
+	private String srvUserId = "";
+	private String username = "";
+	private String timeDate = "";
+	private String attended = "";
+	private String participation = "";
 	private String validReason = "";
-	private String attndFailedReason;
-	private String treatmentReviewMeeting;
+	private String attndFailedReason = "";
+	private String treatmentReviewMeeting = "";
+	private String staffProfession = "";
+	
 	
 	public String getId() {
 		return id;
@@ -65,6 +67,12 @@ public class AttendanceBean {
 	}
 	public void setParticipation(String participation) {
 		this.participation = participation;
+	}
+	public String getStaffProfession() {
+		return staffProfession;
+	}
+	public void setStaffProfession(String staffProfession) {
+		this.staffProfession = staffProfession;
 	}
 
 }

@@ -30,8 +30,8 @@ public class ServiceUserFacadeImpl implements ServiceUserFacade
 		this.serviceUserDao = serviceUserDao;
 	}
 	
-	public void newSubstanceResult(SubstanceBean substanceBean){
-		serviceUserDao.insertNewSubstanceResult(substanceBean);
+	public void newSubstanceResult(SubstanceBean substanceBean , int accum){
+		serviceUserDao.insertNewSubstanceResult(substanceBean, accum);
 	};
 	
 	public void newAttendance(AttendanceBean attendanceBean){
@@ -44,6 +44,9 @@ public class ServiceUserFacadeImpl implements ServiceUserFacade
 	
 	public void addNewNote(NoteBean note){
 		serviceUserDao.addNewNote(note);
+	}
+	public void changeEligibility(ServiceUserBean serviceuser){
+		serviceUserDao.changeEligibility(serviceuser);
 	}
 }
 

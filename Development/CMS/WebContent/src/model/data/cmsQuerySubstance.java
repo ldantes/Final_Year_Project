@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.beans.SubstanceAccumBean;
 import model.beans.SubstanceBean;
 
 import org.apache.log4j.Logger;
@@ -32,6 +33,7 @@ public class cmsQuerySubstance {
 				String query = "SELECT Substance, "
 						+ "Reset_value, "
 						+ "Max_value, "
+						+ " Stream_regression_substance,"
 						+ " Active, "
 						+ "Created_By, "
 						+ "Created_On "
@@ -51,6 +53,7 @@ public class cmsQuerySubstance {
 					substance.setResetValue(results.getString("Reset_value"));
 					substance.setMaxValue(results.getString("Max_value"));
 					substance.setActive(results.getString("Active"));
+					substance.setStreamRegressionFlag(results.getString("Stream_regression_substance"));
 					substance.setCreatedBy(results.getString("Created_By"));
 					substance.setCreatedOn(results.getString("Created_On"));
 					substances.add(substance);
@@ -148,5 +151,67 @@ public class cmsQuerySubstance {
 				}
 			}
 			return substances;
+	}
+	
+	public static List<SubstanceAccumBean> qrySubstanceAccum(String srchID )
+	{
+	
+		String 	funcExceptionErrorMsg 	= "qrySubstanceAccum. ";
+			
+			
+		List<SubstanceAccumBean> subAccums = new  ArrayList<SubstanceAccumBean>();
+		SubstanceAccumBean subAccum =null;
+		Connection connection = null;		
+		Statement stmt = null;		
+			
+			try
+			{
+				connection = DataSourceManager.getDataSource().getConnection();
+				stmt = connection.createStatement();	
+				String query = "SELECT sa.substance sub, "
+						+ "	   sa.accum, "
+						+ "	   sa.Updated_On, "
+						+ "		sa.updated_By "
+						+ " FROM    cm_client_substance_accum sa, cm_substances s "
+						+ " where    sa.client_id = "+srchID
+						+ " and s.substance = sa.substance "
+						+ " and s.active = 'Y'" ;
+				
+				ResultSet results = stmt.executeQuery(query);
+				 while (results.next()) {
+					 subAccum = new SubstanceAccumBean();
+					 subAccum.setSubstance(results.getString("sub"));
+					 subAccum.setAccum(results.getString("accum"));
+					 subAccum.setUpdatedBy(results.getString("updated_By"));
+					 subAccum.setUpdatedOn(results.getString("updated_On"));
+					 subAccums.add(subAccum);
+				 }
+				 results.close();
+					 
+					 
+			}
+				
+			catch (SQLException  e) {							
+				log.error(funcExceptionErrorMsg, e);
+							
+			} finally {
+				try {
+					if(stmt != null){
+						stmt.close();
+					}
+				} catch (SQLException sqle) {
+					log.error(funcExceptionErrorMsg, sqle);
+					
+				}
+				try {
+					if(connection != null){
+						connection.close();
+					}
+				} catch (SQLException sqle) {
+					log.error(funcExceptionErrorMsg, sqle);
+					
+				}
+				return subAccums;
+			}
 	}
 }

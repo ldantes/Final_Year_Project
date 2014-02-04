@@ -14,10 +14,11 @@ public interface ServiceUserDao
 	
 	public ServiceUserBean 		updateServiceUser(ServiceUserBean serviceuserbean);
 	public ServiceUserBean      addServiceUser(ServiceUserBean serviceUserBean);
-	public void insertNewSubstanceResult(SubstanceBean substanceBean);
+	public void insertNewSubstanceResult(SubstanceBean substanceBean, int accum);
 	public void insertNewAttendance(AttendanceBean attendanceBean);
 	public void adjustBalance(TransactionBean transaction);
 	public void addNewNote(NoteBean note);
+	public void changeEligibility(ServiceUserBean serviceuser);
 	
 }
 

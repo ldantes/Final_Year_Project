@@ -22,6 +22,7 @@ public class UserDaoImpl implements UserDao{
 			+ "    user_Fname as firstName, "
 			+ "    User_Sname as surname, "
 			+ "    user_active as active, "
+			+ "	   User_Profession as profession,"
 			+ "    user_password as password,"
 			+ "    user_email as email"
 			+ "	   from    cm_users " ;
@@ -50,6 +51,7 @@ public class UserDaoImpl implements UserDao{
 					userDetails.setActive(results.getString("active"));				
 					userDetails.setFirstName(results.getString("firstName"));
 					userDetails.setSurname(results.getString("surname"));
+					userDetails.setProfession(results.getString("profession"));
 					userDetails.setEmail(results.getString("email"));
 					userDetails.setPassword(results.getString("password"));				
 					

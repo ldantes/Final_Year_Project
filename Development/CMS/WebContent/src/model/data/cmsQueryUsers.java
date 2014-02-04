@@ -73,7 +73,7 @@ public class cmsQueryUsers  {
 	
 	public static List<UserBean> qryUsers(String active)
 	{
-		String 	funcExceptionErrorMsg 	= "qryUserRoles. ";
+		String 	funcExceptionErrorMsg 	= "qryUsers. ";
 		
 		List <UserBean> userBeans = new  ArrayList<UserBean>();
 		UserBean userBean = null;

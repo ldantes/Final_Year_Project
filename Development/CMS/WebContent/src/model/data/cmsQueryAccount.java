@@ -41,7 +41,7 @@ public class cmsQueryAccount {
 				while (results.next())
 				{
 					account.setAccount_Id(results.getString("Account_Id"));
-					account.setAccount_Balance(results.getString("Account_Balance"));
+					account.setAccount_Balance(results.getFloat("Account_Balance"));
 					account.setActive(results.getString("Active"));
 					account.setUpdated_By(results.getString("Updated_By"));
 					account.setUpdated_On(results.getString("Updated_On"));
@@ -103,6 +103,53 @@ public class cmsQueryAccount {
 		
 		return account;
 		
+	}
+	
+	public static float queryWeekCredit(String id)
+	{
+		String 	funcExceptionErrorMsg 	= "queryWeekCredit. ";
+		Connection connection = null;		
+		Statement stmt = null;	
+		float creditsEarnedThisWeek = 0;
+			
+			try{
+				connection = DataSourceManager.getDataSource().getConnection();
+				stmt = connection.createStatement();			
+				String query = "select sum(amount_credited) as sum"
+						+ " from cm_transactions where Account_Id = "+id+""
+								+ " and TO_DAYS(Date_of_Transaction)> to_days(curdate())-7 ";
+				
+
+				ResultSet  results = stmt.executeQuery(query);
+				while (results.next())
+				{
+					creditsEarnedThisWeek = results.getFloat("sum");
+				}
+				
+				results.close();
+			}
+			catch (SQLException  e) {							
+				log.error(funcExceptionErrorMsg, e);
+							
+			} finally {
+				try {
+					if(stmt != null){
+						stmt.close();
+					}
+				} catch (SQLException sqle) {
+					log.error(funcExceptionErrorMsg, sqle);
+					
+				}
+				try {
+					if(connection != null){
+						connection.close();
+					}
+				} catch (SQLException sqle) {
+					log.error(funcExceptionErrorMsg, sqle);
+					
+				}
+			}
+		return creditsEarnedThisWeek;
 	}
 
 }

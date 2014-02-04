@@ -1,23 +1,33 @@
 package com.comp.drools;
 
-import model.beans.StreamBean;
+import model.beans.ServiceUserBean;
 import Rules.SubstanceRules;
+import model.data.cmsQueryServiceUser;
+import web.services.serviceUserService;
 
 
 
-rule "accumalator less than range"
 
-      when
 
-            $stream : StreamBean( substanceIncrementor >= 0)
-
-      then
-
-            System.out.println("***********"+$stream.getSubstanceIncrementor());
-			
-			$stream.setSubstanceIncrementor($stream.getSubstanceIncrementor()+1);
-			System.out.println("***********"+$stream.getSubstanceIncrementor());
-            insert($stream.getSubstanceIncrementor());        
-
+rule "service user's account has enough to withdraw"
+    no-loop true
+when
+    $m: ServiceUserBean( accountDetails.Account_Balance >= 20 )
+then
+    serviceUserService service = new serviceUserService();
+    service.changeEligibility($m,"Y");
+    System.out.println("YES," + $m.getName()+ " Can withdraw("+$m.getAccountDetails().getAccount_Balance()+") their credit");
+    update( $m );
 end
 
+rule "service user's account does NOT have enough to withdraw"
+    no-loop true
+when
+    $m: ServiceUserBean( accountDetails.Account_Balance < 20 )
+then
+    
+    serviceUserService service = new serviceUserService();
+    service.changeEligibility($m,"N");    
+    System.out.println("NO, " + $m.getName()+ " Can NOT withdraw ("+$m.getAccountDetails().getAccount_Balance()+") their credit");
+    update( $m );
+end

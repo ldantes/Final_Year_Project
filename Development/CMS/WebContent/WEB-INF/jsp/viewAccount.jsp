@@ -35,39 +35,42 @@
 		
 	<table>
 	<tr>
-		<td>Credited amount:</td>
-		<td><input type="number" maxLength="5" name="credit" value="0.00" step="0.50" min="0"/></td>
+		<td>Credited amount: </td>
+		<td><input type="number" maxLength="5" name="credit" value="0.00" step="0.50" min="0" max="${serviceUser.streamDetails['maxPoints']}"/></td>
 	</tr>
 	<tr>
 		<td>Withdrawn amount:</td>
-		<td><input type="number" maxLength="5" name="withdraw" value="0.00" step="0.50" min="0"/></td>
+		<td><input type="number" maxLength="5" name="withdraw" value="0.00" step="0.50" min="0" max="${accountDetails.account_Balance}"/></td>
 	</tr>
 	<tr>
 	<td>
 	<input type="submit" value="Adjust balance"/>
 	</td>
 	</tr>
+	<tr><td>Account Balance:</td><td><h3>${accountDetails.account_Balance}</h3></td>
+	</tr>
 	</table>
 	</form>
 	</div>
 	
 	<div class="inline">
+	<c:if test="${accountDetails != null && fn.length(accountDetails) != 0 && accountDetails != ''}">
 	<h1>Account History</h1>
+	
+		<table>
+		<tr>
+		<th>Date</th><th>Withdrawn amount</th><th>Credited amount</th><th>Approved By</th>
+		</tr>
 		
-	<table>
-	<tr>
-	<th>Date</th><th>Withdrawn amount</th><th>Credited amount</th><th>Approved By</th>
-	</tr>
-	
-	<c:forEach var="results" items="${accountDetails.transactions}">
-	<tr>
-	<td>${results.date_of_Transaction}</td><td><p style="color:red">${results.amount_Withdrawn}</p></td><td><p style="color:green">${results.amount_Credited}</p></td><td>${results.approved_By}</td>
-	</tr>
-	</c:forEach>
-	<tr><td>Account Balance:</td><td><h3>${accountDetails.account_Balance}</h3></td>
-	</tr>
-	
-	</table>
+		<c:forEach var="results" items="${accountDetails.transactions}">
+		<tr>
+		<td>${results.date_of_Transaction}</td><td><p style="color:red">${results.amount_Withdrawn}</p></td><td><p style="color:green">${results.amount_Credited}</p></td><td>${results.approved_By}</td>
+		</tr>
+		</c:forEach>
+			
+		</table>
+
+	</c:if>
 	
 	
 	

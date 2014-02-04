@@ -36,10 +36,9 @@
 			<td><input type="text" name="${substance.substance}" value="${substance.substance}"  disabled="disabled" /></td>
 			
 				<td>
-				Passed (Negative Detection):<input type="radio" name="result${substance.substance}" id="passed" onClick="assignmentRadio(this.name);" value="P" ${P}/>
+				Passed (Negative Detection):<input type="radio" required name="result${substance.substance}" id="passed" onClick="assignmentRadio(this.name);" value="P" ${P}/>
 				Failed (Positive Detection):<input type="radio" name="result${substance.substance}" id="failed" onClick="assignmentRadio(this.name);" value="F" ${F}/>
-				
-			</td>
+				</td>
 		</tr>
 		</c:forEach>
 		<tr>

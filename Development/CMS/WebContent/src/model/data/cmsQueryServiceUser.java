@@ -15,12 +15,14 @@ import java.util.ArrayList;
 
 
 
+
 import org.apache.log4j.Logger;
 
 import utilities.DataSourceManager;
 import model.beans.NoteBean;
 import model.beans.ServiceUserBean;
 import model.beans.StreamBean;
+import model.beans.SubstanceAccumBean;
 
 
 public class cmsQueryServiceUser{
@@ -34,6 +36,11 @@ public class cmsQueryServiceUser{
 			ServiceUserBean serviceUser = null;
 			Connection connection = null;		
 			Statement stmt = null;		
+			 if (srchName == "")
+			 {
+				 //limited empty search to only surnames beginning with 'A'
+				 srchName = " A";
+			 }
 			
 			try{
 				connection = DataSourceManager.getDataSource().getConnection();
@@ -139,8 +146,6 @@ public class cmsQueryServiceUser{
 							+ "    c.Created_On client_createdOn,"
 							+ "    c.Updated_By client_updatedBy,"
 							+ "    c.Updated_On client_updatedOn,"
-							+ "    cs.substance_Incrementor,"
-							+ "    cs.Engagemnet_Incrementor,"
 							+ "    cs.Created_By stream_createdBy,"
 							+ "    cs.Created_On stream_createdOn,"
 							+ "    cs.Updated_By stream_updatedBy,"
@@ -148,7 +153,8 @@ public class cmsQueryServiceUser{
 							+ "    s.stream_name ,"
 							+ "    s.stream_id ,"
 							+ "    s.support_level,"
-							+ "    s.weekly_max_points "
+							+ "    s.weekly_max_points, "
+							+ "	   s.Points_Conversion"
 							+ " FROM    cm_clients c,"
 							+ "    cm_client_stream cs,"
 							+ "    cm_streams s "
@@ -179,18 +185,19 @@ public class cmsQueryServiceUser{
 						streamBean.setStreamId(results.getString("stream_id"));
 						streamBean.setStreamName(results.getString("stream_name"));
 						streamBean.setSupportLevel(results.getString("support_level"));
-						streamBean.setEngagementIncrementor(results.getInt("Engagemnet_Incrementor"));
-						streamBean.setSubstanceIncrementor(results.getInt("substance_Incrementor"));
 						streamBean.setMaxPoints(results.getInt("weekly_max_points"));
 						streamBean.setCreatedBy(results.getString("stream_createdBy"));
 						streamBean.setCreatedOn(String.valueOf(results.getDate("stream_createdOn")));
 						streamBean.setUpdateBy(results.getString("stream_updatedBy"));
 						streamBean.setUpdatedOn(String.valueOf(results.getDate("stream_updatedOn")));
+						streamBean.setPointConversion(results.getFloat("Points_Conversion"));
 						serviceUser.setStreamDetails(streamBean);
 					
 					}	
 					
 					results.close();
+					
+					
 				}
 				
 				catch (SQLException  e) {							
@@ -284,4 +291,9 @@ public class cmsQueryServiceUser{
 			
 			
 		}
+		
+		
+		
 }
+		
+

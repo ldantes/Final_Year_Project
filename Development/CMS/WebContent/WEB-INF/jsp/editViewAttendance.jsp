@@ -56,9 +56,7 @@
 		<tr>
 			<td>Reason for missed attendance:</td>
 			<td>
-				<textarea name="missedReason" maxLength="50" style="resize:none; overflow:hidden;" rows="2" cols="25" >
-				
-				</textarea>
+				<textarea name="missedReason" maxLength="50" style="resize:none; overflow:hidden;" rows="2" cols="25" ></textarea>
 			</td>
 		</tr>
 		<tr>
@@ -97,7 +95,8 @@
 		<tr><th>Member of Staff	</th><th>Professional</th><th>Attended</th><th>Time/Date</th><th>Active participation</th><th>Reason for absence</th><th>Valid reason for absence</th><th>Review meeting</th></tr>
 		<c:forEach var="results" items="${attendanceDetails}">
 		<tr><td>${results.username}</td>
-			<td></td>
+			<td>${results.staffProfession}
+			</td>
 				<td>
 				
 				<c:choose>

@@ -93,6 +93,7 @@ public class UserServlet extends HttpServlet {
 						
 						
 						request.setAttribute("userDetails", userDetails);
+						session.setAttribute("userprofession", userDetails.getProfession());
 						session.setAttribute("username", userDetails.getUserName());	
 						
 						List <UserRoleBean> userRoles 	=null;

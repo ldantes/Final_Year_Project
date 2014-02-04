@@ -21,9 +21,12 @@ public class ServiceUserBean{
 	private String updatedOn="";
 	private String updatedBy="";
 	private StreamBean streamDetails;
+	private AccountBean accountDetails;
 	private List<AttendanceBean> attendanceDetails;
 	private List<SubstanceBean> substanceDetails;
 	private List<NoteBean> notes;
+	private List<SubstanceAccumBean> subAccums;
+	private List<EligibilityBean> eligibilityBeans;
 	
 	
 	public StreamBean getStreamDetails(){
@@ -153,6 +156,33 @@ public class ServiceUserBean{
 	public void setNotes(List<NoteBean> notes) {
 		this.notes = notes;
 	}
+
+	public List<SubstanceAccumBean> getSubAccums() {
+		return subAccums;
+	}
+
+	public void setSubAccums(List<SubstanceAccumBean> subAccums) {
+		this.subAccums = subAccums;
+	}
+
+	public List<EligibilityBean> getEligibilityBeans() {
+		return eligibilityBeans;
+	}
+
+	public void setEligibilityBeans(List<EligibilityBean> eligibilityBeans) {
+		this.eligibilityBeans = eligibilityBeans;
+	}
+
+	public AccountBean getAccountDetails() {
+		return accountDetails;
+	}
+
+	public void setAccountDetails(AccountBean accountDetails) {
+		this.accountDetails = accountDetails;
+	}
+
+
+	
 
 	
 	

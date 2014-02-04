@@ -14,6 +14,7 @@
 	<c:choose>
 		<c:when test="${serviceUser.name != null && serviceUser.name != ''}">
 		${serviceUser.name} (${serviceUser.id})
+		
 		</c:when>
 		<c:otherwise>
 		New User
@@ -24,7 +25,7 @@
 	<hr/>
 	<table width="100%">
 	<tr>
-	<td width="50%">
+	<td width="25%">
 	<form id="editSelectServiceUser" action ="ServiceUserServlet" method="post">
 	<input type="hidden" name="requestAction" value="updateServiceUser"/>
 	<input type="hidden" name="srvUserid" value="${serviceUser.id}"/> 
@@ -33,7 +34,7 @@
 	<table>
 		<tr>
 			<td>
-				Full Name: 
+				Full Name*: 
 			</td>
 			<td>
 				<input name="srvUsername" required type="text" value="${serviceUser.name}"/>
@@ -41,7 +42,7 @@
 		</tr>
 		<tr>
 			<td>
-				Date of Birth
+				Date of Birth*:
 			</td>
 			<td>
 				<input name="srvUserDOB" required type="date" value="${serviceUser.doB}"/>
@@ -49,7 +50,7 @@
 		</tr>
 		<tr>
 			<td>
-				Gender: 
+				Gender*: 
 			</td>
 			<td>
 				
@@ -64,7 +65,7 @@
 				</c:otherwise>
 				</c:choose>
 				
-				Male:<input type="radio" name="srvUserGender" id="genderM" onClick="assignmentRadio(this.name);" value="M" ${M}/>
+				Male:<input type="radio" name="srvUserGender" required id="genderM" onClick="assignmentRadio(this.name);" value="M" ${M}/>
 				Female:<input type="radio" name="srvUserGender" id="genderF" onClick="assignmentRadio(this.name);" value="F" ${F}/>
 				
 			</td>
@@ -80,7 +81,7 @@
 		</tr>
 		<tr>
 			<td>
-				Contact Number: 
+				Contact Number*: 
 			</td>
 			<td>
 				<input name="srvUserContactactNumber" required type="tel" value="${serviceUser.contactNumber}" maxlength ="14"/>
@@ -88,12 +89,10 @@
 		</tr>
 		<tr>
 			<td>
-				Address: 
+				Address*: 
 			</td>
 			<td>
-				<textarea name="srvUserAddress" required maxLength="100" style="resize:none; overflow:hidden;" rows="4">
-				${serviceUser.address}
-				</textarea>
+				<textarea name="srvUserAddress" required maxLength="100" style="resize:none; overflow:hidden;" rows="4">${serviceUser.address}</textarea>
 			</td>
 		</tr>
 		<tr>
@@ -128,9 +127,7 @@
 				Family Information: 
 			</td>
 			<td>
-				<textarea name="srvUserFamily" maxLength="100" style="resize:none; overflow:hidden;" rows="5" >
-				${serviceUser.familyInformation}
-				</textarea>
+				<textarea name="srvUserFamily" maxLength="100" style="resize:none; overflow:hidden;" rows="5" >${serviceUser.familyInformation}</textarea>
 			</td>
 		</tr>
 		<tr>
@@ -146,8 +143,27 @@
 	</form>
 	</td>
 	<td>
+	
 	<div>
 	<c:if test="${serviceUser.name != null && serviceUser.name != ''}">
+	<form name="newRequest" method="post">
+					<input type="hidden" name="action">
+					<input type="hidden" name="requestAction">
+					<input type="hidden" name="serviceUserId" value="${serviceUser.id}">
+					
+	</form>
+	<div>
+		<nav>
+		<a href="javascript:document.newRequest.requestAction.value='newSubstanceEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add New Behavioural/Substance results</a>
+		||
+		<a href="javascript:document.newRequest.requestAction.value='newEngagmentEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add New Engagement/Meeting</a>
+		||
+		<a href="javascript:document.newRequest.requestAction.value='viewAccount';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">View Account</a>
+		||
+		<a href="javascript:document.newRequest.requestAction.value='viewNotes';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">View notes</a>
+		</nav>
+	</div>	
+	<br/>
 	<table>
 	<tr>
 	<th> Stream Details</th>
@@ -157,37 +173,33 @@
 	<td>"${serviceUser.streamDetails['streamName']}" support level (${serviceUser.streamDetails['supportLevel']})</td>
 	</tr>
 	<tr>
-	<td>Substance Incrementor:</td>
-	<td>${serviceUser.streamDetails['substanceIncrementor']}</td>
-	</tr>
-	<tr>
-	<td>Engagement Incrementor:</td>
-	<td>${serviceUser.streamDetails['engagementIncrementor']}</td>
-	</tr>
-	<tr>
 	<td>Last Updated:</td>
 	<td>${serviceUser.streamDetails['updatedOn']}</td>
 	</tr>
 	<tr>
+	<th> Eligibilities</th>
+	</tr>
+	<c:forEach items="${serviceUser.eligibilityBeans}" var="eligibility">
+	<tr>
+	<td><c:if test="${eligibility.active == 'N'}">&#10008;</c:if><c:if test="${eligibility.active == 'Y'}"> &#10004;</c:if>
+	${eligibility.name} 
+	</td>
+	</tr>
+	</c:forEach>
+	<tr>
+	<th> Substance Accumalations</th>
+	</tr>
+	<c:forEach items="${serviceUser.subAccums}" var="subaccum">
+	<tr>
+	<td>
+	${subaccum.substance} - ${subaccum.accum}
+	</td>
+	</tr>
+	</c:forEach>
+	<tr>
 	<td>
 	
-		<form name="newRequest" method="post">
-					<input type="hidden" name="action">
-					<input type="hidden" name="requestAction">
-					<input type="hidden" name="serviceUserId" value="${serviceUser.id}">
-					
-	</form>
-	<div>
-		
-		<a href="javascript:document.newRequest.requestAction.value='newSubstanceEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add New Behavioural/Substance results</a>
-		<br/>
-		<a href="javascript:document.newRequest.requestAction.value='newEngagmentEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add New Engagement/Meeting</a>
-		<br/>
-		<a href="javascript:document.newRequest.requestAction.value='viewAccount';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">View Account</a>
-		<br/>
-		<a href="javascript:document.newRequest.requestAction.value='viewNotes';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">View notes</a>
-	</div>	
-		
+			
 	</td>	
 	</tr>
 	</table>

@@ -5,11 +5,12 @@
 
 drop table Cm_transactions;
 drop table cm_accounts;
+drop table CM_Client_Substance_Accum;
 drop table CM_Client_Test_Results;
 drop table cm_substances;
 drop table CM_Client_Date_to_Clean;
 drop table CM_Date_To_Clean;
-drop table CM_Client_Elegibilities;
+drop table CM_Client_eligibilities;
 drop table CM_Eligibility;
 drop table CM_Client_Attnd;
 drop table CM_Client_Notes;
@@ -25,7 +26,7 @@ Create table CM_Users (
     User_FName VARCHAR(20) NULL,
     User_SName VARCHAR(20) NULL,
     User_Email VARCHAR(50) NULL,
-	User_Proffession VARCHAR(50) Not NULL,
+	User_Profession VARCHAR(50) Not NULL,
     User_Active Char check (user_active in ('Y' , 'y', 'N', 'n')),
     User_Password VARCHAR(50) NOT NULL,
     Created_By VARCHAR(25) Not NULL,
@@ -120,9 +121,7 @@ insert into cm_streams values(2,'Progression',2,'Y',null,3,44,1,'lducray',curdat
 create table CM_Client_Stream (
     Client_Id int Not NULL,
     Stream_Id int Not NULL,
-	Substance_Incrementor int,
-	Engagemnet_Incrementor int,
-    Created_By VARCHAR(25) Not NULL,
+	Created_By VARCHAR(25) Not NULL,
     Created_On DATE NOT NULL,
 	Updated_By VARCHAR(25) Not NULL,
     Updated_On DATE NOT NULL,
@@ -160,7 +159,7 @@ create table CM_Client_Attnd (
     Id int not null auto_increment primary key,
     Client_Id int Not NULL,
     UserName VARCHAR(25) Not NULL,
-   #Note_Id int,
+    staff_profession VARCHAR(50) Not NULL,
     Time_date varchar(20),
     Attended Char check (Attended in ('Y' , 'y', 'N', 'n')),
 	participated Char check (Attended in ('Y' , 'y', 'N', 'n')),
@@ -192,6 +191,7 @@ insert into cm_eligibility values(2,'Outings', 'Y', null, null,null,2,'lducray',
 CREATE TABLE CM_Client_eligibilities (
     Eligibility_Id int,
     Client_Id int,
+	 Active char not null check (active in ('Y' , 'y', 'N', 'n')),
     Created_By VARCHAR(25) Not NULL,
     Created_On DATE NOT NULL,
     CONSTRAINT CE_Created_By FOREIGN KEY (created_By)
@@ -213,6 +213,7 @@ CREATE TABLE CM_Date_To_Clean (
         REFERENCES CM_System.Cm_Streams (Stream_Id)
 );
 
+insert into cm_date_to_clean values('none',0,'Y',0,1,0);
 insert into cm_date_to_clean values('green',7,'Y',1,1,3);
 insert into cm_date_to_clean values('yellow',7,'Y',2,1,3);
 insert into cm_date_to_clean values('red',7,'Y',3,1,3);
@@ -238,6 +239,7 @@ CREATE TABLE CM_Substances (
     Substance varchar(30) primary key,
     Reset_value int not null,
     Max_value int not null,
+	Stream_regression_substance char not null check (Stream_regression_substance in ('Y' , 'y', 'N', 'n')),
     Active char not null check (Active in ('Y' , 'y', 'N', 'n')),
     Created_By VARCHAR(25) Not NULL,
     Created_On DATE NOT NULL,
@@ -245,9 +247,10 @@ CREATE TABLE CM_Substances (
         REFERENCES CM_System.Cm_USERS (UserName)
 );
 
-insert into cm_substances values ('Opiate', 0, 4, 'Y', 'lducray', curdate());
-insert into cm_substances values ('Stimulant', 0, 4, 'Y', 'lducray', curdate());
-insert into cm_substances values ('Benzodiazepine', 0, 4, 'Y', 'lducray', curdate());
+insert into cm_substances values ('Opiate', 0, 4,'Y', 'Y', 'lducray', curdate());
+insert into cm_substances values ('Stimulant', 0, 4, 'Y','Y', 'lducray', curdate());
+insert into cm_substances values ('Benzodiazepine', 0, 4, 'Y','Y', 'lducray', curdate());
+insert into cm_substances values ('Canabis', 0, 4, 'N','Y', 'lducray', curdate());
 
 CREATE TABLE CM_Client_Test_Results (
     Id int not null auto_increment primary key,
@@ -264,8 +267,23 @@ CREATE TABLE CM_Client_Test_Results (
         REFERENCES CM_System.Cm_USERS (UserName),
     CONSTRAINT CTR_Client_Id FOREIGN KEY (Client_id)
         REFERENCES CM_System.CM_Clients (client_id),
-    CONSTRAINT CTC_Substance FOREIGN KEY (Substance)
+    CONSTRAINT CTR_Substance FOREIGN KEY (Substance)
         REFERENCES CM_System.CM_Substances (Substance)
+);
+
+CREATE TABLE CM_Client_Substance_Accum (
+    Client_Id int,
+    Substance varchar(30),
+    Accum int(1),
+    Updated_By VARCHAR(25) Not NULL,
+    Updated_On DATE NOT NULL,
+    CONSTRAINT CSA_Updated_By FOREIGN KEY (Updated_By)
+        REFERENCES CM_System.Cm_USERS (UserName),
+    CONSTRAINT CSA_Client_Id FOREIGN KEY (Client_id)
+        REFERENCES CM_System.CM_Clients (client_id),
+    CONSTRAINT CSA_Substance FOREIGN KEY (Substance)
+        REFERENCES CM_System.CM_Substances (Substance),
+	CONSTRAINT CSA_PK PRIMARY KEY (Client_Id , Substance)
 );
 
 CREATE TABLE CM_Accounts (

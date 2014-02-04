@@ -6,7 +6,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -151,7 +153,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		return returnBean;
 	}
 	
-	public void insertNewSubstanceResult(SubstanceBean substanceBean){
+	public void insertNewSubstanceResult(SubstanceBean substanceBean, int accum){
 		
 		String fuctionName ="insertNewSubstanceResult";
 	    Connection connection = null;	
@@ -160,7 +162,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		
 		try {
 					
-				String xmlDbDetails = ConvertSubstanceToXML(substanceBean);
+				String xmlDbDetails = ConvertSubstanceToXML(substanceBean,accum);
 					
 					
 				connection = DataSourceManager.getDataSource().getConnection();		
@@ -345,6 +347,54 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		
 	}
 	
+	public void changeEligibility(ServiceUserBean serviceuser) 
+	{
+		String funcExceptionErrorMsg ="changeEligibility";
+	    Connection connection = null;	
+		Statement stmt =null;
+		
+		for(int i=0; i < serviceuser.getEligibilityBeans().size(); i++)
+		{
+			if(serviceuser.getEligibilityBeans().get(i).getId() == "1")
+			{
+				try{
+					connection = DataSourceManager.getDataSource().getConnection();
+					stmt = connection.createStatement();			
+					String query = "update cm_client_eligibilities set active ='"+serviceuser.getEligibilityBeans().get(i).getActive()+"' where client_id ="+serviceuser.getId()+" and eligibility_id ="+ serviceuser.getEligibilityBeans().get(i).getId()+ "";
+					
+					stmt.executeQuery(query);
+					
+				}
+				catch (SQLException  e) {							
+					log.error(funcExceptionErrorMsg, e);
+								
+				} finally {
+					try {
+						if(stmt != null){
+							stmt.close();
+						}
+					} catch (SQLException sqle) {
+						log.error(funcExceptionErrorMsg, sqle);
+						
+					}
+					try {
+						if(connection != null){
+							connection.close();
+						}
+					} catch (SQLException sqle) {
+						log.error(funcExceptionErrorMsg, sqle);
+						
+					}
+				}
+			
+				}
+		}
+		
+		
+	}
+
+	
+	
 	
 	private String ConvertAttendanceeToXML(AttendanceBean attendanceBean) {
 		String xml ="";
@@ -374,7 +424,9 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 	        root.appendChild(node7);
 	        Node node8 = doc.createElement("participation");
 	        root.appendChild(node8);
-	       
+	        Node node9 = doc.createElement("staffprof");
+	        root.appendChild(node9);
+	               
 	        
 	       
 	        	        
@@ -386,6 +438,8 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 	        node6.appendChild(doc.createTextNode(attendanceBean.getValidReason()));
 	        node7.appendChild(doc.createTextNode(attendanceBean.getTreatmentReviewMeeting()));
 	        node8.appendChild(doc.createTextNode(attendanceBean.getParticipation()));
+	        node9.appendChild(doc.createTextNode(attendanceBean.getStaffProfession()));
+	       
 	        
 	        xml = XMLFunctions.xmlToString(doc);
 		}
@@ -399,7 +453,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 	}
 
 
-	private String ConvertSubstanceToXML(SubstanceBean substanceBean) {
+	private String ConvertSubstanceToXML(SubstanceBean substanceBean, int accum) {
 		String xml ="";
 		Document doc = null;	
 	    
@@ -423,6 +477,8 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 	        root.appendChild(node5);
 	        Node node6 = doc.createElement("createdby");
 	        root.appendChild(node6);
+	        Node node7 = doc.createElement("accum");
+	        root.appendChild(node7);
 	       
 	        
 	       
@@ -433,6 +489,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 	        node4.appendChild(doc.createTextNode(substanceBean.getAdministeredBy()));
 	        node5.appendChild(doc.createTextNode(substanceBean.getAdministeredOn()));
 	        node6.appendChild(doc.createTextNode(substanceBean.getCreatedBy()));
+	        node7.appendChild(doc.createTextNode(""+accum+""));
 	       
 	        	        
 			//convert xml to string
@@ -511,6 +568,8 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		
 	}
 
+
+	
 
 
 	

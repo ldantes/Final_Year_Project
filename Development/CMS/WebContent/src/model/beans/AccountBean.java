@@ -5,7 +5,7 @@ import java.util.List;
 public class AccountBean {
 
 private String Account_Id; 
-private String Account_Balance;
+private Float Account_Balance;
 private String Active;
 private String Updated_By;
 private String Updated_On;
@@ -19,10 +19,10 @@ public String getAccount_Id() {
 public void setAccount_Id(String account_Id) {
 	Account_Id = account_Id;
 }
-public String getAccount_Balance() {
+public Float getAccount_Balance() {
 	return Account_Balance;
 }
-public void setAccount_Balance(String account_Balance) {
+public void setAccount_Balance(Float account_Balance) {
 	Account_Balance = account_Balance;
 }
 public String getActive() {

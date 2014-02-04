@@ -37,6 +37,7 @@ public class cmsQueryAttendance {
 						+ "`Attended`, "
 						+ " Valid_Reason ,"
 						+ " participated, "
+						+ "	staff_profession,"
 						+ "`Attnd_Failed_Reason`, "
 						+ "`Treatment_review_meeting` "
 						+ "FROM cm_client_attnd"
@@ -56,6 +57,7 @@ public class cmsQueryAttendance {
 					attendance.setUsername(results.getString("UserName"));
 					attendance.setTimeDate(results.getString("Time_date").toString());
 					attendance.setAttended(results.getString("Attended"));
+					attendance.setStaffProfession(results.getString("staff_profession"));
 					attendance.setParticipation(results.getString("participated"));
 					attendance.setValidReason(results.getString("Valid_Reason"));
 					attendance.setAttndFailedReason(results.getString("Attnd_Failed_Reason"));

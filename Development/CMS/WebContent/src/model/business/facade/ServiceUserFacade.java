@@ -19,13 +19,15 @@ public interface ServiceUserFacade {
 
 	public ServiceUserBean addServiceUser(ServiceUserBean serviceUserBean);
 
-	public void newSubstanceResult(SubstanceBean substanceBean);
+	public void newSubstanceResult(SubstanceBean substanceBean, int accum);
 
 	public void newAttendance(AttendanceBean attendanceBean);
 
 	public void adjustBalance(TransactionBean transaction);
 
 	public void addNewNote(NoteBean note);
+
+	public void changeEligibility(ServiceUserBean serviceuser);
 		
 	
 	

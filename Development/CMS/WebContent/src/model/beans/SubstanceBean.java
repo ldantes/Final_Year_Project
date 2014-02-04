@@ -8,6 +8,7 @@ public class SubstanceBean {
 	private String resetValue;
 	private String maxValue;
 	private String active;
+	private String streamRegressionFlag;
 	private String result;
 	private String administeredBy;
 	private String administeredOn;
@@ -80,5 +81,12 @@ public class SubstanceBean {
 	public void setSrvUserId(String srvUserId) {
 		this.srvUserId = srvUserId;
 	}
+	public String getStreamRegressionFlag() {
+		return streamRegressionFlag;
+	}
+	public void setStreamRegressionFlag(String streamRegressionFlag) {
+		this.streamRegressionFlag = streamRegressionFlag;
+	}
+	
 
 }

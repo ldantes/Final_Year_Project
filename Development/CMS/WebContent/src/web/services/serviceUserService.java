@@ -10,20 +10,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import model.beans.AttendanceBean;
+import model.beans.EligibilityBean;
 import model.beans.NoteBean;
 import model.beans.ServiceUserBean;
+import model.beans.StreamBean;
+import model.beans.SubstanceAccumBean;
 import model.beans.SubstanceBean;
 import model.beans.TransactionBean;
 import model.beans.UserBean;
 import model.business.facade.ServiceUserFacade;
+import model.data.cmsQueryAccount;
 import model.data.cmsQueryAttendance;
+import model.data.cmsQueryEligibility;
 import model.data.cmsQueryServiceUser;
 import model.data.cmsQuerySubstance;
 import model.data.cmsQueryUsers;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import Rules.SubstanceRules;
 import utilities.DataSourceManager;
 
 public class serviceUserService{
@@ -35,6 +43,7 @@ public class serviceUserService{
 	public List<SubstanceBean> substanceBeans;
 	public List<UserBean> userBeans;
 	public List<AttendanceBean> attendanceDetails;
+	public List<EligibilityBean> eligibilityBeans;
 	
 	public void setApplicationContext(ApplicationContext applicationContext){
 		this.applicationContext=applicationContext;
@@ -99,6 +108,13 @@ public class serviceUserService{
 		this.attendanceDetails =cmsQueryAttendance.srvUserAttendance(id);
 		this.serviceUserBean = cmsQueryServiceUser.searchServiceUsersById(id);
 		this.userBeans = cmsQueryUsers.qryUsers("Y");
+		this.eligibilityBeans = cmsQueryEligibility.srvUserEligibility(id);
+				
+		this.serviceUserBean.setSubstanceDetails(this.substanceBeans);
+		this.serviceUserBean.setAttendanceDetails(this.attendanceDetails);
+		this.serviceUserBean.setEligibilityBeans(this.eligibilityBeans);
+		this.serviceUserBean.setSubAccums(cmsQuerySubstance.qrySubstanceAccum(id));
+		this.serviceUserBean.setAccountDetails(cmsQueryAccount.srvUserAccount(id));
 		
 	}
 	
@@ -106,6 +122,13 @@ public class serviceUserService{
 	{
 		String id = request.getParameter("srvUserid");
 		setReferenceInformation(id);
+		List<SubstanceAccumBean> subAccumList = cmsQuerySubstance.qrySubstanceAccum(id);
+		int accum = 0;
+		String substance= "";
+		String testedSubstancce ="";
+		float credit =0;
+		float creditThisWeek =0;
+		ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
 		
 		for(int i=0; i < this.substanceBeans.size(); i++)
 		{
@@ -117,14 +140,57 @@ public class serviceUserService{
 			substanceBean.setAdministeredOn(request.getParameter("administeredOn"));
 			substanceBean.setCreatedBy(request.getParameter("username"));
 			
-			ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
-			serviceUserFacade.newSubstanceResult(substanceBean);
 			
+			for(int j=0; j < subAccumList.size(); j++)
+			{
+				substance = subAccumList.get(j).getSubstance().toString().toLowerCase();
+				testedSubstancce = substanceBean.getSubstance().toString().toLowerCase();
+				if(substance.equals(testedSubstancce))
+				{
+					if(substanceBean.getResult().equals("F"))
+					{
+						accum = Integer.parseInt(this.substanceBeans.get(i).getResetValue());
+						
+					}
+					else
+					{
+						accum = Integer.parseInt(subAccumList.get(j).getAccum())+1;
+						if(accum > Integer.parseInt(this.substanceBeans.get(i).getMaxValue()))
+						{
+							accum = Integer.parseInt(this.substanceBeans.get(i).getMaxValue());
+						}
+						
+					}
+					break;
+				}
+				credit = credit + (accum * this.serviceUserBean.getStreamDetails().getPointConversion());
+			}
+		
+			
+			
+			serviceUserFacade.newSubstanceResult(substanceBean, accum);
+			
+		};
+		
+		creditThisWeek = cmsQueryAccount.queryWeekCredit(id);
+		if((creditThisWeek + credit) > this.serviceUserBean.getStreamDetails().getMaxPoints())
+		{
+			credit = this.serviceUserBean.getStreamDetails().getMaxPoints() - creditThisWeek;
 		}
+		
+		TransactionBean transaction = new TransactionBean();
+		transaction.setAccount_Id(id);
+		transaction.setAmount_Credited(""+credit+"");
+		transaction.setAmount_Withdrawn("0");
+		transaction.setApproved_By(request.getParameter("administeredBy"));
+		
+		serviceUserFacade.adjustBalance(transaction);
+		setReferenceInformation(id);
 		this.userMessage="Service Test results successfull added";
+		SubstanceRules.adjustSubstanceAccumaltor(this.serviceUserBean);
 	}
 
-	public void newAttendance() 
+	public void newAttendance(String logUserProfession) 
 	{
 		String id = request.getParameter("srvUserid");
 				
@@ -138,7 +204,8 @@ public class serviceUserService{
 		attendanceBean.setParticipation(request.getParameter("particaption"));
 		attendanceBean.setParticipation(request.getParameter("particaption"));
 		attendanceBean.setTreatmentReviewMeeting(request.getParameter("reviewMeeting"));
-			
+		attendanceBean.setStaffProfession(logUserProfession);
+		
 		ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
 		serviceUserFacade.newAttendance(attendanceBean);
 		
@@ -172,62 +239,15 @@ public class serviceUserService{
 		ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
 		serviceUserFacade.adjustBalance(transaction);
 		
-		this.serviceUserBean = cmsQueryServiceUser.searchServiceUsersById(id);
-		
+		setReferenceInformation(id);
+				
 		this.userMessage="Account successfully adjusted";
-	
+		SubstanceRules.adjustSubstanceAccumaltor(this.serviceUserBean);
 	
 			
 	}
 
-	public void adjustServiceSubstanceIncr(ServiceUserBean serviceuser) {
-		
-			String fuctionName ="adjustServiceSubstanceIncr";
-		    Connection connection = null;	
-			CallableStatement stmt =null;
-			System.out.println( "adjustServiceSubstanceIncr");
-			
-			try {
-						
-					
-						
-						
-					connection = DataSourceManager.getDataSource().getConnection();		
-					stmt = connection.prepareCall("{call cm_system.adjust_subsaccum(?,?,?)}");			
-					stmt.setString(1, serviceuser.getId());		
-					stmt.setInt(2, serviceuser.getStreamDetails().getSubstanceIncrementor());	
-					stmt.registerOutParameter(3,java.sql.Types.VARCHAR);			
-					stmt.executeQuery();			
-							
-					if (stmt.getString(3).equals("OK")== false){
-										
-					}
-				}
-			catch (SQLException  e) {							
-				
-							
-			} finally {
-				try {
-					if(stmt != null){
-						stmt.close();
-					}
-				} catch (SQLException sqle) {
-					
-					
-				}
-				try {
-					if(connection != null){
-						connection.close();
-					}
-				} catch (SQLException sqle) {
-					
-					
-				}
-			}
-			
-			System.out.println( "Done");
-		
-	}
+
 
 	public void addNewNote() {
 		
@@ -255,6 +275,28 @@ public class serviceUserService{
 		ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
 		serviceUserFacade.addNewNote(note);
 		
+	}
+	
+	public void changeEligibility(ServiceUserBean serviceuser ,String active)
+	{
+				
+		for(int i=0; i < serviceuser.getEligibilityBeans().size(); i++)
+		{
+			if(serviceuser.getEligibilityBeans().get(i).getId().toString().equals("1"))
+			{
+				if(serviceuser.getEligibilityBeans().get(i).getActive() == active)
+				{
+					break;
+				}
+				else
+				{
+					serviceuser.getEligibilityBeans().get(i).setActive(active);
+//					ServiceUserFacade serviceUserFacade = (ServiceUserFacade) this.applicationContext.getBean("serviceUserFacade");
+//					serviceUserFacade.changeEligibility(serviceuser);
+					cmsQueryEligibility.changeEligibility(serviceuser);
+				}
+			}
+		}
 	}
 	
 }
