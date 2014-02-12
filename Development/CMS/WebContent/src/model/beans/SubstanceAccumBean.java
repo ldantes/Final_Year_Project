@@ -4,7 +4,7 @@ public class SubstanceAccumBean {
 	
 	private String srvUserId;
 	private String substance;
-	private String accum;
+	private int accum;
 	private String updatedBy;
 	private String updatedOn;
 	
@@ -21,10 +21,10 @@ public class SubstanceAccumBean {
 	public void setSrvUserId(String srvUserId) {
 		this.srvUserId = srvUserId;
 	}
-	public String getAccum() {
+	public int getAccum() {
 		return accum;
 	}
-	public void setAccum(String accum) {
+	public void setAccum(int accum) {
 		this.accum = accum;
 	}
 	public String getUpdatedBy() {

@@ -48,6 +48,10 @@ public class ServiceUserFacadeImpl implements ServiceUserFacade
 	public void changeEligibility(ServiceUserBean serviceuser){
 		serviceUserDao.changeEligibility(serviceuser);
 	}
+	
+	public void updateDTC(ServiceUserBean serviceUserBean){
+		serviceUserDao.updateDTC(serviceUserBean);
+	}
 }
 
 	

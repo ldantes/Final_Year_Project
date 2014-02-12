@@ -362,7 +362,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 					stmt = connection.createStatement();			
 					String query = "update cm_client_eligibilities set active ='"+serviceuser.getEligibilityBeans().get(i).getActive()+"' where client_id ="+serviceuser.getId()+" and eligibility_id ="+ serviceuser.getEligibilityBeans().get(i).getId()+ "";
 					
-					stmt.executeQuery(query);
+					stmt.executeUpdate(query);
 					
 				}
 				catch (SQLException  e) {							
@@ -393,7 +393,55 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		
 	}
 
-	
+	public void updateDTC(ServiceUserBean serviceUserBean)
+	{
+		String funcExceptionErrorMsg ="updateDTC";
+	    Connection connection = null;	
+		Statement stmt =null;
+		
+		
+		try{
+					connection = DataSourceManager.getDataSource().getConnection();
+					stmt = connection.createStatement();			
+					
+					
+					String query = "update cm_client_date_to_clean"
+							+ " set card = (select id from cm_date_to_clean where Order_of_Progress ="+serviceUserBean.getDateToClean().getOrderOfProgress()+"),"
+									+ " set_on = curdate(),"
+									+ " Date_to_Clean= DATE_ADD(curdate(),INTERVAL 7 DAY), "
+									+ " set_by='"+serviceUserBean.getDateToClean().getSetBy()+"'"
+									+ " where client_id ="+serviceUserBean.getId()+"";
+					
+					stmt.executeUpdate(query);
+					
+				}
+				catch (SQLException  e) {							
+					log.error(funcExceptionErrorMsg, e);
+								
+				} finally {
+					try {
+						if(stmt != null){
+							stmt.close();
+						}
+					} catch (SQLException sqle) {
+						log.error(funcExceptionErrorMsg, sqle);
+						
+					}
+					try {
+						if(connection != null){
+							connection.close();
+						}
+					} catch (SQLException sqle) {
+						log.error(funcExceptionErrorMsg, sqle);
+						
+					}
+				}
+			
+				
+		
+		
+		
+	}
 	
 	
 	private String ConvertAttendanceeToXML(AttendanceBean attendanceBean) {

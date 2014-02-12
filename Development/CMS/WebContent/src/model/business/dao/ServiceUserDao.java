@@ -19,6 +19,7 @@ public interface ServiceUserDao
 	public void adjustBalance(TransactionBean transaction);
 	public void addNewNote(NoteBean note);
 	public void changeEligibility(ServiceUserBean serviceuser);
+	public void updateDTC(ServiceUserBean serviceUserBean);
 	
 }
 

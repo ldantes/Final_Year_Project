@@ -80,7 +80,7 @@ public class ServiceUserServlet extends HttpServlet {
 				switch (validActions.valueOf(action)){
 			
 					case srchServiceUser:
-							if ( request.getParameter("serviceUserName") != null)
+						if ( request.getParameter("serviceUserName") != null)
 							{
 								String searchedName = request.getParameter("serviceUserName");
 								List<ServiceUserBean> searchedUsers = cmsQueryServiceUser.searchServiceUsersByName(searchedName);
@@ -90,10 +90,10 @@ public class ServiceUserServlet extends HttpServlet {
 							break;
 							
 					case editServiceUser:
-						String srchId = request.getParameter("serviceUserId");
-						if(srchId != "" && srchId != null  )
+						
+						if(id != "" && id != null  )
 						{
-							service.setReferenceInformation(srchId);
+							service.setReferenceInformation(id);
 							
 							destination	= "/editServiceUser.jsp";
 							request.setAttribute("serviceUser",service.getServiceUserBean());
@@ -111,12 +111,13 @@ public class ServiceUserServlet extends HttpServlet {
 					case updateServiceUser:
 						service.setApplicationContext(applicationContext);
 						service.setRequest(request);
-						String servId =request.getParameter("srvUserid");
-						if( servId != null && servId.length() != 0)
+						
+						if( id != null && id.length() != 0)
 						{
 							try {
 								service.updateServiceuser();
 								destination	= "/editServiceUser.jsp";
+								service.setReferenceInformation(id);
 								request.setAttribute("serviceUser",service.getServiceUserBean());
 								userMessage =service.userMessage;
 								request.setAttribute("userMsg",userMessage);
@@ -133,6 +134,7 @@ public class ServiceUserServlet extends HttpServlet {
 						{
 							service.newServiceUser();
 							destination	= "/editServiceUser.jsp";
+							service.setReferenceInformation(service.getServiceUserBean().getId());
 							request.setAttribute("serviceUser",service.getServiceUserBean());
 							userMessage =service.userMessage;
 							request.setAttribute("userMsg",userMessage);
@@ -199,10 +201,14 @@ public class ServiceUserServlet extends HttpServlet {
 						
 					case viewAccount:
 						
-						AccountBean accountDetails = cmsQueryAccount.srvUserAccount(request.getParameter("serviceUserId"));
+						service.setApplicationContext(applicationContext);
+						service.setRequest(request);
+						id = request.getParameter("serviceUserId");
+						service.setReferenceInformation(id);
+						AccountBean accountDetails = cmsQueryAccount.srvUserAccount(id);
 						
 						request.setAttribute("accountDetails", accountDetails );
-						request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(request.getParameter("serviceUserId")) );
+						request.setAttribute("serviceUser", service.getServiceUserBean() );
 						destination="/viewAccount.jsp";
 						break;
 						
@@ -211,11 +217,13 @@ public class ServiceUserServlet extends HttpServlet {
 						service.setApplicationContext(applicationContext);
 						service.setRequest(request);
 						service.adjustBalance();
-						AccountBean accountDetails2 = cmsQueryAccount.srvUserAccount(request.getParameter("serviceUserId"));
+						id = request.getParameter("serviceUserId");
+						service.setReferenceInformation(id);
+						AccountBean accountDetails2 = cmsQueryAccount.srvUserAccount(id);
+						
 						request.setAttribute("accountDetails", accountDetails2 );
-						request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(request.getParameter("serviceUserId")) );
+						request.setAttribute("serviceUser", service.getServiceUserBean() );
 						destination="/viewAccount.jsp";
-						break;
 						
 					case viewNotes:
 						id = request.getParameter("serviceUserId");

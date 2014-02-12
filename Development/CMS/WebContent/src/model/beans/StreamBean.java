@@ -4,7 +4,7 @@ public class StreamBean {
 
 	private String streamId="";
 	private String streamName="";
-	private String supportLevel="";
+	private int supportLevel;
 	private int maxPoints=0;
 	private float pointConversion =0;
 	private String createdBy="";
@@ -24,10 +24,10 @@ public class StreamBean {
 	public void setStreamName(String streamName) {
 		this.streamName = streamName;
 	}
-	public String getSupportLevel() {
+	public int getSupportLevel() {
 		return supportLevel;
 	}
-	public void setSupportLevel(String supportLevel) {
+	public void setSupportLevel(int supportLevel) {
 		this.supportLevel = supportLevel;
 	}
 	public int getMaxPoints() {

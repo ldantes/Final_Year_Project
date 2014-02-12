@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 
 
+
 import org.apache.log4j.Logger;
 
 import utilities.DataSourceManager;
@@ -184,7 +185,7 @@ public class cmsQueryServiceUser{
 						serviceUser.setUpdatedOn(String.valueOf(results.getDate("client_updatedOn")));
 						streamBean.setStreamId(results.getString("stream_id"));
 						streamBean.setStreamName(results.getString("stream_name"));
-						streamBean.setSupportLevel(results.getString("support_level"));
+						streamBean.setSupportLevel(results.getInt("support_level"));
 						streamBean.setMaxPoints(results.getInt("weekly_max_points"));
 						streamBean.setCreatedBy(results.getString("stream_createdBy"));
 						streamBean.setCreatedOn(String.valueOf(results.getDate("stream_createdOn")));
@@ -289,6 +290,44 @@ public class cmsQueryServiceUser{
 				
 				return notes;
 			
+			
+		}
+
+		public static void changeStream(ServiceUserBean serviceuser) 
+		{
+			String funcExceptionErrorMsg ="changeStream";
+		    Connection connection = null;	
+			Statement stmt =null;
+			
+			try{
+					connection = DataSourceManager.getDataSource().getConnection();
+					stmt = connection.createStatement();			
+					String query = "update cm_client_stream set stream_id = (select stream_id from cm_streams where support_level = "+serviceuser.getStreamDetails().getSupportLevel()+") where Client_Id = "+serviceuser.getId();
+					stmt.executeUpdate(query);
+						
+				}
+				catch (SQLException  e) {							
+					log.error(funcExceptionErrorMsg, e);
+								
+				} finally {
+					try {
+						if(stmt != null){
+							stmt.close();
+						}
+					} catch (SQLException sqle) {
+						log.error(funcExceptionErrorMsg, sqle);
+						
+					}
+					try {
+						if(connection != null){
+							connection.close();
+						}
+					} catch (SQLException sqle) {
+						log.error(funcExceptionErrorMsg, sqle);
+							
+					}
+			}
+				
 			
 		}
 		

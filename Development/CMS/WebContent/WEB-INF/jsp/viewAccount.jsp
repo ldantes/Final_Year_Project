@@ -39,8 +39,15 @@
 		<td><input type="number" maxLength="5" name="credit" value="0.00" step="0.50" min="0" max="${serviceUser.streamDetails['maxPoints']}"/></td>
 	</tr>
 	<tr>
+		<c:choose>
+		<c:when test="${serviceUser.eligibilityBeans.get(0).active=='Y'}">
 		<td>Withdrawn amount:</td>
 		<td><input type="number" maxLength="5" name="withdraw" value="0.00" step="0.50" min="0" max="${accountDetails.account_Balance}"/></td>
+		</c:when>
+		<c:otherwise>
+		<td><font color="Red"> Service user is NOT eligible to withdraw their credits</font></td>
+		</c:otherwise>
+		</c:choose>
 	</tr>
 	<tr>
 	<td>

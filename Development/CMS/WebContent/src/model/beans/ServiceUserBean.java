@@ -27,6 +27,7 @@ public class ServiceUserBean{
 	private List<NoteBean> notes;
 	private List<SubstanceAccumBean> subAccums;
 	private List<EligibilityBean> eligibilityBeans;
+	private DateToCleanBean dateToClean;
 	
 	
 	public StreamBean getStreamDetails(){
@@ -180,6 +181,17 @@ public class ServiceUserBean{
 	public void setAccountDetails(AccountBean accountDetails) {
 		this.accountDetails = accountDetails;
 	}
+
+	
+	public DateToCleanBean getDateToClean() {
+		return dateToClean;
+	}
+
+	public void setDateToClean(DateToCleanBean dateToClean) {
+		this.dateToClean = dateToClean;
+	}
+
+	
 
 
 	

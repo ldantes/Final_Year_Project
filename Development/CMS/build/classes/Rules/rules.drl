@@ -7,18 +7,17 @@ import web.services.serviceUserService;
 
 
 
-
-
-rule "service user's account has enough to withdraw"
+rule "service user's account has enough to withdraw AND is eligible for outings/visits"
     no-loop true
 when
-    $m: ServiceUserBean( accountDetails.Account_Balance >= 20 )
+    $m: ServiceUserBean( accountDetails.Account_Balance >= 20 ,dateToClean.card == "none" )
 then
     serviceUserService service = new serviceUserService();
     service.changeEligibility($m,"Y");
     System.out.println("YES," + $m.getName()+ " Can withdraw("+$m.getAccountDetails().getAccount_Balance()+") their credit");
     update( $m );
 end
+
 
 rule "service user's account does NOT have enough to withdraw"
     no-loop true
@@ -29,5 +28,50 @@ then
     serviceUserService service = new serviceUserService();
     service.changeEligibility($m,"N");    
     System.out.println("NO, " + $m.getName()+ " Can NOT withdraw ("+$m.getAccountDetails().getAccount_Balance()+") their credit");
+    System.out.println("service user's account may not withdraw (substance abuse)");
     update( $m );
 end
+
+rule "substance abuse therefor NO outings/visits/Credit withdraw"
+    lock-on-active true
+when
+    $m: ServiceUserBean(dateToClean.card != "none" )
+then
+    
+    serviceUserService service = new serviceUserService();
+    service.changeEligibility($m,"N");    
+    System.out.println("service user's account may not withdraw (substance abuse)");
+    update( $m );
+end
+
+rule "unsupported stream for outings/visits "
+    lock-on-active true
+when
+    $m: ServiceUserBean(streamDetails.streamId != "2" , dateToClean.card != "none")
+    
+then
+	System.out.println($m.getEligibilityBeans().size());
+	for(int i=0; i < $m.getEligibilityBeans().size(); i++)
+	{
+		if($m.getEligibilityBeans().get(i).getId().toString().equals("2") && $m.getEligibilityBeans().get(i).getActive().toString().equals("Y") )
+		{
+		    serviceUserService service = new serviceUserService();
+		    service.changeEligibility($m,"N");    
+		    System.out.println("happened");
+		    
+		}
+	}
+	System.out.println("service user's not eligible for visits/outings");
+end
+
+rule "Service user must digress down a stream due to continual misbehavious (substance abuse)"
+	lock-on-active true
+when
+	$m : ServiceUserBean(dateToClean.card == "RED" , streamDetails.supportLevel != 1 )
+then
+	serviceUserService service = new serviceUserService();
+	$m.getStreamDetails().setSupportLevel($m.getStreamDetails().getSupportLevel()-1);
+    service.changeStream($m);   
+	System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!Regress to High Support Stream!!!!!!!!!!!!!!!!!!!!!!");
+end
+

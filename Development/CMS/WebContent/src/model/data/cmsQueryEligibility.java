@@ -94,7 +94,7 @@ public class cmsQueryEligibility {
 		
 	}
 	
-	public static void changeEligibility(ServiceUserBean serviceuser) 
+	public static void changeEligibility(ServiceUserBean serviceuser, int eleigibility) 
 	{
 		String funcExceptionErrorMsg ="changeEligibility";
 	    Connection connection = null;	
@@ -102,12 +102,10 @@ public class cmsQueryEligibility {
 		
 		for(int i=0; i < serviceuser.getEligibilityBeans().size(); i++)
 		{
-			if(serviceuser.getEligibilityBeans().get(i).getId().toString().equals("1"))
-			{
-				try{
+			try{
 					connection = DataSourceManager.getDataSource().getConnection();
 					stmt = connection.createStatement();			
-					String query = "update cm_client_eligibilities set active ='"+serviceuser.getEligibilityBeans().get(i).getActive()+"' where client_id ="+serviceuser.getId()+" and eligibility_id ="+ serviceuser.getEligibilityBeans().get(i).getId()+ "";
+					String query = "update cm_client_eligibilities set active ='"+serviceuser.getEligibilityBeans().get(i).getActive()+"' where client_id ="+serviceuser.getId()+" and eligibility_id ="+ eleigibility+ "";
 					
 					stmt.executeUpdate(query);
 					
@@ -135,7 +133,7 @@ public class cmsQueryEligibility {
 				}
 			
 				}
-		}
+		
 		
 		
 	}

@@ -23,7 +23,7 @@
 	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/xmlbeans-qname.jar"/>
 	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/xmlpublic.jar"/>
 	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/xom-1.2.10.jar"/>
-	<classpathentry kind="lib" path="F:/Program Files/eclipse-SDK-4.4M2-win32-x86_64/eclipse/plugins/org.drools.eclipse_5.5.0.Final.jar"/>
+	<classpathentry kind="lib" path="C:/eclipse/plugins/org.drools.eclipse_5.5.0.Final.jar"/>
 	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/json-lib-2.4-jdk15.jar"/>
 	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/spring.jar"/>
 	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/commons-pool-1.4.jar"/>

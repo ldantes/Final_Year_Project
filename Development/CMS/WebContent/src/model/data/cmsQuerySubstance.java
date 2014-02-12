@@ -181,7 +181,7 @@ public class cmsQuerySubstance {
 				 while (results.next()) {
 					 subAccum = new SubstanceAccumBean();
 					 subAccum.setSubstance(results.getString("sub"));
-					 subAccum.setAccum(results.getString("accum"));
+					 subAccum.setAccum(results.getInt("accum"));
 					 subAccum.setUpdatedBy(results.getString("updated_By"));
 					 subAccum.setUpdatedOn(results.getString("updated_On"));
 					 subAccums.add(subAccum);

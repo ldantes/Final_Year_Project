@@ -21,6 +21,7 @@ import model.beans.UserBean;
 import model.business.facade.ServiceUserFacade;
 import model.data.cmsQueryAccount;
 import model.data.cmsQueryAttendance;
+import model.data.cmsQueryDateToClean;
 import model.data.cmsQueryEligibility;
 import model.data.cmsQueryServiceUser;
 import model.data.cmsQuerySubstance;
@@ -115,6 +116,7 @@ public class serviceUserService{
 		this.serviceUserBean.setEligibilityBeans(this.eligibilityBeans);
 		this.serviceUserBean.setSubAccums(cmsQuerySubstance.qrySubstanceAccum(id));
 		this.serviceUserBean.setAccountDetails(cmsQueryAccount.srvUserAccount(id));
+		this.serviceUserBean.setDateToClean(cmsQueryDateToClean.srvUserDateToClean(id));
 		
 	}
 	
@@ -126,12 +128,16 @@ public class serviceUserService{
 		int accum = 0;
 		String substance= "";
 		String testedSubstancce ="";
+		int progressionSubstanceCount =0;
+		int progressionSubstances =0;
+		boolean setDTC=false; 
 		float credit =0;
 		float creditThisWeek =0;
 		ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
 		
 		for(int i=0; i < this.substanceBeans.size(); i++)
 		{
+			
 			SubstanceBean substanceBean = new SubstanceBean();
 			substanceBean.setSrvUserId(id);
 			substanceBean.setSubstance(this.substanceBeans.get(i).getSubstance());
@@ -143,39 +149,73 @@ public class serviceUserService{
 			
 			for(int j=0; j < subAccumList.size(); j++)
 			{
+				
 				substance = subAccumList.get(j).getSubstance().toString().toLowerCase();
 				testedSubstancce = substanceBean.getSubstance().toString().toLowerCase();
 				if(substance.equals(testedSubstancce))
 				{
-					if(substanceBean.getResult().equals("F"))
+					if(this.substanceBeans.get(i).getStreamRegressionFlag().equals("Y"))
 					{
-						accum = Integer.parseInt(this.substanceBeans.get(i).getResetValue());
-						
+						if(substanceBean.getResult().equals("F"))
+						{
+							accum = Integer.parseInt(this.substanceBeans.get(i).getResetValue());
+							setDTC=true;
+							
+							
+						}
+						else
+						{
+							accum = subAccumList.get(j).getAccum()+1;
+							if(accum >= Integer.parseInt(this.substanceBeans.get(i).getMaxValue()))
+							{
+								accum = Integer.parseInt(this.substanceBeans.get(i).getMaxValue());
+								progressionSubstanceCount++;
+								
+							}
+							
+						}
+						progressionSubstances++;
 					}
-					else
+					else if(substanceBean.getResult().equals("P"))
 					{
-						accum = Integer.parseInt(subAccumList.get(j).getAccum())+1;
-						if(accum > Integer.parseInt(this.substanceBeans.get(i).getMaxValue()))
+						accum = subAccumList.get(j).getAccum()+1;
+						if(accum >= Integer.parseInt(this.substanceBeans.get(i).getMaxValue()))
 						{
 							accum = Integer.parseInt(this.substanceBeans.get(i).getMaxValue());
+							
+							
 						}
 						
 					}
-					break;
+					
 				}
-				credit = credit + (accum * this.serviceUserBean.getStreamDetails().getPointConversion());
+				
 			}
-		
+			
+			credit = credit + (accum * this.serviceUserBean.getStreamDetails().getPointConversion());
 			
 			
 			serviceUserFacade.newSubstanceResult(substanceBean, accum);
+			accum=0;
 			
 		};
+		
+		if(progressionSubstances == progressionSubstanceCount)
+		{
+			this.serviceUserBean.getStreamDetails().setSupportLevel(this.serviceUserBean.getStreamDetails().getSupportLevel()+1);
+			changeStream(this.serviceUserBean);
+			this.userMessage=this.userMessage+"<br/>Service User's stream has progressed";
+		}
 		
 		creditThisWeek = cmsQueryAccount.queryWeekCredit(id);
 		if((creditThisWeek + credit) > this.serviceUserBean.getStreamDetails().getMaxPoints())
 		{
+			this.userMessage="Credit has reached weekly MAX <br/>";
 			credit = this.serviceUserBean.getStreamDetails().getMaxPoints() - creditThisWeek;
+			if(credit<=0)
+			{
+				credit =0;
+			}
 		}
 		
 		TransactionBean transaction = new TransactionBean();
@@ -185,9 +225,36 @@ public class serviceUserService{
 		transaction.setApproved_By(request.getParameter("administeredBy"));
 		
 		serviceUserFacade.adjustBalance(transaction);
+		
+		this.userMessage=this.userMessage+"Service Test results successfull added <br/> account credited :"+credit;
+		
+		
+		if(setDTC)
+		{
+			if((this.serviceUserBean.getDateToClean().getOrderOfProgress() +1) < 4)
+			{
+				this.serviceUserBean.getDateToClean().setOrderOfProgress(this.serviceUserBean.getDateToClean().getOrderOfProgress() +1);
+				this.serviceUserBean.getDateToClean().setSetBy(request.getParameter("administeredBy"));
+				this.userMessage=this.userMessage+"<br/>Service User assigned a new Date to be Clean.";
+			}
+						
+		}
+		else
+		{
+			this.serviceUserBean.getDateToClean().setOrderOfProgress(0);
+			this.serviceUserBean.getDateToClean().setSetBy(request.getParameter("administeredBy"));
+		}
+		cmsQueryDateToClean.updateDTC(this.serviceUserBean);
 		setReferenceInformation(id);
-		this.userMessage="Service Test results successfull added";
+		
+		String oldStreamId = serviceUserBean.getStreamDetails().getStreamId();
 		SubstanceRules.adjustSubstanceAccumaltor(this.serviceUserBean);
+		
+		setReferenceInformation(id);
+		if (!oldStreamId.equals(this.serviceUserBean.getStreamDetails().getStreamId()))
+		{
+			this.userMessage=this.userMessage+"<br/>Service User's stream has changed, accumalators and DTC are reset";
+		}
 	}
 
 	public void newAttendance(String logUserProfession) 
@@ -211,7 +278,7 @@ public class serviceUserService{
 		
 		this.serviceUserBean = cmsQueryServiceUser.searchServiceUsersById(id);
 		
-		this.userMessage="Service Test results successfull added";
+		this.userMessage="Attendance successfull added";
 	
 			
 	}
@@ -219,6 +286,7 @@ public class serviceUserService{
 	public void adjustBalance() 
 	{
 		String id = request.getParameter("serviceUserId");
+		setReferenceInformation(id);
 		
 		TransactionBean transaction = new TransactionBean();
 		
@@ -228,10 +296,12 @@ public class serviceUserService{
 		{
 			transaction.setAmount_Credited(request.getParameter("credit"));	
 		}
-		
-		if(request.getParameter("withdraw")!= null && request.getParameter("withdraw").length() != 0)
+		if(this.serviceUserBean.getEligibilityBeans().get(0).getActive().equals("Y"))
 		{
-			transaction.setAmount_Withdrawn(request.getParameter("withdraw"));	
+			if(request.getParameter("withdraw")!= null && request.getParameter("withdraw").length() != 0)
+			{
+				transaction.setAmount_Withdrawn(request.getParameter("withdraw"));	
+			}
 		}
 		transaction.setApproved_By(request.getParameter("username"));
 			
@@ -282,7 +352,7 @@ public class serviceUserService{
 				
 		for(int i=0; i < serviceuser.getEligibilityBeans().size(); i++)
 		{
-			if(serviceuser.getEligibilityBeans().get(i).getId().toString().equals("1"))
+			if(serviceuser.getEligibilityBeans().get(i).getId().toString().equals("1")||serviceuser.getEligibilityBeans().get(i).getId().toString().equals("2"))
 			{
 				if(serviceuser.getEligibilityBeans().get(i).getActive() == active)
 				{
@@ -290,13 +360,36 @@ public class serviceUserService{
 				}
 				else
 				{
+					this.userMessage="Credit withdraw eligibility changed";
 					serviceuser.getEligibilityBeans().get(i).setActive(active);
 //					ServiceUserFacade serviceUserFacade = (ServiceUserFacade) this.applicationContext.getBean("serviceUserFacade");
 //					serviceUserFacade.changeEligibility(serviceuser);
-					cmsQueryEligibility.changeEligibility(serviceuser);
+					cmsQueryEligibility.changeEligibility(serviceuser,1);
+				}
+				if(serviceuser.getStreamDetails().getStreamId().equals("2"))
+				{
+						this.userMessage="Outing/Visit priveldges changed";
+						serviceuser.getEligibilityBeans().get(i).setActive(active);
+//						ServiceUserFacade serviceUserFacade = (ServiceUserFacade) this.applicationContext.getBean("serviceUserFacade");
+//						serviceUserFacade.changeEligibility(serviceuser);
+						cmsQueryEligibility.changeEligibility(serviceuser,2);
+					
 				}
 			}
+			
+			
 		}
+		
+	}
+	
+	public void changeStream(ServiceUserBean serviceuser)
+	{
+		this.userMessage="Service Usser Stream has been updated to support level: "+serviceuser.getStreamDetails().getSupportLevel();
+		cmsQueryServiceUser.changeStream(serviceuser);
+		
+		serviceuser.getDateToClean().setOrderOfProgress(0);
+		cmsQueryDateToClean.updateDTC(serviceuser);
+		
 	}
 	
 }

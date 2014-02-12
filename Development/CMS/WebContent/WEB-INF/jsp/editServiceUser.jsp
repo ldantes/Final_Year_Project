@@ -23,6 +23,7 @@
 	</c:choose>
 	</h3>
 	<hr/>
+	<div> <p style="color:red">${userMsg}</p></div>
 	<table width="100%">
 	<tr>
 	<td width="25%">
@@ -30,7 +31,7 @@
 	<input type="hidden" name="requestAction" value="updateServiceUser"/>
 	<input type="hidden" name="srvUserid" value="${serviceUser.id}"/> 
 	<input type="hidden" name="username" value="${username}"/>
-	<div> <p style="color:red">${userMsg}</p></div>
+	
 	<table>
 		<tr>
 			<td>
@@ -181,11 +182,15 @@
 	</tr>
 	<c:forEach items="${serviceUser.eligibilityBeans}" var="eligibility">
 	<tr>
-	<td><c:if test="${eligibility.active == 'N'}">&#10008;</c:if><c:if test="${eligibility.active == 'Y'}"> &#10004;</c:if>
+	<td><c:if test="${eligibility.active == 'N'}"><FONT COLOR="red">&#10008;</FONT></c:if><c:if test="${eligibility.active == 'Y'}"><FONT COLOR="green"> &#10004;</FONT></c:if>
 	${eligibility.name} 
 	</td>
 	</tr>
+	
 	</c:forEach>
+	<tr>
+	<td>
+	<table>
 	<tr>
 	<th> Substance Accumalations</th>
 	</tr>
@@ -195,11 +200,36 @@
 	${subaccum.substance} - ${subaccum.accum}
 	</td>
 	</tr>
+	
 	</c:forEach>
+	</table>
+	</td>
+	<td>
+	<table>
+	<tr>
+	<th> Date To Clean</th>
+	</tr>
+	<c:if test="${serviceUser.dateToClean.card != null and serviceUser.dateToClean.card != ''}">
 	<tr>
 	<td>
-	
-			
+	Card issued: <FONT COLOR="${serviceUser.dateToClean.card}">${serviceUser.dateToClean.card}</FONT>
+	</td>
+	</tr>
+	<tr>
+	<td>
+	Date to be Clean: ${serviceUser.dateToClean.dateToClean}
+	</td>
+	</tr>
+	<tr>
+	<td>
+	Issued on: ${serviceUser.dateToClean.setOn}
+	</td>
+	</tr>
+	</c:if>
+	</table>
+	</td>
+	<tr>
+	<td>
 	</td>	
 	</tr>
 	</table>

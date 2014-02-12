@@ -115,8 +115,8 @@ create table Cm_Streams (
         REFERENCES CM_System.Cm_USERS (UserName)
 );
 
-insert into cm_streams values(1,'High Support',1,'Y',5,null,33,0.50,'lducray',curdate());
-insert into cm_streams values(2,'Progression',2,'Y',null,3,44,1,'lducray',curdate());
+insert into cm_streams values(1,'High Support',1,'Y',5,null,16.50,0.40,'lducray',curdate());
+insert into cm_streams values(2,'Progression',2,'Y',null,3,22,0.60,'lducray',curdate());
 
 create table CM_Client_Stream (
     Client_Id int Not NULL,
@@ -186,7 +186,7 @@ CREATE TABLE CM_Eligibility (
 );
 
 insert into cm_eligibility values(1,'Withdraw Credits', 'Y', null, 20,null,null,'lducray',curdate());
-insert into cm_eligibility values(2,'Outings', 'Y', null, null,null,2,'lducray',curdate());
+insert into cm_eligibility values(2,'Group Recreational Outings', 'Y', null, null,null,2,'lducray',curdate());
 
 CREATE TABLE CM_Client_eligibilities (
     Eligibility_Id int,
@@ -203,7 +203,8 @@ CREATE TABLE CM_Client_eligibilities (
 );
 
 CREATE TABLE CM_Date_To_Clean (
-    Card varchar(10) primary key,
+    Id int not null auto_increment primary key,
+    Card varchar(10) unique,
     No_Days numeric not null,
     Active char not null check (active in ('Y' , 'y', 'N', 'n')),
     Order_of_Progress numeric not null,
@@ -213,16 +214,16 @@ CREATE TABLE CM_Date_To_Clean (
         REFERENCES CM_System.Cm_Streams (Stream_Id)
 );
 
-insert into cm_date_to_clean values('none',0,'Y',0,1,0);
-insert into cm_date_to_clean values('green',7,'Y',1,1,3);
-insert into cm_date_to_clean values('yellow',7,'Y',2,1,3);
-insert into cm_date_to_clean values('red',7,'Y',3,1,3);
+insert into cm_date_to_clean values(1,'none',0,'Y',0,1,0);
+insert into cm_date_to_clean values(2,'YELLOW',7,'Y',1,1,3);
+insert into cm_date_to_clean values(3,'ORANGE',7,'Y',2,1,3);
+insert into cm_date_to_clean values(4,'RED',7,'Y',3,1,3);
 
 
 CREATE TABLE CM_Client_Date_to_Clean (
     Id int not null auto_increment primary key,
     Client_Id int,
-    Card varchar(10),
+    Card int,
     Extension_applied char check (Extension_applied in ('Y' , 'y', 'N', 'n')),
     Date_to_Clean date not null,
     Set_By VARCHAR(25) Not NULL,
@@ -232,7 +233,7 @@ CREATE TABLE CM_Client_Date_to_Clean (
     CONSTRAINT CDTC_Client_Id FOREIGN KEY (Client_id)
         REFERENCES CM_System.CM_Clients (client_id),
     CONSTRAINT CDTC_Card FOREIGN KEY (Card)
-        REFERENCES CM_System.CM_Date_To_Clean (Card)
+        REFERENCES CM_System.CM_Date_To_Clean (Id)
 );
 
 CREATE TABLE CM_Substances (
@@ -250,7 +251,8 @@ CREATE TABLE CM_Substances (
 insert into cm_substances values ('Opiate', 0, 4,'Y', 'Y', 'lducray', curdate());
 insert into cm_substances values ('Stimulant', 0, 4, 'Y','Y', 'lducray', curdate());
 insert into cm_substances values ('Benzodiazepine', 0, 4, 'Y','Y', 'lducray', curdate());
-insert into cm_substances values ('Canabis', 0, 4, 'N','Y', 'lducray', curdate());
+insert into cm_substances values ('THC', 0, 4, 'N','Y', 'lducray', curdate());
+insert into cm_substances values ('Alcohol', 0, 0, 'N','Y', 'lducray', curdate());
 
 CREATE TABLE CM_Client_Test_Results (
     Id int not null auto_increment primary key,

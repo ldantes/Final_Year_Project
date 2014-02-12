@@ -28,6 +28,8 @@ public interface ServiceUserFacade {
 	public void addNewNote(NoteBean note);
 
 	public void changeEligibility(ServiceUserBean serviceuser);
+
+	public void updateDTC(ServiceUserBean serviceUserBean);
 		
 	
 	
