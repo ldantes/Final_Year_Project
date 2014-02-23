@@ -13,8 +13,8 @@
 	<hr/>
 	<form id="srchServiceUserfrm" method="POST" action="ServiceUserServlet">
 		<input type="hidden" name="requestAction" value="srchServiceUser"/>
-		Search:<input type="search" placeholder="Search Service user" name="serviceUserName" focus="true"/>
-		<input type="submit" value="Search by Name">
+		<p>Search:<input type="search" placeholder="Search Service user" name="serviceUserName" /></p>
+		<input class="button" type="submit" value="Search by Name">
 	</form>
 	<hr/>
 	<c:if test="${serviceUserResults.size() != null}">
@@ -23,13 +23,14 @@
 	<input type="hidden" name="serviceUserId" value=""/>
 	<c:choose>
 	<c:when test="${serviceUserResults != null && fn:length(serviceUserResults) != 0}">
-	<table width="100%" border="1">
-	<tr><th>Name</th><th>Date of Birth</th><th>Created By</th></tr>
+	<table class="hor-zebra" >
+	<tr><th width="25%">Name</th><th>Gender</th><th>Date of Birth</th><th>Created By</th></tr>
 	
 	<c:forEach var="result"  items="${serviceUserResults}" >
 	
-	<tr>
-		<td><a href="javascript:var f = document.getElementById('serviceUserSelect'); f.serviceUserId.value='${result.id}';f.submit();">${result.name}</a></td>
+	<tr onclick="javascript:var f = document.getElementById('serviceUserSelect'); f.serviceUserId.value='${result.id}';f.submit();" class="row">
+		<td>${result.firstname} ${result.surname}</td>
+		<td>${result.gender}</td>
 		<td>${result.doB}</td>
 		<td>${result.createdBy}</td>
 	</tr>
@@ -37,6 +38,8 @@
 	</c:forEach>
 
 	</table>
+	<hr/>
+	<p>Results: ${serviceUserResults.size()}</p>
 	</c:when>
 	<c:otherwise>
 		No results found!

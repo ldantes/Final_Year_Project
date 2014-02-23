@@ -15,7 +15,7 @@
 	</form>
 	<h1>Add/View Substance Results: </h1><h3 style="color:red">
 	
-			<a href="javascript:var f = document.getElementById('serviceUserSelect'); f.serviceUserId.value='${serviceUser.id}';f.submit();">${serviceUser.name}</a> (${serviceUser.id})
+			<a href="javascript:var f = document.getElementById('serviceUserSelect'); f.serviceUserId.value='${serviceUser.id}';f.submit();">${serviceUser.firstname} ${serviceUser.surname}</a> (${serviceUser.id})
 	
 	</h3>
 	<hr/>
@@ -29,15 +29,15 @@
 	<input type="hidden" name="srvUserid" value="${serviceUser.id}"/> 
 	<input type="hidden" name="username" value="${username}"/>
 	<div> <p style="color:red">${userMsg}</p></div>
-	<table>
+	<table class="hor-zebra">
 		
 		<c:forEach var="substance" items="${substanceBeans}">
 		<tr>
 			<td><input type="text" name="${substance.substance}" value="${substance.substance}"  disabled="disabled" /></td>
 			
 				<td>
-				Passed (Negative Detection):<input type="radio" required name="result${substance.substance}" id="passed" onClick="assignmentRadio(this.name);" value="P" ${P}/>
-				Failed (Positive Detection):<input type="radio" name="result${substance.substance}" id="failed" onClick="assignmentRadio(this.name);" value="F" ${F}/>
+				Pass :<input type="radio" required name="result${substance.substance}" id="passed" onClick="assignmentRadio(this.name);" value="P" ${P}/>
+				Fail :<input type="radio" name="result${substance.substance}" id="failed" onClick="assignmentRadio(this.name);" value="F" ${F}/>
 				</td>
 		</tr>
 		</c:forEach>
@@ -53,7 +53,7 @@
 		</td>
 		</tr>
 		<tr>
-		<td><input type="submit" value="submit"/>
+		<td><input class="button"  type="submit" value="submit"/>
 		</tr>
 	</table>
 	
@@ -62,13 +62,32 @@
 	
 	<div class="inline" >
 	<h2>PREVIOUS RESULT DETAILS</h2>
-	<table>
+	<table class="hor-zebra">
 		
 		<c:choose>
-		<c:when test="${previousResultsBeans != null &&  fn.length(previousResultsBeans) != 0}">
-		<c:forEach var="results" items="${previousResultsBeans}">
+		<c:when test="${previousResultsBeans.size() != 0}">
+		<c:set var="count" value="0"/>
 		<tr>
-			<td>${results.substance}</td>
+			<th >Substance
+			</th>
+			<th>Result
+			</th >
+			<th >Administered By
+			</th>
+			<th>Administered On
+			</th>
+		</tr>
+		<c:forEach var="results" items="${previousResultsBeans}">
+		<c:choose>
+		<c:when test="${count % 2 ==0}">
+			<tr class="vzebra-even">
+		</c:when>
+		<c:otherwise>
+		<tr>
+		</c:otherwise>
+		</c:choose>
+		
+			<td >${results.substance}</td>
 			
 				<td>
 				
@@ -86,12 +105,13 @@
 				
 			</td>
 		
-		<td>Administered by: <input type="text" disabled="disabled" value="${results.administeredBy}" />
+		<td >${results.administeredBy}
 								
 		</td>
-		<td>Administered on: <input type="date" id="datePicker" name="administedOn" value="${results.administeredOn}" disabled="disabled"/>
+		<td>${results.administeredOn}
 		</td>
 		</tr>
+		<c:set var="count" value="${count +1}"/>
 		</c:forEach>
 		</c:when>
 		<c:otherwise>

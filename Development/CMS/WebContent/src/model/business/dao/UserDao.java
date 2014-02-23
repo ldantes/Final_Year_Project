@@ -12,6 +12,8 @@ public interface UserDao
 {
 	
 	public UserBean 		getUser(String userName, String password) throws SQLException, NamingException;
+
+	public void editUser(UserBean user);
 	
 }
 

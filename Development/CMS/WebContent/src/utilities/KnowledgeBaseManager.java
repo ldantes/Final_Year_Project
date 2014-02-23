@@ -16,12 +16,13 @@ public class KnowledgeBaseManager {
 	
 	   /**
      * Create new knowledge base
+	 * @param drl 
      */
-	public static KnowledgeBase createKnowledgeBase() {
+	public static KnowledgeBase createKnowledgeBase(String drl) {
 		KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
              //Add drl file into builder
 				
-		builder.add( ResourceFactory.newFileResource( "C:\\xampp\\tomcat\\webapps\\CMS\\WebContent\\src\\Rules\\rules.drl" ), ResourceType.DRL);
+		builder.add( ResourceFactory.newFileResource( "C:\\xampp\\tomcat\\webapps\\CMS\\WebContent\\src\\Rules\\"+drl ), ResourceType.DRL);
 		 if ( builder.hasErrors() ) {
 		 System.err.println( builder.getErrors().toString() );
 		 }

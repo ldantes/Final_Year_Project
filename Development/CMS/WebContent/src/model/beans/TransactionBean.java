@@ -5,8 +5,8 @@ public class TransactionBean {
 
 private String Id;
 private String Account_Id;
-private String Amount_Withdrawn;
-private String Amount_Credited;
+private String Amount_Withdrawn ="0";
+private String Amount_Credited ="0";
 private String Approved_By;
 private String Date_of_Transaction;
 

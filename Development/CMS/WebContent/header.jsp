@@ -16,7 +16,7 @@
 	<h3> version 1.0</h3>
 </div>
 	<c:if test="${username != null}">
-	<p align="right">Signed in as: ${username}</p>
+	<p  align="right">Signed in as: ${username}, <a href="javascript:document.navigationForm.requestAction.value='logout';document.navigationForm.action='UserServlet';document.navigationForm.submit();">Logout</a></p>
 
 	<form name="navigationForm" method="post">
 					<input type="hidden" name="action">
@@ -25,12 +25,15 @@
 					
 	</form>
 	
-		<nav> 
-		<a href="javascript:document.navigationForm.requestAction.value='srchServiceUser';document.navigationForm.action='ServiceUserServlet';document.navigationForm.submit();">Search Service User</a> ||
-		<a href="javascript:document.navigationForm.requestAction.value='editServiceUser';document.navigationForm.action='ServiceUserServlet';document.navigationForm.serviceUserId='';document.navigationForm.submit();">Add Service User</a>  
+		<nav id="nav"> 
+		<a href="javascript:document.navigationForm.requestAction.value='srchServiceUser';document.navigationForm.action='ServiceUserServlet';document.navigationForm.submit();">Search Service User</a>
+		<a href="javascript:document.navigationForm.requestAction.value='editServiceUser';document.navigationForm.action='ServiceUserServlet';document.navigationForm.serviceUserId='';document.navigationForm.submit();">Add Service User</a>
+		<c:if test="${sessionScope.userAdmin == 'true'}"><a href="javascript:document.navigationForm.requestAction.value='init';document.navigationForm.action='SystemServlet';document.navigationForm.submit();">System Administration</a>
+		<a href="javascript:document.navigationForm.requestAction.value='init';document.navigationForm.action='UserServlet';document.navigationForm.submit();">User Management</a>
+		</c:if>
 		</nav>
 	
 	</c:if>
-
+ <hr/>
 </body>
 </html>

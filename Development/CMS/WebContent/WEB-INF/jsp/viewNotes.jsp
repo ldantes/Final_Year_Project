@@ -21,7 +21,7 @@
 	</form>
 	<h1>Notes: </h1><h3 style="color:red">
 	
-			<a href="javascript:var f = document.getElementById('serviceUserSelect'); f.serviceUserId.value='${serviceUser.id}';f.submit();">${serviceUser.name}</a> (${serviceUser.id})
+			<a href="javascript:var f = document.getElementById('serviceUserSelect'); f.serviceUserId.value='${serviceUser.id}';f.submit();">${serviceUser.firstname} ${serviceUser.surname}</a> (${serviceUser.id})
 	
 	</h3>
 	
@@ -35,9 +35,8 @@
 	<input type="hidden" name="serviceUserId" value="${serviceUser.id}"/>
 	<input type="hidden" name="username" value="${username}"/>
 		
-	<table>
+	<table class="hor-zebra">
 	<tr>
-		<td>Enter new note:</td>
 		<td>
 			<textarea name ="note" maxlength=500 placeholder="new note content..." onkeyup="countChar(this)" style="resize:none;" cols="50" rows="10" required /></textarea>
 			 
@@ -57,7 +56,7 @@
 	</tr>
 	<tr>
 	<td>
-	<input type="submit" value="submit new note"/>
+	<input class="button"  type="submit" value="submit new note"/>
 	</td>
 	</tr>
 	</table>
@@ -66,6 +65,8 @@
 	
 	<div class="inline" width="50%">
 	<h1>Notes History</h1>
+	<c:choose>
+	<c:when test="${notes.size() != 0}">
 	<c:forEach var="result" items="${notes}" >
 			
 	<form id ="updateNote" method="post" action="ServiceUserServlet">
@@ -75,11 +76,12 @@
 		<input type="hidden" name="noteId" value=""/>
 	
 		
-		<table >
+		<table class="hor-zebra">
 			<tr>
-								<td colspan="2" align="right" ><p style="color:red">${result.userName} - ${result.updated_On}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p></td>
+								
 											
-								<td>
+								<td width="50%">
+								${result.userName}<br/>${result.updated_On}
 								<c:choose>
 									<c:when test="${username == result.userName }">
 										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -89,11 +91,9 @@
 											<textarea name="${result.id}" id="${result.id}" maxlength=500  readonly="readonly" style="resize:none;" cols="50" rows="5">${result.note}</textarea>
 											<a href="javascript:edit(${result.id});">edit</a>
 											<div id="submitdiv+${result.id}" style="display:none;" >
-												<input type="button" value="Update" onclick="javascript:var f = document.getElementById('updateNote'); f.noteId.value='${result.id}';f.submit();" />
+												<input class="button"  type="button" value="Update" onclick="javascript:var f = document.getElementById('updateNote'); f.noteId.value='${result.id}';f.submit();" />
 											</div>
 											<br>
-											
-											
 										</div>
 									</c:when>
 									<c:otherwise>
@@ -101,12 +101,16 @@
 									</c:otherwise>
 								</c:choose>
 								</td>
-							</tr>
+			</tr>
 		</table>
 		</form>
 	
 	</c:forEach>	
-		
+	</c:when>
+	<c:otherwise>
+		No previous Notes
+	</c:otherwise>
+	</c:choose>	
 	
 	</div>
 	

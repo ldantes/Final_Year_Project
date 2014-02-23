@@ -10,10 +10,10 @@
     <%@include file="/header.jsp"%>
 	<script type="text/javascript" src="<c:url value="/resources/javascript/jsFunctions.js" />"></script>
 	
-	<h1>Edit Service user: </h1><h3 style="color:red">
+	<h1>Edit Service User: </h1><h3>
 	<c:choose>
-		<c:when test="${serviceUser.name != null && serviceUser.name != ''}">
-		${serviceUser.name} (${serviceUser.id})
+		<c:when test="${serviceUser.id != null && serviceUser.id != ''}">
+		${serviceUser.firstname} ${serviceUser.surname} (${serviceUser.id})
 		
 		</c:when>
 		<c:otherwise>
@@ -23,22 +23,48 @@
 	</c:choose>
 	</h3>
 	<hr/>
-	<div> <p style="color:red">${userMsg}</p></div>
-	<table width="100%">
-	<tr>
-	<td width="25%">
+	<div class="msg">${userMsg}</div><div>
+	<c:if test="${serviceUser.id != null && serviceUser.id != ''}">
+	<form name="newRequest" method="post">
+					<input type="hidden" name="action">
+					<input type="hidden" name="requestAction">
+					<input type="hidden" name="serviceUserId" value="${serviceUser.id}">
+					
+	</form>
+	<div>
+		<nav>
+		<a href="javascript:document.newRequest.requestAction.value='newSubstanceEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add New Behavioural/Substance results</a>
+		||
+		<a href="javascript:document.newRequest.requestAction.value='newEngagmentEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add New Engagement/Meeting</a>
+		||
+		<a href="javascript:document.newRequest.requestAction.value='viewAccount';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">View Account</a>
+		||
+		<a href="javascript:document.newRequest.requestAction.value='viewNotes';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">View notes</a>
+		</nav>
+	</div>	
+	</c:if>
+	</div>
+	<div class="inline">
 	<form id="editSelectServiceUser" action ="ServiceUserServlet" method="post">
 	<input type="hidden" name="requestAction" value="updateServiceUser"/>
-	<input type="hidden" name="srvUserid" value="${serviceUser.id}"/> 
+	<input type="hidden" name=serviceUserId value="${serviceUser.id}"/> 
 	<input type="hidden" name="username" value="${username}"/>
 	
-	<table>
+	<table class="hor-zebra">
 		<tr>
 			<td>
-				Full Name*: 
+				First Name*: 
 			</td>
 			<td>
-				<input name="srvUsername" required type="text" value="${serviceUser.name}"/>
+				<input name="srvUserfname" required type="text" maxlength="20" value="${serviceUser.firstname}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Surname*: 
+			</td>
+			<td>
+				<input name="srvUsersname" required type="text" maxlength="30" value="${serviceUser.surname}"/>
 			</td>
 		</tr>
 		<tr>
@@ -54,18 +80,21 @@
 				Gender*: 
 			</td>
 			<td>
-				
-				<c:choose>
+					<c:choose>
 				<c:when test="${serviceUser.gender=='M' || serviceUser.gender=='m'}">
 						<c:set var="M" value="checked"/>
 						<c:set var="F" value=""/>
 				</c:when>
+				<c:when test="${serviceUser.gender=='F' || serviceUser.gender=='f'}">
+							<c:set var="F" value="checked"/>
+						<c:set var="M" value=""/>
+				</c:when>
 				<c:otherwise>
-						<c:set var="F" value="checked"/>
+						<c:set var="F" value=""/>
 						<c:set var="M" value=""/>
 				</c:otherwise>
 				</c:choose>
-				
+							
 				Male:<input type="radio" name="srvUserGender" required id="genderM" onClick="assignmentRadio(this.name);" value="M" ${M}/>
 				Female:<input type="radio" name="srvUserGender" id="genderF" onClick="assignmentRadio(this.name);" value="F" ${F}/>
 				
@@ -73,7 +102,7 @@
 		</tr>
 		<tr>
 			<td>
-				PPS Number: 
+				PPS/Clinic Number*: 
 			</td>
 			<td>
 				<input name="srvPPS" required type="text" value="${serviceUser.pps}"/>
@@ -133,39 +162,19 @@
 		</tr>
 		<tr>
 			<td>
-				<input type="submit" value="Submit"/>
+				<input class="button"  type="submit" value="Submit"/>
 			</td>
 			<td>
-				<input type="button" value="Cancel" onClick="this.form.reset();"/>
+				<input class="button"  type="button" value="Cancel" onClick="this.form.reset();"/>
 			</td>
 		</tr>
 	</table>
-	
 	</form>
-	</td>
-	<td>
-	
-	<div>
-	<c:if test="${serviceUser.name != null && serviceUser.name != ''}">
-	<form name="newRequest" method="post">
-					<input type="hidden" name="action">
-					<input type="hidden" name="requestAction">
-					<input type="hidden" name="serviceUserId" value="${serviceUser.id}">
-					
-	</form>
-	<div>
-		<nav>
-		<a href="javascript:document.newRequest.requestAction.value='newSubstanceEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add New Behavioural/Substance results</a>
-		||
-		<a href="javascript:document.newRequest.requestAction.value='newEngagmentEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add New Engagement/Meeting</a>
-		||
-		<a href="javascript:document.newRequest.requestAction.value='viewAccount';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">View Account</a>
-		||
-		<a href="javascript:document.newRequest.requestAction.value='viewNotes';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">View notes</a>
-		</nav>
-	</div>	
+	</div>
+	<div class="inline">
+	<c:if test="${serviceUser.id != null && serviceUser.id != ''}">	
 	<br/>
-	<table>
+	<table class="hor-zebra">
 	<tr>
 	<th> Stream Details</th>
 	</tr>
@@ -182,8 +191,7 @@
 	</tr>
 	<c:forEach items="${serviceUser.eligibilityBeans}" var="eligibility">
 	<tr>
-	<td><c:if test="${eligibility.active == 'N'}"><FONT COLOR="red">&#10008;</FONT></c:if><c:if test="${eligibility.active == 'Y'}"><FONT COLOR="green"> &#10004;</FONT></c:if>
-	${eligibility.name} 
+	<td><c:if test="${eligibility.active == 'N' && eligibility.amount == 0}"><FONT COLOR="red">&#10008;</FONT></c:if><c:if test="${eligibility.active == 'Y' || eligibility.amount > 0 }"><FONT COLOR="green"> &#10004;</FONT></c:if>${eligibility.name} <c:if test="${eligibility.amount > 0}"> (${eligibility.amount})</c:if>
 	</td>
 	</tr>
 	
@@ -197,7 +205,8 @@
 	<c:forEach items="${serviceUser.subAccums}" var="subaccum">
 	<tr>
 	<td>
-	${subaccum.substance} - ${subaccum.accum}
+	${subaccum.substance} </td><td> <c:if test="${subaccum.accum > 0}"><FONT COLOR="green"></c:if>
+							<c:if test="${subaccum.accum == 0}"><FONT COLOR="red"></c:if>${subaccum.accum}</FONT>
 	</td>
 	</tr>
 	
@@ -205,14 +214,14 @@
 	</table>
 	</td>
 	<td>
-	<table>
+	<table class="hor-zebra">
 	<tr>
 	<th> Date To Clean</th>
 	</tr>
 	<c:if test="${serviceUser.dateToClean.card != null and serviceUser.dateToClean.card != ''}">
 	<tr>
 	<td>
-	Card issued: <FONT COLOR="${serviceUser.dateToClean.card}">${serviceUser.dateToClean.card}</FONT>
+	Card issued: <FONT class="card" COLOR="${serviceUser.dateToClean.card}">${serviceUser.dateToClean.card}</FONT>
 	</td>
 	</tr>
 	<tr>
@@ -235,9 +244,7 @@
 	</table>
 	</c:if>
 	</div>
-	</td> 
-	</tr>
-	</table>
+	
 	
 
 </body>

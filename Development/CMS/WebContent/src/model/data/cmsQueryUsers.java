@@ -144,4 +144,79 @@ public class cmsQueryUsers  {
 		
 		return userBeans;
 	}
+	
+	public static UserBean getUserByName(String username) 
+	{
+		UserBean userDetails=null;
+		String funcExceptionErrorMsg ="getUserByName ";
+		Connection connection = null;
+		Statement stmt = null;
+		
+		try {
+				connection = DataSourceManager.getDataSource().getConnection();
+				stmt = connection.createStatement();
+				String qryUser ="select `UserName`,"
+						+ " `User_FName`,"
+						+ " `User_SName`,"
+						+ " `User_Email`,"
+						+ " `User_Profession`,"
+						+ " `User_Active`,"
+						+ " `User_Password`,"
+						+ " `Created_By`,"
+						+ " `Created_On`,"
+						+ " `Updated_By`,"
+						+ " `Updated_On`"
+						+ "	   from    cm_users  "
+						+ "		where UserName ='"+username+"'" ;
+				
+				ResultSet  results = stmt.executeQuery(qryUser)  ;
+				
+				while (results.next()) {
+					userDetails= new UserBean();
+					
+					userDetails.setUserName(results.getString("UserName"));
+					userDetails.setActive(results.getString("User_Active"));				
+					userDetails.setFirstName(results.getString("User_FName"));
+					userDetails.setSurname(results.getString("User_SName"));
+					userDetails.setProfession(results.getString("User_Profession"));
+					userDetails.setEmail(results.getString("User_Email"));
+					userDetails.setPassword(results.getString("User_Password"));	
+					userDetails.setUpdatedBy(results.getString("Updated_By"));
+					userDetails.setUpdatedOn(results.getString("Updated_On"));
+					userDetails.setCreatedBy(results.getString("Created_By"));
+					userDetails.setCreatedOn(results.getString("Created_On"));
+					
+												
+				}	
+				
+				
+				results.close();
+				} catch (SQLException  e) {							
+					log.error(funcExceptionErrorMsg, e);
+					
+				} finally {
+					try {
+						if(stmt != null){
+							stmt.close();
+						}
+					} catch (SQLException sqle) {
+						log.error(funcExceptionErrorMsg, sqle);
+						
+					}
+					try {
+						if(connection != null){
+							connection.close();
+						}
+					} catch (SQLException sqle) {
+						log.error(funcExceptionErrorMsg, sqle);
+						
+					}
+				}
+				
+			
+			
+		return userDetails;
+	}
+
+	
 }

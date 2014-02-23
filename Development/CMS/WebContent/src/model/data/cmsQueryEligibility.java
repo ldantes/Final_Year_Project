@@ -37,7 +37,7 @@ public class cmsQueryEligibility {
 				stmt = connection.createStatement();			
 				String query = "SELECT a.Eligibility_Id, "
 						+ " b.Eligibility_name,"
-						+ " a.Active, b.Amount,"
+						+ " a.Active, a.Amount,"
 						+ " b.min_value, b.max_value,"
 						+ " b.Stream_Id, a.Created_By,"
 						+ " a.Created_On FROM cm_client_eligibilities a,"
@@ -94,7 +94,7 @@ public class cmsQueryEligibility {
 		
 	}
 	
-	public static void changeEligibility(ServiceUserBean serviceuser, int eleigibility) 
+	public static void changeEligibility(ServiceUserBean serviceuser, int eleigibility, int amount) 
 	{
 		String funcExceptionErrorMsg ="changeEligibility";
 	    Connection connection = null;	
@@ -102,10 +102,12 @@ public class cmsQueryEligibility {
 		
 		for(int i=0; i < serviceuser.getEligibilityBeans().size(); i++)
 		{
+			if(Integer.parseInt(serviceuser.getEligibilityBeans().get(i).getId()) == eleigibility)
+			{
 			try{
 					connection = DataSourceManager.getDataSource().getConnection();
 					stmt = connection.createStatement();			
-					String query = "update cm_client_eligibilities set active ='"+serviceuser.getEligibilityBeans().get(i).getActive()+"' where client_id ="+serviceuser.getId()+" and eligibility_id ="+ eleigibility+ "";
+					String query = "update cm_client_eligibilities set active ='"+serviceuser.getEligibilityBeans().get(i).getActive()+"', amount="+amount+" where client_id ="+serviceuser.getId()+" and eligibility_id ="+ eleigibility+ "";
 					
 					stmt.executeUpdate(query);
 					
@@ -133,7 +135,7 @@ public class cmsQueryEligibility {
 				}
 			
 				}
-		
+		}
 		
 		
 	}

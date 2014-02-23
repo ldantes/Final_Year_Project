@@ -14,6 +14,8 @@ public class SubstanceBean {
 	private String administeredOn;
 	private String createdBy;
 	private String createdOn;
+	private String updatedBy;
+	private String updatedOn;
 	
 	public String getSubstance() {
 		return substance;
@@ -87,6 +89,19 @@ public class SubstanceBean {
 	public void setStreamRegressionFlag(String streamRegressionFlag) {
 		this.streamRegressionFlag = streamRegressionFlag;
 	}
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+	public String getUpdatedOn() {
+		return updatedOn;
+	}
+	public void setUpdatedOn(String updatedOn) {
+		this.updatedOn = updatedOn;
+	}
+	
 	
 
 }

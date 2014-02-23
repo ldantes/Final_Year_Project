@@ -26,6 +26,12 @@ public class UserFacadeImpl implements UserFacade
 	
 	}
 	
+	public void editUser(UserBean user)
+	{
+		userDao.editUser(user);
+		
+	}
+	
 	public void setUserDao(UserDao userDao){
 		this.userDao = userDao;
 	}

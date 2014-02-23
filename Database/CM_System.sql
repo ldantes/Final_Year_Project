@@ -78,7 +78,8 @@ insert into cm_user_roles values('accounting','lducray','lducray',curdate());
 create table CM_Clients (
     client_id int NOT NULL AUTO_INCREMENT,
     primary key (client_id),
-    Client_Name varchar(50) not null,
+    Client_FName varchar(20) not null,
+	Client_SName varchar(30) not null,
     Client_DOB varchar(10) not null,
     Client_Gender char null check (Client_Gender IN ('M' , 'm', 'F', 'f')),
     Client_Contact_No varchar(14) null,
@@ -172,7 +173,6 @@ CREATE TABLE CM_Eligibility (
     Eligibility_Id int Not NULL,
     Eligibility_name varchar(25) not null,
     Active char not null check (active in ('Y' , 'y', 'N', 'n')),
-	Amount numeric null,
 	min_value int,
 	max_value int,
     Stream_Id int  null,
@@ -185,13 +185,16 @@ CREATE TABLE CM_Eligibility (
         REFERENCES CM_System.Cm_Streams (Stream_Id)
 );
 
-insert into cm_eligibility values(1,'Withdraw Credits', 'Y', null, 20,null,null,'lducray',curdate());
-insert into cm_eligibility values(2,'Group Recreational Outings', 'Y', null, null,null,2,'lducray',curdate());
+insert into cm_eligibility values(1,'Withdraw Credits', 'Y',  20,null,null,'lducray',curdate());
+insert into cm_eligibility values(2,'Group Recreational Outings', 'Y',  null,null,2,'lducray',curdate());
+insert into cm_eligibility values(3,'Weekday Take Away', 'Y',  null,null,null,'lducray',curdate());
+insert into cm_eligibility values(4,'Weekend Take Away', 'Y',  null,null,null,'lducray',curdate());
 
 CREATE TABLE CM_Client_eligibilities (
     Eligibility_Id int,
     Client_Id int,
 	 Active char not null check (active in ('Y' , 'y', 'N', 'n')),
+	Amount numeric null,
     Created_By VARCHAR(25) Not NULL,
     Created_On DATE NOT NULL,
     CONSTRAINT CE_Created_By FOREIGN KEY (created_By)
@@ -244,15 +247,19 @@ CREATE TABLE CM_Substances (
     Active char not null check (Active in ('Y' , 'y', 'N', 'n')),
     Created_By VARCHAR(25) Not NULL,
     Created_On DATE NOT NULL,
+    Updated_By VARCHAR(25) Not NULL,
+    Updated_On DATE NOT NULL,
     CONSTRAINT Substances_Created_by FOREIGN KEY (Created_By)
+        REFERENCES CM_System.Cm_USERS (UserName),
+	CONSTRAINT Substances_Updated_by FOREIGN KEY (Updated_by)
         REFERENCES CM_System.Cm_USERS (UserName)
 );
 
-insert into cm_substances values ('Opiate', 0, 4,'Y', 'Y', 'lducray', curdate());
-insert into cm_substances values ('Stimulant', 0, 4, 'Y','Y', 'lducray', curdate());
-insert into cm_substances values ('Benzodiazepine', 0, 4, 'Y','Y', 'lducray', curdate());
-insert into cm_substances values ('THC', 0, 4, 'N','Y', 'lducray', curdate());
-insert into cm_substances values ('Alcohol', 0, 0, 'N','Y', 'lducray', curdate());
+insert into cm_substances values ('Opiate', 0, 4,'Y', 'Y', 'lducray', curdate(),'lducray', curdate());
+insert into cm_substances values ('Stimulant', 0, 4, 'Y','Y', 'lducray', curdate(),'lducray', curdate());
+insert into cm_substances values ('Benzodiazepine', 0, 4, 'Y','Y', 'lducray', curdate(),'lducray', curdate());
+insert into cm_substances values ('THC', 0, 4, 'N','Y', 'lducray', curdate(),'lducray', curdate());
+insert into cm_substances values ('Alcohol', 0, 1, 'N','Y', 'lducray', curdate(),'lducray', curdate());
 
 CREATE TABLE CM_Client_Test_Results (
     Id int not null auto_increment primary key,
@@ -319,6 +326,6 @@ CREATE TABLE CM_Transactions (
 );
 
 
-
+commit;
 
 

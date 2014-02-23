@@ -16,8 +16,197 @@ div.header {
 
 }
 
+div.msg {
+	color: #c6c6c6
+}
+
 div.inline{
 	display: inline;
 	float:left;
 	margin:15px;
+}
+
+#nav {
+	margin: 0;
+	padding: 7px 0 0;
+	background: #98bede ;
+	line-height: 100%;
+
+	border-radius: 2em;
+	-webkit-border-radius: 2em;
+	-moz-border-radius: 2em;
+
+}
+
+/* main level link */
+#nav a {
+	font-weight: bold;
+	color: #e7e5e5;
+	text-decoration: none;
+	padding:  8px 20px;
+	margin: 0;
+
+	-webkit-border-radius: 1.6em;
+	-moz-border-radius: 1.6em;
+	
+	text-shadow: 0 1px 1px rgba(0,0,0, .3);
+}
+#nav a:hover {
+	color: #6c6c6c;
+	background: #EFFFFF;
+}
+
+
+html, body
+{
+	height: 100%;
+	background:#EFFFFF;
+}
+
+body
+{
+	margin: 10px;
+	padding: 0px;
+	
+	font-family: 'Source Sans Pro', sans-serif;
+	font-size: 16pt;
+	font-weight: 800;
+	color: #6c6c6c
+}
+
+h1 
+{
+	margin: 0;
+	padding: 0;
+	font-weight: 600;
+	color: #454445;
+}
+
+h2, h3
+{
+	margin: 0;
+	padding: 0;
+	font-weight: 600;
+	color: #444455;
+}
+
+p, ol, ul
+{
+	margin-top: 0;
+}
+
+ol, ul
+{
+	padding: 0;
+	list-style: none;
+}
+
+p
+{
+	line-height: 180%;
+}
+
+strong
+{
+}
+
+a
+{
+	color: #3399FF;
+}
+
+a:hover
+{
+	text-decoration: none;
+}
+
+/*********************************************************************************/
+/* Button Style                                                                  */
+/*********************************************************************************/
+
+.button
+{
+	display: inline-block;
+	
+	background: #98bede;
+	-moz-transition: opacity 0.25s ease-in-out;
+	-webkit-transition: opacity 0.25s ease-in-out;
+	-o-transition: opacity 0.25s ease-in-out;
+	-ms-transition: opacity 0.25s ease-in-out;
+	transition: opacity 0.25s ease-in-out;
+	text-decoration: none;
+	text-transform: uppercase;
+	font-weight: 800;
+	color: #deefff;
+}
+
+.button:hover
+{
+	color: #444455;
+	background: #deefff;
+}
+
+/***********************Table*************************/
+
+.hor-zebra
+{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size: 16px;
+	margin: 5px;
+	width: 100%;
+	text-align: left;
+	border-collapse: collapse;
+}
+.hor-zebra th
+{
+	font-size: 18px;
+	font-weight: normal;
+	padding: 15px 14px;
+	color: #039;
+}
+.hor-zebra td
+{
+	padding: 4px;
+	color: #669;
+}
+.vzebra-even
+{
+	background: #e8edff;
+}
+
+tr.row{
+  background-color: #EFFFFF;
+}
+
+tr.row:hover{
+  background-color: #deefff;;
+  cursor: pointer;
+}
+
+table.nogap{
+  border-collapse: collapse;
+}
+
+.card{
+	font-size: 25px;
+	font-weight: 2000;
+}
+
+
+/*******************
+LOGIN FORM
+*******************/
+
+.login-form {
+	width: 300px;
+	margin: 0 auto;
+	position: relative;
+	
+	background: #f3f3f3;
+	border: 1px solid #fff;
+	border-radius: 5px;
+	
+	box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }

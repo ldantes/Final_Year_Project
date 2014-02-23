@@ -1,5 +1,6 @@
 package model.data;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -150,6 +151,53 @@ public class cmsQueryAccount {
 				}
 			}
 		return creditsEarnedThisWeek;
+	}
+	
+	public static void adjustBalance(TransactionBean transaction)
+	{
+		String fuctionName ="adjustBalance";
+	    Connection connection = null;	
+		CallableStatement stmt =null;
+		
+		
+		try {
+					
+					
+				connection = DataSourceManager.getDataSource().getConnection();		
+				stmt = connection.prepareCall("{call cm_system.adjust_balance(?,?,?,?,?)}");			
+				stmt.setString(1, transaction.getAccount_Id());		
+				stmt.setString(2, transaction.getAmount_Credited());	
+				stmt.setString(3, transaction.getAmount_Withdrawn());	
+				stmt.setString(4, transaction.getApproved_By());	
+				stmt.registerOutParameter(5,java.sql.Types.VARCHAR);			
+				stmt.executeQuery();			
+						
+				if (stmt.getString(5).equals("OK")== false){
+									
+				}
+			}
+		catch (SQLException  e) {							
+			log.error(fuctionName, e);
+						
+		} finally {
+			try {
+				if(stmt != null){
+					stmt.close();
+				}
+			} catch (SQLException sqle) {
+				log.error(fuctionName, sqle);
+				
+			}
+			try {
+				if(connection != null){
+					connection.close();
+				}
+			} catch (SQLException sqle) {
+				log.error(fuctionName, sqle);
+				
+			}
+		}
+		
 	}
 
 }

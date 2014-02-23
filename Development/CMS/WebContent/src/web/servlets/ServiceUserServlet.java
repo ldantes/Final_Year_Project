@@ -19,6 +19,7 @@ import web.services.serviceUserService;
 import model.beans.AccountBean;
 import model.beans.ServiceUserBean;
 import model.beans.SubstanceBean;
+import model.beans.TransactionBean;
 import model.beans.UserBean;
 import model.data.cmsQueryAccount;
 import model.data.cmsQueryServiceUser;
@@ -64,10 +65,10 @@ public class ServiceUserServlet extends HttpServlet {
 		String destination	= "/ServiceUsersSrch.jsp";
 		String jsp_path	= "/WEB-INF/jsp";
 		String userMessage	= null;
-		HttpSession session = request.getSession(true);	
-		if(session.getAttribute("username").toString() != null)
-		{
-			String logUserName 	= session.getAttribute("username").toString();
+		HttpSession session = request.getSession();  
+		if (request.getRequestedSessionId().equals(session.getId())){  
+		    
+		   	String logUserName 	= session.getAttribute("username").toString();
 			
 			WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(this.getServletContext());
 			
@@ -112,7 +113,7 @@ public class ServiceUserServlet extends HttpServlet {
 						service.setApplicationContext(applicationContext);
 						service.setRequest(request);
 						
-						if( id != null && id.length() != 0)
+						if( id != null && id.length() != 0 && id != "")
 						{
 							try {
 								service.updateServiceuser();
@@ -216,7 +217,29 @@ public class ServiceUserServlet extends HttpServlet {
 						
 						service.setApplicationContext(applicationContext);
 						service.setRequest(request);
-						service.adjustBalance();
+						
+						///
+						service.setReferenceInformation(id);
+						
+						TransactionBean transaction = new TransactionBean();
+						
+						transaction.setAccount_Id(id);
+						
+						if(request.getParameter("credit")!= null && request.getParameter("credit").length() != 0)
+						{
+							transaction.setAmount_Credited(request.getParameter("credit"));	
+						}
+						if(service.serviceUserBean.getEligibilityBeans().get(0).getActive().equals("Y"))
+						{
+							if(request.getParameter("withdraw")!= null && request.getParameter("withdraw").length() != 0)
+							{
+								transaction.setAmount_Withdrawn(request.getParameter("withdraw"));	
+							}
+						}
+						transaction.setApproved_By(request.getParameter("username"));
+							
+						///
+						service.adjustBalance(transaction);
 						id = request.getParameter("serviceUserId");
 						service.setReferenceInformation(id);
 						AccountBean accountDetails2 = cmsQueryAccount.srvUserAccount(id);
@@ -265,8 +288,22 @@ public class ServiceUserServlet extends HttpServlet {
 		}
 		else
 		{
-			requestDispatch = request.getRequestDispatcher("index.jsp");
-			request.setAttribute("userMsg","session timedout");
+			response.setDateHeader("Expires", 0); //Causes the proxy cache to see the page as "stale"
+			response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
+			session = request.getSession(true);
+			session.removeAttribute("userDetails");
+			session.removeAttribute("userprofession");
+			session.removeAttribute("username");
+			session.removeAttribute("userAdmin");
+			session.removeAttribute("userAccountant");
+			session.removeAttribute("userReports");
+								
+			session.invalidate();
+			jsp_path	= "";
+			destination= "/index.jsp";	
+			userMessage= "Session Timed Out";
+			request.setAttribute("userMessage", userMessage);
+			requestDispatch = request.getRequestDispatcher(jsp_path+destination);
 			requestDispatch.forward(request,response);
 		}
 		

@@ -62,7 +62,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 			//db transaction returns OK if successful transaction. Otherwise it returns
 			//and error description.
 			if (stmt.getString(2).equals("OK")== false){
-				returnBean.setName("ERROR");				
+						
 			}
 		}
 		catch (SQLException  e) {							
@@ -123,7 +123,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 			//db transaction returns OK if successful transaction. Otherwise it returns
 			//and error description.
 			if (stmt.getString(2).equals("OK")== false){
-				returnBean.setName("ERROR");				
+						
 			}
 		}
 		catch (SQLException  e) {							
@@ -568,43 +568,46 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 	        doc.appendChild(root);
 	        Node node1 = doc.createElement("id");
 	        root.appendChild(node1);	
-	        Node node2 = doc.createElement("name");
+	        Node node2 = doc.createElement("fname");
 	        root.appendChild(node2);
-	        Node node3 = doc.createElement("gender");
+	        Node node3 = doc.createElement("sname");
 	        root.appendChild(node3);
-	        Node node4 = doc.createElement("dob");
+	        Node node4 = doc.createElement("gender");
 	        root.appendChild(node4);
-	        Node node5 = doc.createElement("address");
+	        Node node5 = doc.createElement("dob");
 	        root.appendChild(node5);
-	        Node node6 = doc.createElement("contactnumber");
+	        Node node6 = doc.createElement("address");
 	        root.appendChild(node6);
-	        Node node7 = doc.createElement("ethnicity");
+	        Node node7 = doc.createElement("contactnumber");
 	        root.appendChild(node7);
-	        Node node8 = doc.createElement("nationality");
+	        Node node8 = doc.createElement("ethnicity");
 	        root.appendChild(node8);
-	        Node node9 = doc.createElement("familyinfo");
+	        Node node9 = doc.createElement("nationality");
 	        root.appendChild(node9);
-	        Node node10 = doc.createElement("occupation");
+	        Node node10 = doc.createElement("familyinfo");
 	        root.appendChild(node10);
-	        Node node11 = doc.createElement("username");
+	        Node node11 = doc.createElement("occupation");
 	        root.appendChild(node11);
-	        Node node12 = doc.createElement("pps");
+	        Node node12 = doc.createElement("username");
 	        root.appendChild(node12);
+	        Node node13 = doc.createElement("pps");
+	        root.appendChild(node13);
 	        
 	       
 	        	        
 	        node1.appendChild(doc.createTextNode(serviceuserbean.getId().toString()));
-	        node2.appendChild(doc.createTextNode(serviceuserbean.getName()));
-	       	node3.appendChild(doc.createTextNode(serviceuserbean.getGender()));
-	        node4.appendChild(doc.createTextNode(serviceuserbean.getDoB()));
-	        node5.appendChild(doc.createTextNode(serviceuserbean.getAddress()));
-	        node6.appendChild(doc.createTextNode(serviceuserbean.getContactNumber()));
-	        node7.appendChild(doc.createTextNode(serviceuserbean.getEthnicity()));
-	        node8.appendChild(doc.createTextNode(serviceuserbean.getNationality()));
-	        node9.appendChild(doc.createTextNode(serviceuserbean.getFamilyInformation()));
-	        node10.appendChild(doc.createTextNode(serviceuserbean.getOccupation()));
-	        node11.appendChild(doc.createTextNode(serviceuserbean.getUpdatedBy()));
-	        node12.appendChild(doc.createTextNode(serviceuserbean.getPps()));
+	        node2.appendChild(doc.createTextNode(serviceuserbean.getfirstname()));
+	        node3.appendChild(doc.createTextNode(serviceuserbean.getSurname()));
+	       	node4.appendChild(doc.createTextNode(serviceuserbean.getGender()));
+	        node5.appendChild(doc.createTextNode(serviceuserbean.getDoB()));
+	        node6.appendChild(doc.createTextNode(serviceuserbean.getAddress()));
+	        node7.appendChild(doc.createTextNode(serviceuserbean.getContactNumber()));
+	        node8.appendChild(doc.createTextNode(serviceuserbean.getEthnicity()));
+	        node9.appendChild(doc.createTextNode(serviceuserbean.getNationality()));
+	        node10.appendChild(doc.createTextNode(serviceuserbean.getFamilyInformation()));
+	        node11.appendChild(doc.createTextNode(serviceuserbean.getOccupation()));
+	        node12.appendChild(doc.createTextNode(serviceuserbean.getUpdatedBy()));
+	        node13.appendChild(doc.createTextNode(serviceuserbean.getPps()));
 	        	        
 			//convert xml to string
 	        xml = XMLFunctions.xmlToString(doc);

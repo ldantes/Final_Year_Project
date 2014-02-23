@@ -21,6 +21,10 @@
     <servlet-name>ServiceUserServlet</servlet-name>
     <servlet-class>web.servlets.ServiceUserServlet</servlet-class>
   </servlet>
+   <servlet>
+    <servlet-name>SystemServlet</servlet-name>
+    <servlet-class>web.servlets.SystemServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>UserServlet</servlet-name>
     <url-pattern>/UserServlet</url-pattern>
@@ -29,5 +33,9 @@
   <servlet-mapping>
     <servlet-name>ServiceUserServlet</servlet-name>
     <url-pattern>/ServiceUserServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>SystemServlet</servlet-name>
+    <url-pattern>/SystemServlet</url-pattern>
   </servlet-mapping>
 </web-app>

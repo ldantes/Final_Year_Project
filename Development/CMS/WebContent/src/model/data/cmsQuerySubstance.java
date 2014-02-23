@@ -18,7 +18,7 @@ public class cmsQuerySubstance {
 
 	private static Logger log = Logger.getLogger(cmsQuerySubstance.class);
 	
-	public static List<SubstanceBean> qrySubstances(String id)
+	public static List<SubstanceBean> qrySubstances(String id, String active)
 	{
 			
 		String 	funcExceptionErrorMsg 	= "searchServiceUsers. ";
@@ -36,14 +36,22 @@ public class cmsQuerySubstance {
 						+ " Stream_regression_substance,"
 						+ " Active, "
 						+ "Created_By, "
-						+ "Created_On "
+						+ "Created_On ,"
+						+ "Updated_By, "
+						+ "Updated_On "
 						+ "FROM cm_substances where Active = 'Y'";
+				
+				if (active.equals("N"))
+				{
+					query = query+ "  or active ='N'";
+				}
 				
 				if (id != null && id != "")
 				{
 					query = query+ " and substance ='"+id+"'";
 				}
 				
+								
 				ResultSet  results = stmt.executeQuery(query);
 				
 				while (results.next())
@@ -56,6 +64,8 @@ public class cmsQuerySubstance {
 					substance.setStreamRegressionFlag(results.getString("Stream_regression_substance"));
 					substance.setCreatedBy(results.getString("Created_By"));
 					substance.setCreatedOn(results.getString("Created_On"));
+					substance.setUpdatedBy(results.getString("Updated_By"));
+					substance.setUpdatedOn(results.getString("Updated_On"));
 					substances.add(substance);
 				}
 					
@@ -153,6 +163,7 @@ public class cmsQuerySubstance {
 			return substances;
 	}
 	
+
 	public static List<SubstanceAccumBean> qrySubstanceAccum(String srchID )
 	{
 	
@@ -213,5 +224,56 @@ public class cmsQuerySubstance {
 				}
 				return subAccums;
 			}
+	}
+
+
+	public static String updateSubstances(List<SubstanceBean> newValues) {
+		String funcExceptionErrorMsg ="updateSubstances";
+	    Connection connection = null;	
+		Statement stmt =null;
+		
+		for(int i=0; i < newValues.size(); i++)
+		{
+			try{
+					connection = DataSourceManager.getDataSource().getConnection();
+					stmt = connection.createStatement();			
+					String query = "update cm_substances set Reset_value = "+newValues.get(i).getResetValue()+" ,"
+							+ "								 max_value = "+newValues.get(i).getMaxValue()+","
+							+ "								 active ='"+newValues.get(i).getActive()+"',"
+							+ "								 Stream_regression_substance ='"+newValues.get(i).getStreamRegressionFlag()+"',"
+							+ "								 Updated_By ='"+newValues.get(i).getUpdatedBy()+"',"
+							+ "								 updated_on = curdate()"
+							+ "							 where substance = '"+newValues.get(i).getSubstance()+"'";
+					System.out.println(query);
+					stmt.executeUpdate(query);
+					
+				}
+				catch (SQLException  e) {							
+					log.error(funcExceptionErrorMsg, e);
+					return e+" error occured";
+								
+				} finally {
+					try {
+						if(stmt != null){
+							stmt.close();
+						}
+					} catch (SQLException sqle) {
+						log.error(funcExceptionErrorMsg, sqle);
+						
+					}
+					try {
+						if(connection != null){
+							connection.close();
+						}
+					} catch (SQLException sqle) {
+						log.error(funcExceptionErrorMsg, sqle);
+						
+					}
+				}
+			
+				}
+		
+		return  "Substance Updates Successfull";
+		
 	}
 }

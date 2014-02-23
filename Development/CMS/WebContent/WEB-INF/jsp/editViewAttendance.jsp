@@ -15,7 +15,7 @@
 	</form>
 	<h1>Add/View Attendance: </h1><h3 style="color:red">
 	
-			<a href="javascript:var f = document.getElementById('serviceUserSelect'); f.serviceUserId.value='${serviceUser.id}';f.submit();">${serviceUser.name}</a> (${serviceUser.id})
+			<a href="javascript:var f = document.getElementById('serviceUserSelect'); f.serviceUserId.value='${serviceUser.id}';f.submit();">${serviceUser.firstname} ${serviceUser.surname}</a> (${serviceUser.id})
 	
 	</h3>
 	<hr/>
@@ -29,7 +29,7 @@
 	<input type="hidden" name="srvUserid" value="${serviceUser.id}"/> 
 	<input type="hidden" name="username" value="${username}"/>
 	<div> <p style="color:red">${userMsg}</p></div>
-	<table>
+	<table class="hor-zebra">
 		
 		<tr>
 			<td>Time of meeting:</td>
@@ -75,10 +75,10 @@
 		</tr>
 		<tr>
 			<td>
-				<input type="submit" value="Submit"/>
+				<input class="button"  type="submit" value="Submit"/>
 			</td>
 			<td>
-				<input type="button" value="Cancel" onClick="this.form.reset();"/>
+				<input class="button"  type="button" value="Cancel" onClick="this.form.reset();"/>
 			</td>
 		</tr>
 	</table>
@@ -88,14 +88,14 @@
 	
 	<div class="inline" >
 	<h2>PREVIOUS ATTENDANCES</h2>
-	<table style="padding:5px " border="1">
+	<table class="hor-zebra">
 		
 		<c:choose>
-		<c:when test="${attendanceDetails != null &&  fn.length(attendanceDetails) != 0}">
-		<tr><th>Member of Staff	</th><th>Professional</th><th>Attended</th><th>Time/Date</th><th>Active participation</th><th>Reason for absence</th><th>Valid reason for absence</th><th>Review meeting</th></tr>
+		<c:when test="${attendanceDetails != null &&  attendanceDetails.size() != 0}">
+		<tr><th>Member of Staff	</th><th class="vzebra-even" >Professional</th><th>Attended</th><th class="vzebra-even" >Time/Date</th><th>Active participation</th><th class="vzebra-even">Reason for absence</th><th>Valid reason for absence</th><th class="vzebra-even">Review meeting</th></tr>
 		<c:forEach var="results" items="${attendanceDetails}">
-		<tr><td>${results.username}</td>
-			<td>${results.staffProfession}
+		<tr><td >${results.username}</td>
+			<td class="vzebra-even">${results.staffProfession}
 			</td>
 				<td>
 				
@@ -113,9 +113,17 @@
 				
 			</td>
 			
-		<td>${results.timeDate}</td>
-		<td>${results.participation}</td>
-		<td>${results.attndFailedReason}</td>
+		<td class="vzebra-even" >${results.timeDate}</td>
+		<td><c:choose>
+				<c:when test="${results.participation=='N' || results.participation=='n'}">
+						<p style="color:red">No</p>
+				</c:when>
+				<c:when test="${results.participation=='Y' || results.participation=='y'}">
+						<p style="color:green">Yes</p>
+				</c:when>
+				
+				</c:choose></td>
+		<td class="vzebra-even"> <div style="word-wrap: break-word;">${results.attndFailedReason}</div></td>
 		<td>
 			<c:choose>
 				<c:when test="${results.validReason=='N' || results.validReason=='n'}">
@@ -124,12 +132,10 @@
 				<c:when test="${results.validReason=='Y' || results.validReason=='y'}">
 						<p style="color:green">Yes</p>
 				</c:when>
-				<c:otherwise>
-						Not recorded
-				</c:otherwise>
+				
 				</c:choose>
 		</td>
-		<td>
+		<td class="vzebra-even">
 			<c:choose>
 				<c:when test="${results.treatmentReviewMeeting=='N' || results.treatmentReviewMeeting=='n'}">
 						<p style="color:red">No</p>
@@ -149,7 +155,7 @@
 		</c:when>
 		<c:otherwise>
 		<tr>
-			<td>No previous results recorded!</td>
+			<td>No previous engagements recorded!</td>
 		</tr>
 		</c:otherwise>
 		</c:choose>

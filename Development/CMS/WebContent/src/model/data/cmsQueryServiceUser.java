@@ -40,14 +40,15 @@ public class cmsQueryServiceUser{
 			 if (srchName == "")
 			 {
 				 //limited empty search to only surnames beginning with 'A'
-				 srchName = " A";
+				 srchName = "A";
 			 }
 			
 			try{
 				connection = DataSourceManager.getDataSource().getConnection();
 				stmt = connection.createStatement();			
 				String query = "SELECT    client_id,"
-						+ "   Client_Name,"
+						+ "   Client_FName,"
+						+ "   Client_SName,"
 						+ "    Client_DOB,"
 						+ "    Client_Gender,"
 						+ "    Client_Contact_No,"
@@ -62,14 +63,15 @@ public class cmsQueryServiceUser{
 						+ "    Updated_By,"
 						+ "    Updated_On "
 						+ " FROM    cm_clients "
-						+ " where   UPPER(client_name) like UPPER('%"+srchName+"%') "
-								+ " order by client_name";
+						+ " where   UPPER(client_sname) like UPPER('"+srchName+"%') or UPPER(client_fname) like UPPER('"+srchName+"%') "
+								+ " order by client_sname";
 				ResultSet  results = stmt.executeQuery(query);
 				
 				while (results.next()) {
 					serviceUser = new ServiceUserBean();
 					serviceUser.setId(results.getString("client_id"));
-					serviceUser.setName(results.getString("Client_Name"));
+					serviceUser.setSurname(results.getString("Client_SName"));
+					serviceUser.setfirstname(results.getString("Client_FName"));
 					serviceUser.setDoB(String.valueOf(results.getString("Client_DOB")));
 					serviceUser.setGender(results.getString("Client_Gender"));
 					serviceUser.setPps(results.getString("Client_PPSNo"));
@@ -133,7 +135,8 @@ public class cmsQueryServiceUser{
 					connection = DataSourceManager.getDataSource().getConnection();
 					stmt = connection.createStatement();			
 					String query = "SELECT   c.client_id,"
-							+ "    c.Client_Name,"
+							+ "    c.Client_FName,"
+							+ "    c.Client_SName,"
 							+ "    c.Client_DOB,"
 							+ "    c.Client_Gender,"
 							+ "    c.Client_Contact_No,"
@@ -169,7 +172,8 @@ public class cmsQueryServiceUser{
 						serviceUser = new ServiceUserBean();
 						streamBean = new StreamBean();
 						serviceUser.setId(results.getString("client_id"));
-						serviceUser.setName(results.getString("Client_Name"));
+						serviceUser.setSurname(results.getString("Client_SName"));
+						serviceUser.setfirstname(results.getString("Client_FName"));
 						serviceUser.setDoB(String.valueOf(results.getString("Client_DOB")));
 						serviceUser.setGender(results.getString("Client_Gender"));
 						serviceUser.setContactNumber(results.getString("Client_Contact_No"));

@@ -1,62 +1,68 @@
 package com.comp.drools;
 
 import model.beans.ServiceUserBean;
+import model.beans.SubstanceAccumBean;
+import model.beans.AttendanceBean;
+import model.beans.TransactionBean;
 import Rules.SubstanceRules;
 import model.data.cmsQueryServiceUser;
+import model.data.cmsQueryEligibility;
 import web.services.serviceUserService;
+
+import java.lang.Integer;
 
 
 
 rule "service user's account has enough to withdraw AND is eligible for outings/visits"
     no-loop true
 when
-    $m: ServiceUserBean( accountDetails.Account_Balance >= 20 ,dateToClean.card == "none" )
+    $result: ServiceUserBean( accountDetails.Account_Balance >= 20 ,dateToClean.card == "none" )
 then
     serviceUserService service = new serviceUserService();
-    service.changeEligibility($m,"Y");
-    System.out.println("YES," + $m.getName()+ " Can withdraw("+$m.getAccountDetails().getAccount_Balance()+") their credit");
-    update( $m );
+    service.changeEligibility($result,"Y");
+    System.out.println("YES, Can withdraw("+$result.getAccountDetails().getAccount_Balance()+") their credit");
+    update( $result );
 end
 
 
 rule "service user's account does NOT have enough to withdraw"
     no-loop true
 when
-    $m: ServiceUserBean( accountDetails.Account_Balance < 20 )
+    $result: ServiceUserBean( accountDetails.Account_Balance < 20 )
 then
     
     serviceUserService service = new serviceUserService();
-    service.changeEligibility($m,"N");    
-    System.out.println("NO, " + $m.getName()+ " Can NOT withdraw ("+$m.getAccountDetails().getAccount_Balance()+") their credit");
+    service.changeEligibility($result,"N");    
+    System.out.println("NO, Can NOT withdraw ("+$result.getAccountDetails().getAccount_Balance()+") their credit");
     System.out.println("service user's account may not withdraw (substance abuse)");
-    update( $m );
+    update( $result );
 end
 
 rule "substance abuse therefor NO outings/visits/Credit withdraw"
     lock-on-active true
 when
-    $m: ServiceUserBean(dateToClean.card != "none" )
+    $result: ServiceUserBean(dateToClean.card != "none" )
 then
     
     serviceUserService service = new serviceUserService();
-    service.changeEligibility($m,"N");    
+    service.changeEligibility($result,"N");    
     System.out.println("service user's account may not withdraw (substance abuse)");
-    update( $m );
+    update( $result );
 end
 
 rule "unsupported stream for outings/visits "
     lock-on-active true
 when
-    $m: ServiceUserBean(streamDetails.streamId != "2" , dateToClean.card != "none")
+    $result: ServiceUserBean(streamDetails.streamId != "2" , dateToClean.card != "none")
     
 then
-	System.out.println($m.getEligibilityBeans().size());
-	for(int i=0; i < $m.getEligibilityBeans().size(); i++)
+	System.out.println($result.getEligibilityBeans().size());
+	for(int i=0; i < $result.getEligibilityBeans().size(); i++)
 	{
-		if($m.getEligibilityBeans().get(i).getId().toString().equals("2") && $m.getEligibilityBeans().get(i).getActive().toString().equals("Y") )
+		if($result.getEligibilityBeans().get(i).getId().toString().equals("2") && $result.getEligibilityBeans().get(i).getActive().toString().equals("Y") )
 		{
 		    serviceUserService service = new serviceUserService();
-		    service.changeEligibility($m,"N");    
+		    service.changeEligibility($result,"N");    
 		    System.out.println("happened");
 		    
 		}
@@ -67,11 +73,93 @@ end
 rule "Service user must digress down a stream due to continual misbehavious (substance abuse)"
 	lock-on-active true
 when
-	$m : ServiceUserBean(dateToClean.card == "RED" , streamDetails.supportLevel != 1 )
+	$result : ServiceUserBean(dateToClean.card == "RED" , streamDetails.supportLevel != 1 )
 then
 	serviceUserService service = new serviceUserService();
-	$m.getStreamDetails().setSupportLevel($m.getStreamDetails().getSupportLevel()-1);
-    service.changeStream($m);   
+	$result.getStreamDetails().setSupportLevel($result.getStreamDetails().getSupportLevel()-1);
+    service.changeStream($result);   
 	System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!Regress to High Support Stream!!!!!!!!!!!!!!!!!!!!!!");
+end
+
+rule "service user is entitled to NO weekday TA"
+    lock-on-active true
+    no-loop true
+    dialect "mvel"
+when
+	  $result : ServiceUserBean()
+      $inter : SubstanceAccumBean(substance =="Opiate", accum < 2) from $result.subAccums
+then
+ 	
+	cmsQueryEligibility.changeEligibility($result,3,0);
+   System.out.println("service user get 1 TA- Service user Id="+$result.getId());
+    
+end
+
+rule "service user is entitled to 1 weekday TA"
+    lock-on-active true
+    no-loop true
+    dialect "mvel"
+    salience 10
+when
+	  $result : ServiceUserBean()
+      $inter : SubstanceAccumBean(substance =="Opiate", accum == 2) from $result.subAccums
+then
+ 	
+	cmsQueryEligibility.changeEligibility($result,3,1);
+   System.out.println("service user get 1 TA- Service user Id="+$result.getId());
+    
+end
+
+rule "service user is entitled to 2 weekday TA"
+    lock-on-active true
+    no-loop true
+    dialect "mvel"
+    salience 10
+when
+	  $result : ServiceUserBean()
+      $inter : SubstanceAccumBean(substance =="Opiate", accum == 3) from $result.subAccums
+then
+ 	
+	cmsQueryEligibility.changeEligibility($result,3,2);
+   System.out.println("service user get 2 TA- Service user Id="+$result.getId());
+    
+end
+
+rule "service user is entitled to 3 weekday TA"
+    lock-on-active true
+    no-loop true
+    dialect "mvel"
+    salience 10
+when
+	  $result : ServiceUserBean()
+      $inter : SubstanceAccumBean(substance =="Opiate", accum == 4) from $result.subAccums
+then
+ 	
+	cmsQueryEligibility.changeEligibility($result,3,3);
+   System.out.println("service user get 1 TA- Service user Id="+$result.getId());
+    
+end
+
+rule "service user looses a weekday TA due to alcohol intoxication"
+    lock-on-active true
+    no-loop true
+    dialect "java"
+when
+	  $result : ServiceUserBean()
+      $inter : SubstanceAccumBean(substance =="Alcohol", accum == 0) from $result.subAccums
+then
+ 	
+ 	int amount =0;
+	for(int i=0; i < $result.getEligibilityBeans().size(); i++)
+	{
+		if($result.getEligibilityBeans().get(i).getId().toString().equals("3") && Integer.parseInt($result.getEligibilityBeans().get(i).getAmount())!=0 )
+		{
+		    amount = Integer.parseInt($result.getEligibilityBeans().get(i).getAmount()) - 1;
+		}
+	}
+ 	
+   cmsQueryEligibility.changeEligibility($result,3,amount);
+   System.out.println("reduced TA- ALCOHOL Service user Id="+$result.getId());
+    
 end
 

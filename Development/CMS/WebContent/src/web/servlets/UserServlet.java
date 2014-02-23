@@ -48,7 +48,7 @@ public class UserServlet extends HttpServlet {
 	//assign valid actions
 	private enum validActions
 	{
-	   login; 
+	   login, logout , init , editUser, saveUser; 
 	}
 	
 	
@@ -59,13 +59,14 @@ public class UserServlet extends HttpServlet {
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)		
 	throws ServletException, IOException {
-		String destination	= "/test.jsp";
+		String destination	= "/index.jsp";
 		String jsp_path	= "/WEB-INF/jsp";
 		String userMessage	= null;
 		
 			WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(this.getServletContext());
 			UserFacade userFacade = (UserFacade)applicationContext.getBean("userFacade");
 			
+					
 			String action= request.getParameter("requestAction");	
 			
 			
@@ -74,95 +75,155 @@ public class UserServlet extends HttpServlet {
 		
 				case login:
 					UserBean 	userDetails 	=null;
-					
-									
-				try 
-				{
-					String usernameEnter = request.getParameter("username");
-					String passwordEntered = request.getParameter("password");
-					
-					if(usernameEnter != "" && passwordEntered != "" && usernameEnter != null && passwordEntered != null)
+					try 
 					{
-						userDetails= userFacade.authenticateUser(usernameEnter, passwordEntered);
+						String usernameEnter = request.getParameter("username");
+						String passwordEntered = request.getParameter("password");
+						
+						if(usernameEnter != "" && passwordEntered != "" && usernameEnter != null && passwordEntered != null)
+						{
+							userDetails= userFacade.authenticateUser(usernameEnter, passwordEntered);
+						}
+						
+	
+						if(userDetails != null)
+						{
+							session = request.getSession(true);
+							
+							
+							request.setAttribute("userDetails", userDetails);
+							session.setAttribute("userprofession", userDetails.getProfession());
+							session.setAttribute("username", userDetails.getUserName());	
+							
+							List <UserRoleBean> userRoles 	=null;
+							userRoles = cmsQueryUsers.qryUserRoles(userDetails);
+							userDetails.setUserRoles(userRoles);
+							
+							
+							boolean userAdmin=false;
+							boolean userAccountant=false;
+							boolean userReports = false;
+							 
+							 for (int i = 0 ; i< userDetails.getUserRoles().size();i++)
+							 {
+								 
+								 if (userDetails.getUserRoles().get(i).getRoleName().equals("admin"))
+								 {
+									 userAdmin=true;	
+								 }
+								 
+								 if (userDetails.getUserRoles().get(i).getRoleName().equals("accounting"))
+								 {
+									 userAccountant=true;	
+								 }
+								 
+								 if (userDetails.getUserRoles().get(i).getRoleName().equals("reports"))
+								 {
+									 userReports=true;	
+								 }
+								 
+							 }
+							
+							 session.setAttribute("userAdmin", userAdmin);	
+							 session.setAttribute("userAccountant", userAccountant);
+							 session.setAttribute("userReports", userReports);
+							
+							
+							request.setAttribute("username", userDetails.getUserName());
+							request.setAttribute("userRoles", userDetails.getUserRoles());
+							request.setAttribute("userMessage", userMessage);
+							
+							destination= "/ServiceUsersSrch.jsp";
+							
+						}
+						else
+						{
+							jsp_path	= "";
+							destination= "/index.jsp";	
+							userMessage= "Entered details do not match any active users";
+							request.setAttribute("userMessage", userMessage);
+						}
+					} 
+					catch (SQLException e) 
+					{
+						
+						
+						userMessage	= e.getMessage();
+						e.printStackTrace();
+					} 
+					catch (NamingException e) 
+					{
+						
+						userMessage	= e.getMessage();
+						e.printStackTrace();
 					}
+					break;
+				
+				case logout:
 					
-
-					if(userDetails != null)
+					response.setDateHeader("Expires", 0); //Causes the proxy cache to see the page as "stale"
+					response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
+					session = request.getSession(true);
+					session.removeAttribute("userDetails");
+					session.removeAttribute("userprofession");
+					session.removeAttribute("username");
+					session.removeAttribute("userAdmin");
+					session.removeAttribute("userAccountant");
+					session.removeAttribute("userReports");
+										
+					session.invalidate();
+					jsp_path	= "";
+					destination= "/index.jsp";	
+					userMessage= "Logged Out";
+					request.setAttribute("userMessage", userMessage);
+					
+					break;
+				
+				case init:
+					
+					request.setAttribute("users", cmsQueryUsers.qryUsers(null));
+					System.out.print(cmsQueryUsers.qryUsers(null).size());
+					destination= "/userManagaement.jsp";
+					break;
+						
+				case editUser:
+					
+					request.setAttribute("selecteduser", cmsQueryUsers.getUserByName(request.getParameter("userId")));
+					request.setAttribute("users", cmsQueryUsers.qryUsers(null));
+					System.out.print(cmsQueryUsers.qryUsers(null).size());
+					destination= "/userManagaement.jsp";
+					break;
+					
+				case saveUser:
+					
+					UserBean user = new UserBean();
+					if( request.getParameter("enteredusername") != null)
 					{
-						session = request.getSession(true);
-						
-						
-						request.setAttribute("userDetails", userDetails);
-						session.setAttribute("userprofession", userDetails.getProfession());
-						session.setAttribute("username", userDetails.getUserName());	
-						
-						List <UserRoleBean> userRoles 	=null;
-						userRoles = cmsQueryUsers.qryUserRoles(userDetails);
-						userDetails.setUserRoles(userRoles);
-						
-						
-						boolean userAdmin=false;
-						boolean userAccountant=false;
-						boolean userReports = false;
-						 
-						 for (int i = 0 ; i> userDetails.getUserRoles().size();i++)
-						 {
-							 
-							 if (userDetails.getUserRoles().get(i).getRoleName().equals("admin"))
-							 {
-								 userAdmin=true;	
-							 }
-							 
-							 if (userDetails.getUserRoles().get(i).getRoleName().equals("accountant"))
-							 {
-								 userAccountant=true;	
-							 }
-							 
-							 if (userDetails.getUserRoles().get(i).getRoleName().equals("reports"))
-							 {
-								 userReports=true;	
-							 }
-							 
-						 }
-						
-						 session.setAttribute("userAdmin", userAdmin);	
-						 session.setAttribute("userAccountant", userAccountant);
-						 session.setAttribute("userReports", userReports);
-						
-						
-						request.setAttribute("username", userDetails.getUserName());
-						request.setAttribute("userRoles", userDetails.getUserRoles());
-						request.setAttribute("userMessage", userMessage);
-						
-						destination= "/ServiceUsersSrch.jsp";
-						
+					user.setUserName(request.getParameter("enteredusername"));
 					}
 					else
 					{
-						jsp_path	= "";
-						destination= "/index.jsp";	
-						userMessage= "Entered details do not match any active users";
-						request.setAttribute("userMessage", userMessage);
+						user.setUserName(request.getParameter("setusername"));
 					}
-				} 
-				catch (SQLException e) 
-				{
+					user.setFirstName(request.getParameter("fname"));
+					user.setSurname(request.getParameter("sname"));
+					user.setActive(request.getParameter("active"));
+					user.setProfession(request.getParameter("profession"));
+					user.setEmail(request.getParameter("email"));
+					user.setPassword(request.getParameter("password"));
+					user.setUpdatedBy(request.getParameter("username"));
 					
 					
-					userMessage	= e.getMessage();
-					e.printStackTrace();
-				} 
-				catch (NamingException e) 
-				{
+					userFacade.editUser(user);
 					
-					userMessage	= e.getMessage();
-					e.printStackTrace();
-				}
-				
-					
-						
+					request.setAttribute("selecteduser", cmsQueryUsers.getUserByName(request.getParameter(user.getUserName())));
+					request.setAttribute("users", cmsQueryUsers.qryUsers(null));
+					System.out.print(cmsQueryUsers.qryUsers(null).size());
+					destination= "/userManagaement.jsp";
+					break;
 						
 			}			
+			
 			
 			requestDispatch = request.getRequestDispatcher(jsp_path+destination);
 			requestDispatch.forward(request,response);

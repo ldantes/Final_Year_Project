@@ -3,6 +3,7 @@ package model.beans;
 public class EligibilityBean {
 	
 	private String id ="";
+	private String client_id ="";
 	private String name ="";
 	private String active ="";
 	private String amount ="";
@@ -65,6 +66,12 @@ public class EligibilityBean {
 	}
 	public void setCreatedOn(String createdOn) {
 		this.createdOn = createdOn;
+	}
+	public String getClient_id() {
+		return client_id;
+	}
+	public void setClient_id(String client_id) {
+		this.client_id = client_id;
 	}
 
 }

@@ -6,7 +6,8 @@ import java.util.List;
 public class ServiceUserBean{
     
     private String id="";
-	private String name="";
+	private String firstname="";
+	private String surname="";
 	private String DoB="";
 	private String gender ="";
 	private String contactNumber="";
@@ -23,11 +24,11 @@ public class ServiceUserBean{
 	private StreamBean streamDetails;
 	private AccountBean accountDetails;
 	private List<AttendanceBean> attendanceDetails;
-	private List<SubstanceBean> substanceDetails;
 	private List<NoteBean> notes;
 	private List<SubstanceAccumBean> subAccums;
 	private List<EligibilityBean> eligibilityBeans;
 	private DateToCleanBean dateToClean;
+	private List<SubstanceBean> substanceDetails;
 	
 	
 	public StreamBean getStreamDetails(){
@@ -46,11 +47,11 @@ public class ServiceUserBean{
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getName() {
-		return name;
+	public String getfirstname() {
+		return firstname;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setfirstname(String firstname) {
+		this.firstname = firstname;
 	}
 	
 	public String getDoB() {
@@ -126,14 +127,6 @@ public class ServiceUserBean{
 		this.updatedBy = updatedBy;
 	}
 
-	public List<SubstanceBean> getSubstanceDetails() {
-		return substanceDetails;
-	}
-
-	public void setSubstanceDetails(List<SubstanceBean> substanceDetails) {
-		this.substanceDetails = substanceDetails;
-	}
-
 	public List<AttendanceBean> getAttendanceDetails() {
 		return attendanceDetails;
 	}
@@ -189,6 +182,22 @@ public class ServiceUserBean{
 
 	public void setDateToClean(DateToCleanBean dateToClean) {
 		this.dateToClean = dateToClean;
+	}
+
+	public List<SubstanceBean> getSubstanceDetails() {
+		return substanceDetails;
+	}
+
+	public void setSubstanceDetails(List<SubstanceBean> substanceDetails) {
+		this.substanceDetails = substanceDetails;
+	}
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
 	}
 
 	
