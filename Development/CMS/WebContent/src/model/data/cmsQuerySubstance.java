@@ -276,4 +276,57 @@ public class cmsQuerySubstance {
 		return  "Substance Updates Successfull";
 		
 	}
+
+
+	public static String newSubstance(SubstanceBean newSub) {
+		String funcExceptionErrorMsg ="updateSubstances";
+	    Connection connection = null;	
+		Statement stmt =null;
+		
+		try{
+				connection = DataSourceManager.getDataSource().getConnection();
+				stmt = connection.createStatement();			
+				String query = "INSERT INTO cm_substances"
+						+ "		VALUES(	'"+newSub.getSubstance()+"',"
+						+ "				"+newSub.getResetValue()+","
+						+ "				"+newSub.getMaxValue()+","
+						+ "				'"+newSub.getStreamRegressionFlag()+"',"
+						+ "				'"+newSub.getActive()+"',"
+						+ "				'"+newSub.getUpdatedBy()+"',"
+						+ "				curdate(),"
+						+ "				'"+newSub.getUpdatedBy()+"',"
+						+ "				curdate())";
+				System.out.println(query);
+				stmt.executeUpdate(query);
+				
+			}
+			catch (SQLException  e) {							
+				log.error(funcExceptionErrorMsg, e);
+				return e+" error occured";
+							
+			} finally {
+				try {
+					if(stmt != null){
+						stmt.close();
+					}
+				} catch (SQLException sqle) {
+					log.error(funcExceptionErrorMsg, sqle);
+					
+				}
+				try {
+					if(connection != null){
+						connection.close();
+					}
+				} catch (SQLException sqle) {
+					log.error(funcExceptionErrorMsg, sqle);
+					
+					}
+				}
+			
+				
+		
+		return  " New Substance Added Successfully";
+		
+	
+	}
 }

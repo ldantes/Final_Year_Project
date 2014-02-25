@@ -55,7 +55,7 @@ public class cmsQueryEligibility {
 					eligibility.setId(results.getString("Eligibility_Id"));
 					eligibility.setName(results.getString("Eligibility_name"));
 					eligibility.setActive(results.getString("Active"));
-					eligibility.setAmount(results.getString("Amount"));
+					eligibility.setAmount(results.getInt("Amount"));
 					eligibility.setMinValue(results.getString("min_value"));
 					eligibility.setMaxValue(results.getString("max_value"));
 					eligibility.setStreamId(results.getString("Stream_Id"));

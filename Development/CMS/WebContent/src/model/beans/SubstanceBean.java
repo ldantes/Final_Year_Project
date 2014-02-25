@@ -2,20 +2,20 @@ package model.beans;
 
 public class SubstanceBean {
 	
-	private String srvUserId;
-	private String testId;
-	private String substance;
-	private String resetValue;
-	private String maxValue;
-	private String active;
-	private String streamRegressionFlag;
-	private String result;
-	private String administeredBy;
-	private String administeredOn;
-	private String createdBy;
-	private String createdOn;
-	private String updatedBy;
-	private String updatedOn;
+	private String srvUserId ="";
+	private String testId ="";
+	private String substance ="";
+	private String resetValue = "0";
+	private String maxValue = "0";
+	private String active = "0";
+	private String streamRegressionFlag = "0";
+	private String result = "0";
+	private String administeredBy = "0";
+	private String administeredOn = "0";
+	private String createdBy = "0";
+	private String createdOn = "0";
+	private String updatedBy = "0";
+	private String updatedOn = "0";
 	
 	public String getSubstance() {
 		return substance;

@@ -38,7 +38,7 @@ public class EngagementRules {
 		facts.add(serviceuser);
 		facts.add(attendanceBean);
 		ksession.execute(facts);
-		 
+		
 		return serviceuser;
 	}
 	public Set<String> getFiredRules() {

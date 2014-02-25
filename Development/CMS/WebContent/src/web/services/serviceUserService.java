@@ -132,7 +132,7 @@ public class serviceUserService{
 		int progressionSubstanceCount =0;
 		int progressionSubstances =0;
 		boolean setDTC=false; 
-		float credit =0;
+		float credit = 0.00f;
 		
 		ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
 		
@@ -232,10 +232,13 @@ public class serviceUserService{
 		String oldStreamId = serviceUserBean.getStreamDetails().getStreamId();
 		SubstanceRules sRules = new SubstanceRules();
 		sRules.adjustSubstanceAccumaltor(this.serviceUserBean);
+		System.out.print("*****************FIRED RULES****************\n");
 		for (String s : sRules.getFiredRules())
 		{
 			this.userMessage=this.userMessage+"<br/>"+s;
+			System.out.print(s+"\n-");
 		}
+		System.out.print("*********************************************");
 		setReferenceInformation(id);
 		if (!oldStreamId.equals(this.serviceUserBean.getStreamDetails().getStreamId()))
 		{
@@ -262,11 +265,13 @@ public class serviceUserService{
 		setReferenceInformation(id);
 		EngagementRules eRules = new EngagementRules();
 		eRules.applyEngagmentRules(this.serviceUserBean, attendanceBean);
+		System.out.print("*****************FIRED RULES****************");
 		for (String s : eRules.getFiredRules())
 		{
 			this.userMessage=this.userMessage+"<br/>"+s;
+			System.out.print(s);
 		}
-		
+		System.out.print("*********************************************");
 		ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
 		serviceUserFacade.newAttendance(attendanceBean);
 		

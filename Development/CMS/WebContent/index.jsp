@@ -9,6 +9,7 @@
 	 <p style="color:red">${userMessage}</p>
 			
 			<form id="loginForm" method="POST" action="UserServlet" class="login-form">
+				<h1>Login</h1>
 	        	<input type="hidden" name="requestAction" value="login"/>
 	        	<table>
 	        	<tr>

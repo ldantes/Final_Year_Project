@@ -64,7 +64,7 @@ public class ServiceUserServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String destination	= "/ServiceUsersSrch.jsp";
 		String jsp_path	= "/WEB-INF/jsp";
-		String userMessage	= null;
+		String userMessage	= "";
 		HttpSession session = request.getSession();  
 		if (request.getRequestedSessionId().equals(session.getId())){  
 		    

@@ -29,7 +29,7 @@ RequestDispatcher 	requestDispatch;
 	
 	private enum validActions
 	{
-		init,substanceUpdate, updateStreams;
+		init,substanceUpdate, updateStreams, newSubstance;
 	}
     
     public SystemServlet() {
@@ -124,6 +124,37 @@ RequestDispatcher 	requestDispatch;
 					request.setAttribute("substanceBeans",cmsQuerySubstance.qrySubstances(null,"N"));
 					request.setAttribute("streams",cmsStreamQuery.qryStreams());
 					request.setAttribute("userMsg2", userMessage);
+					break;
+					
+				case newSubstance:
+					
+					SubstanceBean newSub = new SubstanceBean();
+					newSub.setSubstance(request.getParameter("newSubstance"));
+					if(request.getParameter("subactive") != null)
+					{
+						newSub.setActive(request.getParameter("subactive"));
+					}
+					else
+					{
+						newSub.setActive("N");
+					}
+					newSub.setMaxValue(request.getParameter("submax"));
+					newSub.setResetValue(request.getParameter("subreset"));
+					
+					if(request.getParameter("regFlag")!=null)
+					{
+						newSub.setStreamRegressionFlag(request.getParameter("regFlag"));
+					}
+					else
+					{
+						newSub.setStreamRegressionFlag("N");
+					}
+					newSub.setUpdatedBy(request.getParameter("username"));
+					
+					userMessage = cmsQuerySubstance.newSubstance(newSub);
+					request.setAttribute("substanceBeans",cmsQuerySubstance.qrySubstances(null,"N"));
+					request.setAttribute("streams",cmsStreamQuery.qryStreams());
+					request.setAttribute("userMsg", userMessage);
 					break;
 			
 			

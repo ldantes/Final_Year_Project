@@ -59,7 +59,7 @@ function assignCheckBox(checkbox)
 						<c:set var="active" value=""/>
 				</c:otherwise>
 				</c:choose>
-				<input type="checkbox" name="subActive${substance.substance}" id="subActive${substance.substance}" Onclick="assignCheckBox(this); alert(this.value);"value="Y" ${active}/>
+				<input type="checkbox" name="subActive${substance.substance}" id="subActive${substance.substance}" Onclick="assignCheckBox(this); "value="Y" ${active}/>
 			</td>
 			
 			<td>
@@ -90,6 +90,39 @@ function assignCheckBox(checkbox)
 			<td><input input class="button" type="submit" value="Update Substances"></td>
 	</tr>
 	</table>
+	</form>
+	
+	<form id="newSubstance" action ="SystemServlet" method="post">
+	<input type="hidden" name="requestAction" value="newSubstance"/>
+	<input type="hidden" name="username" value="${username}"/>
+	<table>
+	<tr>
+			<td>New Substance:</td><td><input type="text" maxlength ="30" size ="30" name="newSubstance" value=""  /></td></tr>
+		<tr>
+			<td>
+			
+				Active:</td><td><input type="checkbox" name="subactive"  Onclick="assignCheckBox(this);" value="N" />
+			</td></tr>
+		<tr>
+			
+			<td>
+				Maximum Accumalation:</td><td><input type="number" name="submax" maxLength="2" min="0"  value="0" />
+			</td></tr>
+		<tr>
+			<td>
+				Reset Value:</td><td><input type="number" name="subreset" maxLength="2" min="0" i value="0" />
+			</td></tr>
+		<tr>
+			<td>
+			Stream Progression/Regression:</td><td><input type="checkbox" name="regFlag"  Onclick="assignCheckBox(this);" value="N" />
+			</td>
+				
+		</tr>
+		<tr>
+			<td><input input class="button" type="submit" value="Add New Substances"></td>
+		</tr>
+	</table>
+	
 	</form>
 	<hr/>
 	<h3>Streams</h3>

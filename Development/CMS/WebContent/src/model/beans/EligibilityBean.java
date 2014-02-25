@@ -6,7 +6,7 @@ public class EligibilityBean {
 	private String client_id ="";
 	private String name ="";
 	private String active ="";
-	private String amount ="";
+	private int amount =0;
 	private String minValue ="";
 	private String maxValue ="";
 	private String streamId ="";
@@ -31,10 +31,10 @@ public class EligibilityBean {
 	public void setActive(String active) {
 		this.active = active;
 	}
-	public String getAmount() {
+	public int getAmount() {
 		return amount;
 	}
-	public void setAmount(String amount) {
+	public void setAmount(int amount) {
 		this.amount = amount;
 	}
 	public String getMinValue() {

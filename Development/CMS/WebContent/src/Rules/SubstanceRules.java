@@ -37,7 +37,7 @@ public class SubstanceRules {
 		List<Object> facts = new ArrayList<Object>();
 		facts.add(serviceuser);
 		ksession.execute(facts);
-		 
+		facts.clear();
 		return serviceuser;
 	}
 

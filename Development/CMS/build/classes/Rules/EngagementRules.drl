@@ -81,9 +81,9 @@ then
 	int newTAAmount =0;
 	for(int i=0; i < suser.getEligibilityBeans().size(); i++)
 	{
-		if(suser.getEligibilityBeans().get(i).getId().toString().equals("3") && Integer.parseInt(suser.getEligibilityBeans().get(i).getAmount())!=0 )
+		if(suser.getEligibilityBeans().get(i).getId().toString().equals("3") && suser.getEligibilityBeans().get(i).getAmount()!=0 )
 		{
-		    newTAAmount = Integer.parseInt(suser.getEligibilityBeans().get(i).getAmount()) - 1;
+		    newTAAmount = suser.getEligibilityBeans().get(i).getAmount() - 1;
 		    System.out.println("!!!!!!!!!!!!!!!!!!2-----"+newTAAmount);
 		}
 	}
