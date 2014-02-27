@@ -161,7 +161,7 @@ rule "service user is entitled to 2 weekday TA"
     
 when
 	  $result : ServiceUserBean(streamDetails.supportLevel != 1)
-      $inter : SubstanceAccumBean(substance =="Opiate", accum == 3) from $result.subAccums
+      $inter : SubstanceAccumBean(substance =="Opiate", accum == 4) from $result.subAccums
 then
  	
 	cmsQueryEligibility.changeEligibility($result,3,2);
@@ -169,7 +169,7 @@ then
     
 end
 
-rule "service user is entitled to 3 weekday TA"
+/*rule "service user is entitled to 3 weekday TA"
     lock-on-active true
     no-loop true
     dialect "mvel"
@@ -182,7 +182,7 @@ then
 	cmsQueryEligibility.changeEligibility($result,3,3);
    System.out.println("service user get 1 TA- Service user Id="+$result.getId());
     
-end
+end*/
 
 rule "(stream 2)service user is entitled to weekend TA"
     lock-on-active true
@@ -203,11 +203,12 @@ then
  		if(substances.get(i).getStreamRegressionFlag().equals("Y") )
  		{
  			countReq++;
- 		}
- 		if(substances.get(i).getSubstance().equals($result.getSubAccums().get(i).getSubstance()) && $result.getSubAccums().get(i).getAccum() >=3)
- 		{
+ 			if(substances.get(i).getSubstance().equals($result.getSubAccums().get(i).getSubstance()) && $result.getSubAccums().get(i).getAccum() >=3)
+ 			{
  			countHave ++;
+ 			}
  		}
+ 		
  	}
  	System.out.println(countReq+"   :    "+countHave);
  	if(countReq == countHave)

@@ -95,10 +95,20 @@ private static Logger log = Logger.getLogger(cmsQueryUsers.class);
 					String query = "update cm_client_date_to_clean"
 							+ " set card = (select id from cm_date_to_clean where Order_of_Progress ="+serviceUserBean.getDateToClean().getOrderOfProgress()+"),"
 									+ " set_on = curdate(),"
-									+ " Date_to_Clean= DATE_ADD(curdate(),INTERVAL 7 DAY), "
-									+ " set_by='"+serviceUserBean.getDateToClean().getSetBy()+"'"
-									+ " where client_id ="+serviceUserBean.getId()+"";
-					
+									
+									+ " set_by='"+serviceUserBean.getDateToClean().getSetBy()+"',";
+					if(serviceUserBean.getDateToClean().getExtensionApplied().equals("Y"))
+					{
+						query = query+ " Extension_applied ='"+serviceUserBean.getDateToClean().getExtensionApplied()+"',"
+								+ "		 Date_to_Clean= DATE_ADD('"+serviceUserBean.getDateToClean().getDateToClean()+"',INTERVAL "+serviceUserBean.getDateToClean().getDaysExtension()+" DAY) ";
+					}
+					else
+					{
+						query = query+  " Extension_applied ='"+serviceUserBean.getDateToClean().getExtensionApplied()+"',"
+								+ " Date_to_Clean= DATE_ADD(curdate(),INTERVAL "+serviceUserBean.getDateToClean().getNumDays()+" DAY) ";
+					}
+					query = query+ " where client_id ="+serviceUserBean.getId()+"";
+					System.out.print("QUERY"+query);
 					stmt.executeUpdate(query);
 					
 				}

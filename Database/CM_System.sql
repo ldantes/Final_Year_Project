@@ -53,6 +53,7 @@ Create table CM_Roles (
 );
 
 insert into CM_Roles values('admin','lducray',sysdate());
+
 insert into CM_Roles values('accounting','lducray',sysdate());
 
 
@@ -70,7 +71,9 @@ Create table CM_User_Roles (
     CONSTRAINT User_role_role_name FOREIGN KEY (Role_Name)
         REFERENCES CM_System.Cm_Roles (Role_Name)
 );
- insert into cm_user_roles values ('admin','lducray','lducray',curdate());
+
+insert into cm_user_roles values ('admin','lducray','lducray',curdate());
+insert into cm_user_roles values('admin','jsmith','lducray',sysdate());
 insert into cm_user_roles values('accounting','lducray','lducray',curdate());
 
 
@@ -217,7 +220,7 @@ CREATE TABLE CM_Date_To_Clean (
         REFERENCES CM_System.Cm_Streams (Stream_Id)
 );
 
-insert into cm_date_to_clean values(1,'none',0,'Y',0,1,0);
+insert into cm_date_to_clean values(1,'none',7,'Y',0,1,0);
 insert into cm_date_to_clean values(2,'YELLOW',7,'Y',1,1,3);
 insert into cm_date_to_clean values(3,'ORANGE',7,'Y',2,1,3);
 insert into cm_date_to_clean values(4,'RED',7,'Y',3,1,3);

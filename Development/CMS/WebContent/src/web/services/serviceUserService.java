@@ -216,7 +216,7 @@ public class serviceUserService{
 			if((this.serviceUserBean.getDateToClean().getOrderOfProgress() +1) < 4)
 			{
 				this.serviceUserBean.getDateToClean().setOrderOfProgress(this.serviceUserBean.getDateToClean().getOrderOfProgress() +1);
-				this.serviceUserBean.getDateToClean().setSetBy(request.getParameter("administeredBy"));
+				
 				this.userMessage=this.userMessage+"<br/>Service User assigned a new Date to be Clean.";
 			}
 						
@@ -224,8 +224,10 @@ public class serviceUserService{
 		else
 		{
 			this.serviceUserBean.getDateToClean().setOrderOfProgress(0);
-			this.serviceUserBean.getDateToClean().setSetBy(request.getParameter("administeredBy"));
+			
 		}
+		this.serviceUserBean.getDateToClean().setExtensionApplied("N");
+		this.serviceUserBean.getDateToClean().setSetBy(request.getParameter("administeredBy"));
 		cmsQueryDateToClean.updateDTC(this.serviceUserBean);
 		setReferenceInformation(id);
 		

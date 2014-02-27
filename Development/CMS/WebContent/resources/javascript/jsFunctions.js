@@ -11,3 +11,14 @@ function assignmentRadio(elementName)
        }
 }
 
+function assignCheckBox(checkbox)
+{
+	if (checkbox.checked) 
+	{
+		checkbox.value = 'Y';
+	}
+	else
+	{
+		checkbox.value = 'N';
+    }
+}

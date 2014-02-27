@@ -231,6 +231,25 @@
 	</tr>
 	<tr>
 	<td>
+	<c:choose>
+	<c:when test="${serviceUser.dateToClean.extensionApplied != 'Y'}">
+	<form id="DTCExtension" action ="ServiceUserServlet" method="post">
+	<input type="hidden" name="requestAction" value="addDTCEx"/>
+	<input type="hidden" name=serviceUserId value="${serviceUser.id}"/> 
+	<input type="hidden" name="username" value="${username}"/>
+		Apply ${serviceUser.dateToClean.daysExtension} Day Extension <input type="checkbox" name="addExt"  Onclick="assignCheckBox(this);" value="N" />
+		<input type="submit" class="button" value="Apply extension">
+	</form>
+	</c:when>
+	<c:otherwise>
+	  ${serviceUser.dateToClean.daysExtension} Day Extension Applied
+	</c:otherwise>
+	</c:choose>
+	
+	</td>
+	</tr>
+	<tr>
+	<td>
 	Issued on: ${serviceUser.dateToClean.setOn}
 	</td>
 	</tr>

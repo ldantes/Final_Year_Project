@@ -106,6 +106,23 @@ function assignCheckBox(checkbox)
 				<input type="checkbox" name="active" id="active" Onclick="assignCheckBox(this);"value="Y" ${active}/>
 			</td>
 		</tr>
+		<tr><td><h1>User Roles</h1></td></tr>
+		<c:forEach var="availableRoles" items="${roles}">
+		<tr>
+		<td> ${availableRoles.roleName}
+			<c:forEach var="userRoles" items="${selecteduser['userRoles']}">
+			<c:choose>
+				<c:when test="${availableRoles.roleName == userRoles.roleName}">
+						<c:set var="checkedx" value="checked"/>
+				</c:when>
+			</c:choose>
+			
+				
+			
+			</c:forEach>
+			<input type="checkbox" name="${availableRoles.roleName}X" Onclick="assignCheckBox(this); alert(this.value)"value="Y" ${checkedx} />
+		</td></tr>
+		</c:forEach>
 		<tr>
 			<td><input type="submit" class="button" value="Submit">
 			</td>

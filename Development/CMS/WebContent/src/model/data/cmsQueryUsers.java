@@ -188,7 +188,7 @@ public class cmsQueryUsers  {
 					
 												
 				}	
-				
+				userDetails.setUserRoles(qryUserRoles(userDetails));
 				
 				results.close();
 				} catch (SQLException  e) {							
@@ -218,5 +218,57 @@ public class cmsQueryUsers  {
 		return userDetails;
 	}
 
+	public static List<UserRoleBean> qryRoles()
+	{
+		String 	funcExceptionErrorMsg 	= "qryUserRoles. ";
+		
+		List <UserRoleBean> roleBeans = new  ArrayList<UserRoleBean>();
+		UserRoleBean roleBean = null;
+		Connection connection = null;		
+		Statement stmt = null;		
+		
+		try{
+			connection = DataSourceManager.getDataSource().getConnection();
+			stmt = connection.createStatement();			
+			String query = "select role_name  , created_by, created_on from cm_roles ";
+			ResultSet  results = stmt.executeQuery(query);
+			
+			while (results.next()) {
+				roleBean = new UserRoleBean();
+				roleBean.setRoleName(results.getString("role_name"));
+				roleBean.setCreatedBy(results.getString("created_by"));
+				roleBean.setCreatedOn(results.getString("created_On"));
+				
+				roleBeans.add(roleBean);				
+			}	
+			
+			results.close();
+		}
+		
+		catch (SQLException  e) {							
+			log.error(funcExceptionErrorMsg, e);
+						
+		} finally {
+			try {
+				if(stmt != null){
+					stmt.close();
+				}
+			} catch (SQLException sqle) {
+				log.error(funcExceptionErrorMsg, sqle);
+				
+			}
+			try {
+				if(connection != null){
+					connection.close();
+				}
+			} catch (SQLException sqle) {
+				log.error(funcExceptionErrorMsg, sqle);
+				
+			}
+		}
+		
+		
+		return roleBeans;
+	}
 	
 }

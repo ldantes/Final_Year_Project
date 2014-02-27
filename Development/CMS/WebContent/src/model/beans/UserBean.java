@@ -17,7 +17,7 @@ public class UserBean {
 	private String createdOn;
 	private String updatedBy;
 	private String updatedOn;
-	private List<UserRoleBean> userRole;
+	private List<UserRoleBean> userRoles;
 	
 	
 	public String getId(){
@@ -69,10 +69,10 @@ public class UserBean {
 	}
 	
 	public List<UserRoleBean> getUserRoles() {
-		return userRole;
+		return userRoles;
 	}
-	public void setUserRoles(List<UserRoleBean> userRole) {
-		this.userRole = userRole;
+	public void setUserRoles(List<UserRoleBean> userRoles) {
+		this.userRoles = userRoles;
 	}
 	public String getCreatedBy() {
 		return createdBy;

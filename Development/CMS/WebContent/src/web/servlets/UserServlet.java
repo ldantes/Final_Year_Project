@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -182,13 +183,18 @@ public class UserServlet extends HttpServlet {
 				case init:
 					
 					request.setAttribute("users", cmsQueryUsers.qryUsers(null));
+					request.setAttribute("roles", cmsQueryUsers.qryRoles());
 					System.out.print(cmsQueryUsers.qryUsers(null).size());
 					destination= "/userManagaement.jsp";
 					break;
 						
 				case editUser:
 					
-					request.setAttribute("selecteduser", cmsQueryUsers.getUserByName(request.getParameter("userId")));
+					if(request.getParameter("userId")!= "" && request.getParameter("userId") != null)
+					{
+						request.setAttribute("selecteduser", cmsQueryUsers.getUserByName(request.getParameter("userId")));
+					}
+					request.setAttribute("roles", cmsQueryUsers.qryRoles());
 					request.setAttribute("users", cmsQueryUsers.qryUsers(null));
 					System.out.print(cmsQueryUsers.qryUsers(null).size());
 					destination= "/userManagaement.jsp";
@@ -207,17 +213,82 @@ public class UserServlet extends HttpServlet {
 					}
 					user.setFirstName(request.getParameter("fname"));
 					user.setSurname(request.getParameter("sname"));
-					user.setActive(request.getParameter("active"));
+					if(request.getParameter("active")!=null)
+					{
+						user.setActive(request.getParameter("active"));
+					}
+					else
+					{
+						user.setActive("N");
+					}
 					user.setProfession(request.getParameter("profession"));
 					user.setEmail(request.getParameter("email"));
 					user.setPassword(request.getParameter("password"));
 					user.setUpdatedBy(request.getParameter("username"));
 					
 					
+					List<UserRoleBean> availableroles = cmsQueryUsers.qryRoles();
+					List<UserRoleBean> curroles = cmsQueryUsers.getUserByName(user.getUserName()).getUserRoles();
+					List<UserRoleBean> userroles = new  ArrayList<UserRoleBean>();
+					
+					
+					for( int i =0; i< availableroles.size(); i++)
+					{
+						Boolean duplicate = false;
+						UserRoleBean userRole = new UserRoleBean();
+						System.out.print(request.getParameter(availableroles.get(i).getRoleName()+"X") !=null);
+						if(request.getParameter(availableroles.get(i).getRoleName()+"X") !=null)
+						{
+							if(request.getParameter(availableroles.get(i).getRoleName()+"X").equals("Y"))
+							{
+								for(int j =0; j< curroles.size(); j++)
+								{
+									if(availableroles.get(i).getRoleName().equals(curroles.get(j).getRoleName()))
+									{
+										duplicate = true;
+									}
+								}
+								if(duplicate == false)
+								{
+									userRole.setRoleName(availableroles.get(i).getRoleName());
+									userRole.setUserName(user.getUserName());
+									userroles.add(userRole);
+								}
+							}
+							else
+							{
+								for(int j =0; j< curroles.size(); j++)
+								{	
+									if(availableroles.get(i).getRoleName().equals(curroles.get(j).getRoleName()))
+									{
+										userRole.setRoleName(availableroles.get(i).getRoleName());
+										userRole.setUserName(user.getUserName());
+										userFacade.removeUserRoles(userRole);
+									}
+								}
+								
+							}
+						}
+						else
+						{
+							for(int j =0; j< curroles.size(); j++)
+							{	
+								if(availableroles.get(i).getRoleName().equals(curroles.get(j).getRoleName()))
+								{
+									userRole.setRoleName(availableroles.get(i).getRoleName());
+									userRole.setUserName(user.getUserName());
+									userFacade.removeUserRoles(userRole);
+								}
+							}
+							
+						}
+					}
+					user.setUserRoles(userroles);
 					userFacade.editUser(user);
 					
-					request.setAttribute("selecteduser", cmsQueryUsers.getUserByName(request.getParameter(user.getUserName())));
+					request.setAttribute("selecteduser", cmsQueryUsers.getUserByName(user.getUserName()));
 					request.setAttribute("users", cmsQueryUsers.qryUsers(null));
+					request.setAttribute("roles", cmsQueryUsers.qryRoles());
 					System.out.print(cmsQueryUsers.qryUsers(null).size());
 					destination= "/userManagaement.jsp";
 					break;

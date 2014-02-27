@@ -117,6 +117,11 @@ public class UserDaoImpl implements UserDao{
 				
 				stmt.executeUpdate(statement)  ;
 				
+				for(int i=0;i<user.getUserRoles().size();i++)
+				{
+					statement="insert into cm_user_roles values ('"+user.getUserRoles().get(i).getRoleName()+"','"+user.getUserName()+"','"+user.getUpdatedBy()+"',curdate())";
+					stmt.executeUpdate(statement)  ;
+				}
 				
 				
 				} catch (SQLException  e) {							
@@ -145,7 +150,46 @@ public class UserDaoImpl implements UserDao{
 	}
 
 	
-	
+	public void removeUserRoles(UserRoleBean role)
+	{
+		String funcExceptionErrorMsg ="removeUserRoles ";
+		Connection connection = null;
+		Statement stmt = null;
+		
+		
+				
+		try {
+				connection = DataSourceManager.getDataSource().getConnection();
+				stmt = connection.createStatement();
+				String statement ="delete from cm_user_roles where role_Name ='"+role.getRoleName()+"' and userName ='"+role.getUserName()+"'";
+
+				stmt.executeUpdate(statement)  ;
+				
+				
+				
+				} catch (SQLException  e) {							
+					log.error(funcExceptionErrorMsg, e);
+					
+				} finally {
+					try {
+						if(stmt != null){
+							stmt.close();
+						}
+					} catch (SQLException sqle) {
+						log.error(funcExceptionErrorMsg, sqle);
+						
+					}
+					try {
+						if(connection != null){
+							connection.close();
+						}
+					} catch (SQLException sqle) {
+						log.error(funcExceptionErrorMsg, sqle);
+						
+					}
+				}
+			
+	}
 		
 	
 	

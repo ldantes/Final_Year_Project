@@ -22,6 +22,7 @@ import model.beans.SubstanceBean;
 import model.beans.TransactionBean;
 import model.beans.UserBean;
 import model.data.cmsQueryAccount;
+import model.data.cmsQueryDateToClean;
 import model.data.cmsQueryServiceUser;
 import model.data.cmsQuerySubstance;
 import model.data.cmsQueryUsers;
@@ -47,7 +48,7 @@ public class ServiceUserServlet extends HttpServlet {
 	
 	private enum validActions
 	{
-	   srchServiceUser, editServiceUser, updateServiceUser, newSubstanceEntry, insertNewSubstanceResult, newEngagmentEntry , insertNewAttendance, viewAccount, newTransaction, viewNotes,newNote, updateNote; 
+	   srchServiceUser, editServiceUser, updateServiceUser, newSubstanceEntry,addDTCEx, insertNewSubstanceResult, newEngagmentEntry , insertNewAttendance, viewAccount, newTransaction, viewNotes,newNote, updateNote; 
 	}
 	
     public ServiceUserServlet() {
@@ -274,6 +275,23 @@ public class ServiceUserServlet extends HttpServlet {
 						request.setAttribute("notes",cmsQueryServiceUser.qryServiceUserNotes(id));
 						request.setAttribute("serviceUser", cmsQueryServiceUser.searchServiceUsersById(id) );
 						destination="/viewNotes.jsp";
+						break;
+						
+					case addDTCEx:
+						service.setApplicationContext(applicationContext);
+						service.setRequest(request);
+						service.setReferenceInformation(id);
+						System.out.print("HERE");
+						if (service.getServiceUserBean().getDateToClean().getExtensionApplied() ==null || service.getServiceUserBean().getDateToClean().getExtensionApplied() !="Y")
+						{
+							
+								service.getServiceUserBean().getDateToClean().setExtensionApplied("Y");
+								cmsQueryDateToClean.updateDTC(service.getServiceUserBean());
+							
+						}
+						service.setReferenceInformation(id);
+						request.setAttribute("serviceUser",service.getServiceUserBean());
+						destination="/editServiceUser.jsp";
 						break;
 						
 						
