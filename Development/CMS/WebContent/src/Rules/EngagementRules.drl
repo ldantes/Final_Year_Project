@@ -8,6 +8,7 @@ import Rules.SubstanceRules;
 import model.data.cmsQueryServiceUser;
 import model.data.cmsQueryEligibility;
 import web.services.serviceUserService;
+import java.math.BigDecimal;
 
 import java.lang.Integer;
 
@@ -21,7 +22,7 @@ then
 	System.out.println("Service User should be award 3 credits");
 	TransactionBean transaction = new TransactionBean();
 	transaction.setAccount_Id($result.getSrvUserId());
-	transaction.setAmount_Credited("3");
+	transaction.setAmount_Credited(new BigDecimal(3));
 	transaction.setApproved_By($result.getUsername());
 	
 	serviceUserService service = new serviceUserService();
@@ -38,7 +39,7 @@ then
 
 	TransactionBean transaction = new TransactionBean();
 	transaction.setAccount_Id($result.getSrvUserId());
-	transaction.setAmount_Credited("3");
+	transaction.setAmount_Credited(new BigDecimal(3));
 	transaction.setApproved_By($result.getUsername());
 	
 	serviceUserService service = new serviceUserService();

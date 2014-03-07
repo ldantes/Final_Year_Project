@@ -49,7 +49,7 @@
 							</c:forEach>
 						</select>
 		</td>
-		<td>Administered on: <input type="date" id="datePicker" name="administeredOn" value="${user.administedOn}"/>
+		<td>Administered on: <input type="date"  required id="datePicker" name="administeredOn" value="${user.administedOn}"/>
 		</td>
 		</tr>
 		<tr>
@@ -122,6 +122,6 @@
 		</c:choose>
 	</table>
 	</div>
-
+<div><%@include file="/footer.html"%></div>
 </body>
 </html>

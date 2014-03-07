@@ -1,5 +1,7 @@
 package web.services;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -39,6 +41,7 @@ import utilities.DataSourceManager;
 public class serviceUserService{
 	
 	public String userMessage = "";
+	public String firedrules = "";
 	private ApplicationContext 		applicationContext=null;
 	private HttpServletRequest      request=null;
 	public ServiceUserBean serviceUserBean;
@@ -167,7 +170,7 @@ public class serviceUserService{
 						else
 						{
 							accum = subAccumList.get(j).getAccum()+1;
-							if(accum >= Integer.parseInt(this.substanceBeans.get(i).getMaxValue()))
+							if(accum > Integer.parseInt(this.substanceBeans.get(i).getMaxValue()))
 							{
 								accum = Integer.parseInt(this.substanceBeans.get(i).getMaxValue());
 								progressionSubstanceCount++;
@@ -237,7 +240,7 @@ public class serviceUserService{
 		System.out.print("*****************FIRED RULES****************\n");
 		for (String s : sRules.getFiredRules())
 		{
-			this.userMessage=this.userMessage+"<br/>"+s;
+			this.firedrules=this.firedrules+"<br/>"+s;
 			System.out.print(s+"\n-");
 		}
 		System.out.print("*********************************************");
@@ -270,7 +273,7 @@ public class serviceUserService{
 		System.out.print("*****************FIRED RULES****************");
 		for (String s : eRules.getFiredRules())
 		{
-			this.userMessage=this.userMessage+"<br/>"+s;
+			this.firedrules=this.firedrules+"<br/>"+s;
 			System.out.print(s);
 		}
 		System.out.print("*********************************************");
@@ -287,7 +290,7 @@ public class serviceUserService{
 	public void adjustBalance(TransactionBean transaction) 
 	{
 		cmsQueryAccount.adjustBalance(transaction);
-				
+		setReferenceInformation(transaction.getAccount_Id());		
 		this.userMessage="Account successfully adjusted";
 		SubstanceRules sRules = new SubstanceRules();
 		sRules.adjustSubstanceAccumaltor(this.serviceUserBean);
@@ -387,13 +390,13 @@ public class serviceUserService{
 		
 		TransactionBean transaction = new TransactionBean();
 		transaction.setAccount_Id(serviceuser.getId());
-		transaction.setAmount_Credited(""+credit+"");
-		transaction.setAmount_Withdrawn("0");
+		transaction.setAmount_Credited(new BigDecimal(credit));
+		transaction.setAmount_Withdrawn(new BigDecimal(0));
 		transaction.setApproved_By(request.getParameter("administeredBy"));
 		ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
 		serviceUserFacade.adjustBalance(transaction);
 		
-		this.userMessage=this.userMessage+"Service Test results successfull added <br/> account credited :"+credit;
+		this.userMessage=this.userMessage+"Service Test results successfull added <br/> account credited :"+new BigDecimal(credit).setScale(2, RoundingMode.CEILING);
 	}
 	
 }

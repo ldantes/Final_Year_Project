@@ -76,7 +76,7 @@ public class UserDaoImpl implements UserDao{
 
 	public void editUser(UserBean user)
 	{
-		UserBean userDetails=null;
+		
 		String funcExceptionErrorMsg ="getUserByName ";
 		Connection connection = null;
 		Statement stmt = null;
@@ -84,20 +84,24 @@ public class UserDaoImpl implements UserDao{
 		
 				
 		try {
+				UserBean userDetails= cmsQueryUsers.getUserByName(user.getUserName());
 				connection = DataSourceManager.getDataSource().getConnection();
 				stmt = connection.createStatement();
 				String statement ="";
 				
-				if(cmsQueryUsers.getUserByName(user.getUserName()) != null)
+				if(userDetails != null)
 				{
 					 statement ="UPDATE `cm_system`.`cm_users`"
 					 		+ "SET `User_FName` = '"+user.getFirstName()+"',"
 					 		+ "`User_SName` = '"+user.getSurname()+"',"
 					 		+ "`User_Email` = '"+user.getEmail()+"',"
 					 		+ "`User_Profession` = '"+user.getProfession()+"',"
-					 		+ "`User_Active` = '"+user.getActive()+"',"
-					 		+ "`User_Password` = '"+user.getPassword()+"',"
-					 		+ "`Updated_By` = '"+user.getUpdatedBy()+"',"
+					 		+ "`User_Active` = '"+user.getActive()+"',";
+					 if(user.getPassword()!="")
+					 {
+						 statement = statement+ "`User_Password` = '"+user.getPassword()+"',";
+					 }
+					 statement= statement+ "`Updated_By` = '"+user.getUpdatedBy()+"',"
 					 		+ "`Updated_On` = curdate()"
 					 		+ "WHERE username = '"+user.getUserName()+"'";
 

@@ -47,5 +47,6 @@
 	</c:choose>
 	</form>
 	</c:if>
+<div><%@include file="/footer.html"%></div>
 </body>
 </html>

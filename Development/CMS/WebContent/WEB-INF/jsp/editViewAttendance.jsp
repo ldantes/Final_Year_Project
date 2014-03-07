@@ -33,11 +33,11 @@
 		
 		<tr>
 			<td>Time of meeting:</td>
-			<td><input type="time" name="attndTime" value=""/>	</td>
+			<td><input type="time" name="attndTime" value="" required/>	</td>
 		</tr>
 		<tr>
 			<td>Date of meeting:</td>
-			<td><input type="date" name="attndDate" value=""/>	</td>
+			<td><input type="date" name="attndDate" value="" required/>	</td>
 		</tr>
 		<tr>
 			<td>Meeting attended:</td>
@@ -161,6 +161,6 @@
 		</c:choose>
 	</table>
 	</div>
-
+	<%@include file="/footer.html"%>
 </body>
 </html>

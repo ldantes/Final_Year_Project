@@ -23,7 +23,9 @@
 	</c:choose>
 	</h3>
 	<hr/>
-	<div class="msg">${userMsg}</div><div>
+	<div class="msg">${userMsg}</div>
+	<div class="firedrules">${firedrules}</div>
+	<div>
 	<c:if test="${serviceUser.id != null && serviceUser.id != ''}">
 	<form name="newRequest" method="post">
 					<input type="hidden" name="action">
@@ -44,6 +46,7 @@
 	</div>	
 	</c:if>
 	</div>
+	
 	<div class="inline">
 	<form id="editSelectServiceUser" action ="ServiceUserServlet" method="post">
 	<input type="hidden" name="requestAction" value="updateServiceUser"/>
@@ -264,6 +267,7 @@
 	</c:if>
 	</div>
 	
+	<%@include file="/footer.html"%>
 	
 
 </body>

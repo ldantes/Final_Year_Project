@@ -17,6 +17,14 @@ function assignCheckBox(checkbox)
 		checkbox.value = 'N';
     }
 }
+
+function show_hide(id) {
+    var e = document.getElementById(id);
+    if(e.style.display == 'block')
+       e.style.display = 'none';
+    else
+       e.style.display = 'block';
+ }
 </script>
 </head>
 <body>
@@ -83,10 +91,12 @@ function assignCheckBox(checkbox)
 			</td>
 		</tr>
 		<tr>
-			<td>Password*
+			<td> <a href="javascript:show_hide('newPassword');">New Password</a>
+			<div id="newPassword"    style="display:none;"}>
+			Password:<input name="password" type="password" maxlength="50" size="50" value="" >
+			</div>
 			</td>
-			<td><input name="password" type="password" maxlength="50" size="50" value="${selecteduser.password}" required>
-			</td>
+			
 		</tr>
 		<tr>
 			<td>Active
@@ -111,16 +121,14 @@ function assignCheckBox(checkbox)
 		<tr>
 		<td> ${availableRoles.roleName}
 			<c:forEach var="userRoles" items="${selecteduser['userRoles']}">
+			<c:set var="checkedx" value=""/>
 			<c:choose>
 				<c:when test="${availableRoles.roleName == userRoles.roleName}">
 						<c:set var="checkedx" value="checked"/>
 				</c:when>
 			</c:choose>
-			
-				
-			
 			</c:forEach>
-			<input type="checkbox" name="${availableRoles.roleName}X" Onclick="assignCheckBox(this); alert(this.value)"value="Y" ${checkedx} />
+			<input type="checkbox" name="${availableRoles.roleName}X" Onclick="assignCheckBox(this);"value="Y" ${checkedx} />
 		</td></tr>
 		</c:forEach>
 		<tr>
@@ -135,5 +143,6 @@ function assignCheckBox(checkbox)
 	</form>
 	
 </div>
+<%@include file="/footer.html"%>
 </body>
 </html>

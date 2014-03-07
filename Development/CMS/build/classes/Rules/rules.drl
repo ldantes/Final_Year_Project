@@ -20,14 +20,37 @@ import java.util.List;
 rule "service user's account has enough to withdraw AND is eligible for outings/visits"
     no-loop true
 when
-    $result: ServiceUserBean( accountDetails.Account_Balance >= 20 ,dateToClean.card == "none" )
+    $result: ServiceUserBean( accountDetails.Account_Balance >= 20 , dateToClean.card == "none")
 then
-    serviceUserService service = new serviceUserService();
-    service.changeEligibility($result,"Y");
-    System.out.println("YES, Can withdraw("+$result.getAccountDetails().getAccount_Balance()+") their credit");
-    update( $result );
+	for(int i=0; i<   $result.getEligibilityBeans().size(); i++) 
+	{
+		if($result.getEligibilityBeans().get(i).getId().equals("1"))
+		{
+	    	$result.getEligibilityBeans().get(i).setActive("Y");
+	    	cmsQueryEligibility.changeEligibility($result,1,0);
+	    	System.out.println("This happened 1");
+	   	}
+	}
+    
 end
 
+rule "service user is eligible for outings/visits"
+    no-loop true
+when
+	 $result : ServiceUserBean(streamDetails.supportLevel != 1)
+     $r: ServiceUserBean(dateToClean.card == "none" ) from $result
+   
+then
+	for(int i=0; i<   $result.getEligibilityBeans().size(); i++) 
+	{
+		if($result.getEligibilityBeans().get(i).getId().equals("2"))
+		{
+	    	$result.getEligibilityBeans().get(i).setActive("Y");
+	    	cmsQueryEligibility.changeEligibility($result,2,0);
+	    	System.out.println("This happened 2");
+	   	}
+	}
+end
 
 rule "service user's account does NOT have enough to withdraw"
     no-loop true
@@ -35,11 +58,15 @@ when
     $result: ServiceUserBean( accountDetails.Account_Balance < 20 )
 then
     
-    serviceUserService service = new serviceUserService();
-    service.changeEligibility($result,"N");    
-    System.out.println("NO, Can NOT withdraw ("+$result.getAccountDetails().getAccount_Balance()+") their credit");
-    System.out.println("service user's account may not withdraw (substance abuse)");
-    update( $result );
+   for(int i=0; i<   $result.getEligibilityBeans().size(); i++) 
+	{
+		if($result.getEligibilityBeans().get(i).getId().equals("1"))
+		{
+	    	$result.getEligibilityBeans().get(i).setActive("N");
+	    	cmsQueryEligibility.changeEligibility($result,1,0);
+	    	System.out.println("This happened N");
+	   	}
+	}
 end
 
 rule "substance abuse therefor NO outings/visits/Credit withdraw"
@@ -54,7 +81,7 @@ then
     update( $result );
 end
 
-rule "unsupported stream for outings/visits "
+/*rule "unsupported stream for outings/visits "
     lock-on-active true
 when
     $result: ServiceUserBean(streamDetails.streamId != "2" , dateToClean.card != "none")
@@ -72,9 +99,9 @@ then
 		}
 	}
 	System.out.println("service user's not eligible for visits/outings");
-end
+end*/
 
-rule "Service user must digress down a stream due to continual misbehavious (substance abuse)"
+rule "Service user must regress down a stream due to continual misbehavious (substance abuse)"
 	lock-on-active true
 when
 	$result : ServiceUserBean(dateToClean.card == "RED" , streamDetails.supportLevel != 1 )

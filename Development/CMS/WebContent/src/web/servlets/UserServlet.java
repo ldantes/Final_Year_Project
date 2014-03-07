@@ -1,6 +1,8 @@
 package web.servlets;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 
@@ -14,7 +16,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -81,6 +82,8 @@ public class UserServlet extends HttpServlet {
 						String usernameEnter = request.getParameter("username");
 						String passwordEntered = request.getParameter("password");
 						
+						passwordEntered = encrypt(passwordEntered);
+							
 						if(usernameEnter != "" && passwordEntered != "" && usernameEnter != null && passwordEntered != null)
 						{
 							userDetails= userFacade.authenticateUser(usernameEnter, passwordEntered);
@@ -157,6 +160,9 @@ public class UserServlet extends HttpServlet {
 						
 						userMessage	= e.getMessage();
 						e.printStackTrace();
+					} catch (NoSuchAlgorithmException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 					break;
 				
@@ -203,6 +209,8 @@ public class UserServlet extends HttpServlet {
 				case saveUser:
 					
 					UserBean user = new UserBean();
+					List<UserRoleBean> curroles = new ArrayList<UserRoleBean>();
+					
 					if( request.getParameter("enteredusername") != null)
 					{
 					user.setUserName(request.getParameter("enteredusername"));
@@ -210,6 +218,10 @@ public class UserServlet extends HttpServlet {
 					else
 					{
 						user.setUserName(request.getParameter("setusername"));
+						if(cmsQueryUsers.getUserByName(user.getUserName()).getUserRoles() != null)
+						{
+							curroles = cmsQueryUsers.getUserByName(user.getUserName()).getUserRoles();
+						}
 					}
 					user.setFirstName(request.getParameter("fname"));
 					user.setSurname(request.getParameter("sname"));
@@ -223,15 +235,22 @@ public class UserServlet extends HttpServlet {
 					}
 					user.setProfession(request.getParameter("profession"));
 					user.setEmail(request.getParameter("email"));
-					user.setPassword(request.getParameter("password"));
+					try {
+						user.setPassword(request.getParameter("password"));
+						if(user.getPassword()!="")
+						{
+							user.setPassword(encrypt(user.getPassword()));
+						}
+					} catch (NoSuchAlgorithmException e) {
+						e.printStackTrace();
+					}
+					
 					user.setUpdatedBy(request.getParameter("username"));
 					
 					
 					List<UserRoleBean> availableroles = cmsQueryUsers.qryRoles();
-					List<UserRoleBean> curroles = cmsQueryUsers.getUserByName(user.getUserName()).getUserRoles();
+					
 					List<UserRoleBean> userroles = new  ArrayList<UserRoleBean>();
-					
-					
 					for( int i =0; i< availableroles.size(); i++)
 					{
 						Boolean duplicate = false;
@@ -298,6 +317,20 @@ public class UserServlet extends HttpServlet {
 			
 			requestDispatch = request.getRequestDispatcher(jsp_path+destination);
 			requestDispatch.forward(request,response);
+	}
+	
+	private String encrypt(String password) throws NoSuchAlgorithmException 
+	{
+		
+		MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] passBytes = password.getBytes();
+        md.reset();
+        byte[] digested = md.digest(passBytes);
+        StringBuffer sb = new StringBuffer();
+        for(int i=0;i<digested.length;i++){
+            sb.append(Integer.toHexString(0xff & digested[i]));
+        }
+        return sb.toString();
 	}
 }
 

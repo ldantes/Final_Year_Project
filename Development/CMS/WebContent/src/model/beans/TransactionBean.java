@@ -1,12 +1,14 @@
 package model.beans;
 
+import java.math.BigDecimal;
+
 public class TransactionBean {
 
 
 private String Id;
 private String Account_Id;
-private String Amount_Withdrawn ="0";
-private String Amount_Credited ="0";
+private BigDecimal Amount_Withdrawn;
+private BigDecimal Amount_Credited;
 private String Approved_By;
 private String Date_of_Transaction;
 
@@ -22,16 +24,16 @@ public String getAccount_Id() {
 public void setAccount_Id(String account_Id) {
 	Account_Id = account_Id;
 }
-public String getAmount_Withdrawn() {
+public BigDecimal getAmount_Withdrawn() {
 	return Amount_Withdrawn;
 }
-public void setAmount_Withdrawn(String amount_Withdrawn) {
+public void setAmount_Withdrawn(BigDecimal amount_Withdrawn) {
 	Amount_Withdrawn = amount_Withdrawn;
 }
-public String getAmount_Credited() {
+public BigDecimal getAmount_Credited() {
 	return Amount_Credited;
 }
-public void setAmount_Credited(String amount_Credited) {
+public void setAmount_Credited(BigDecimal amount_Credited) {
 	Amount_Credited = amount_Credited;
 }
 public String getApproved_By() {

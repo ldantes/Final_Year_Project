@@ -260,8 +260,8 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 				connection = DataSourceManager.getDataSource().getConnection();		
 				stmt = connection.prepareCall("{call cm_system.adjust_balance(?,?,?,?,?)}");			
 				stmt.setString(1, transaction.getAccount_Id());		
-				stmt.setString(2, transaction.getAmount_Credited());	
-				stmt.setString(3, transaction.getAmount_Withdrawn());	
+				stmt.setString(2, transaction.getAmount_Credited().toString());	
+				stmt.setString(3, transaction.getAmount_Withdrawn().toString());	
 				stmt.setString(4, transaction.getApproved_By());	
 				stmt.registerOutParameter(5,java.sql.Types.VARCHAR);			
 				stmt.executeQuery();			

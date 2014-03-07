@@ -1,6 +1,7 @@
 package web.servlets;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 
 
@@ -66,6 +67,7 @@ public class ServiceUserServlet extends HttpServlet {
 		String destination	= "/ServiceUsersSrch.jsp";
 		String jsp_path	= "/WEB-INF/jsp";
 		String userMessage	= "";
+		String firedrules = "";
 		HttpSession session = request.getSession();  
 		if (request.getRequestedSessionId().equals(session.getId())){  
 		    
@@ -168,7 +170,9 @@ public class ServiceUserServlet extends HttpServlet {
 //						request.setAttribute("userBeans",service.userBeans);
 //						request.setAttribute("previousResultsBeans",cmsQuerySubstance.qryServiceUserResults(service.getServiceUserBean().getId()));
 						userMessage =service.userMessage;
+						firedrules=service.firedrules;
 						request.setAttribute("userMsg",userMessage);
+						request.setAttribute("firedrules",firedrules);
 						destination="/editServiceUser.jsp";
 						
 					//	service.adjustServiceSubstanceIncr(serviceuser);
@@ -197,6 +201,7 @@ public class ServiceUserServlet extends HttpServlet {
 											
 						request.setAttribute("serviceUser",service.getServiceUserBean());
 						userMessage =service.userMessage;
+						firedrules=service.firedrules;
 						request.setAttribute("userMsg",userMessage);
 						destination="/editServiceUser.jsp";
 						break;
@@ -228,13 +233,13 @@ public class ServiceUserServlet extends HttpServlet {
 						
 						if(request.getParameter("credit")!= null && request.getParameter("credit").length() != 0)
 						{
-							transaction.setAmount_Credited(request.getParameter("credit"));	
+							transaction.setAmount_Credited(new BigDecimal(request.getParameter("credit")));	
 						}
 						if(service.serviceUserBean.getEligibilityBeans().get(0).getActive().equals("Y"))
 						{
 							if(request.getParameter("withdraw")!= null && request.getParameter("withdraw").length() != 0)
 							{
-								transaction.setAmount_Withdrawn(request.getParameter("withdraw"));	
+								transaction.setAmount_Withdrawn(new BigDecimal(request.getParameter("withdraw")));	
 							}
 						}
 						transaction.setApproved_By(request.getParameter("username"));
@@ -244,10 +249,11 @@ public class ServiceUserServlet extends HttpServlet {
 						id = request.getParameter("serviceUserId");
 						service.setReferenceInformation(id);
 						AccountBean accountDetails2 = cmsQueryAccount.srvUserAccount(id);
-						
+						service.setReferenceInformation(id);
 						request.setAttribute("accountDetails", accountDetails2 );
 						request.setAttribute("serviceUser", service.getServiceUserBean() );
 						destination="/viewAccount.jsp";
+						break;
 						
 					case viewNotes:
 						id = request.getParameter("serviceUserId");

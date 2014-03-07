@@ -1,11 +1,12 @@
 package model.beans;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class AccountBean {
 
 private String Account_Id; 
-private Float Account_Balance;
+private BigDecimal  Account_Balance;
 private String Active;
 private String Updated_By;
 private String Updated_On;
@@ -19,10 +20,10 @@ public String getAccount_Id() {
 public void setAccount_Id(String account_Id) {
 	Account_Id = account_Id;
 }
-public Float getAccount_Balance() {
+public BigDecimal  getAccount_Balance() {
 	return Account_Balance;
 }
-public void setAccount_Balance(Float account_Balance) {
+public void setAccount_Balance(BigDecimal  account_Balance) {
 	Account_Balance = account_Balance;
 }
 public String getActive() {

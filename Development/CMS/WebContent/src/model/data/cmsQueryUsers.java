@@ -187,9 +187,15 @@ public class cmsQueryUsers  {
 					userDetails.setCreatedOn(results.getString("Created_On"));
 					
 												
-				}	
-				userDetails.setUserRoles(qryUserRoles(userDetails));
-				
+				}
+				if(userDetails!=null)
+				{
+					List<UserRoleBean> roles = qryUserRoles(userDetails);
+					if (roles.size()!=0 && roles!=null)
+					{
+						userDetails.setUserRoles(qryUserRoles(userDetails));
+					}
+				}
 				results.close();
 				} catch (SQLException  e) {							
 					log.error(funcExceptionErrorMsg, e);

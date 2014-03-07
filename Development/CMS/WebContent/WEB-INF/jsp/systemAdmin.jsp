@@ -159,5 +159,6 @@ function assignCheckBox(checkbox)
 	</tr>
 	</table>
 	</form>
+	<%@include file="/footer.html"%>
 </body>
 </html>

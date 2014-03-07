@@ -40,8 +40,8 @@ Create table CM_Users (
         REFERENCES CM_System.Cm_USERS (UserName)
 );
 
-insert into cm_users values('lducray','Leslie','Ducray','c10327999@mydit.ie','Psycologist','Y','password','lducray',sysdate(),'lducray',sysdate());
-insert into cm_users values('jsmith','John','Smith','c10327784@mydit.ie','Lab technician','Y','password','lducray',sysdate(),'lducray',sysdate());
+insert into cm_users values('lducray','Leslie','Ducray','c10327999@mydit.ie','Psycologist','Y','5f4dcc3b5aa765d61d8327deb882cf99','lducray',sysdate(),'lducray',sysdate());
+insert into cm_users values('jsmith','John','Smith','c10327784@mydit.ie','Lab technician','Y','5f4dcc3b5aa765d61d8327deb882cf99','lducray',sysdate(),'lducray',sysdate());
 
 Create table CM_Roles (
     Role_Name VARCHAR(20) NULL,
@@ -220,7 +220,7 @@ CREATE TABLE CM_Date_To_Clean (
         REFERENCES CM_System.Cm_Streams (Stream_Id)
 );
 
-insert into cm_date_to_clean values(1,'none',7,'Y',0,1,0);
+insert into cm_date_to_clean values(1,'none',7,'Y',0,1,3);
 insert into cm_date_to_clean values(2,'YELLOW',7,'Y',1,1,3);
 insert into cm_date_to_clean values(3,'ORANGE',7,'Y',2,1,3);
 insert into cm_date_to_clean values(4,'RED',7,'Y',3,1,3);

@@ -87,7 +87,7 @@
 	
 	
 	</div>
-	
+	<div><%@include file="/footer.html"%></div>
 	
 	
 </body>

@@ -16,9 +16,26 @@ div.header {
 
 }
 
+#footer {
+	float:left; 
+clear: left;
+  bottom: 0;
+  color: #707070;
+  height: 2em;
+  left: 0;
+  position: static;
+  font-size: small;
+  width:100%;
+}
+
 div.msg {
 	color: #c6c6c6
 }
+div.firedrules {
+	text-size: 0.5px;
+	color: #454445
+}
+
 
 div.inline{
 	display: inline;

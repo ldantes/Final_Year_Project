@@ -42,7 +42,7 @@ public class cmsQueryAccount {
 				while (results.next())
 				{
 					account.setAccount_Id(results.getString("Account_Id"));
-					account.setAccount_Balance(results.getFloat("Account_Balance"));
+					account.setAccount_Balance(results.getBigDecimal("Account_Balance"));
 					account.setActive(results.getString("Active"));
 					account.setUpdated_By(results.getString("Updated_By"));
 					account.setUpdated_On(results.getString("Updated_On"));
@@ -69,8 +69,8 @@ public class cmsQueryAccount {
 				{
 					transaction = new TransactionBean();
 					transaction.setId(results.getString("Id"));
-					transaction.setAmount_Withdrawn(results.getString("Amount_Withdrawn"));
-					transaction.setAmount_Credited(results.getString("Amount_Credited"));
+					transaction.setAmount_Withdrawn(results.getBigDecimal("Amount_Withdrawn"));
+					transaction.setAmount_Credited(results.getBigDecimal("Amount_Credited"));
 					transaction.setApproved_By(results.getString("Approved_By"));
 					transaction.setDate_of_Transaction(results.getString("Date_of_Transaction"));
 					
@@ -166,8 +166,8 @@ public class cmsQueryAccount {
 				connection = DataSourceManager.getDataSource().getConnection();		
 				stmt = connection.prepareCall("{call cm_system.adjust_balance(?,?,?,?,?)}");			
 				stmt.setString(1, transaction.getAccount_Id());		
-				stmt.setString(2, transaction.getAmount_Credited());	
-				stmt.setString(3, transaction.getAmount_Withdrawn());	
+				stmt.setBigDecimal(2, transaction.getAmount_Credited());	
+				stmt.setBigDecimal(3, transaction.getAmount_Withdrawn());	
 				stmt.setString(4, transaction.getApproved_By());	
 				stmt.registerOutParameter(5,java.sql.Types.VARCHAR);			
 				stmt.executeQuery();			
