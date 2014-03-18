@@ -61,7 +61,7 @@ function show_hide(id) {
 		<tr>
 			<td>Username*
 			</td>
-			<td><input name="enteredusername" type="text" maxlength="25" size="50" value="${selecteduser.userName}" required>
+			<td><input name="enteredusername" pattern="^[A-Za-z_ -][A-Za-z_ -]*$" title="No numbers or special characters permited" type="text" maxlength="25" size="50" value="${selecteduser.userName}" required>
 			</td>
 		</tr>
 		</c:otherwise>
@@ -69,19 +69,19 @@ function show_hide(id) {
 		<tr>
 			<td>First Name*
 			</td>
-			<td><input name="fname" type="text" maxlength="20" size="50" value="${selecteduser.firstName}" required>
+			<td><input name="fname" type="text" maxlength="20" size="50"  pattern="^[A-Za-z_ -][A-Za-z_ -]*$" title="No numbers or special characters permited" value="${selecteduser.firstName}" required>
 			</td>
 		</tr>
 		<tr>
 			<td>Surname*
 			</td>
-			<td><input name="sname" type="text" maxlength="20" size="50" value="${selecteduser.surname}" required>
+			<td><input name="sname" type="text" maxlength="20" size="50" pattern="^[A-Za-z_ -][A-Za-z_ -]*$" title="No numbers or special characters permited" value="${selecteduser.surname}" required>
 			</td>
 		</tr>
 		<tr>
 			<td>Profession*
 			</td>
-			<td><input name="profession" type="text" maxlength="50" size="50" value="${selecteduser.profession}" required>
+			<td><input name="profession" type="text" maxlength="50" size="50"  pattern="^[A-Za-z_ -][A-Za-z_ -]*$" title="No numbers or special characters permited" value="${selecteduser.profession}" required>
 			</td>
 		</tr>
 		<tr>

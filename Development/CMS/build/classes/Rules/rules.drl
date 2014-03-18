@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
+//The service user has tested negative for required substances and they have over 20 euro credit
 rule "service user's account has enough to withdraw AND is eligible for outings/visits"
     no-loop true
 when
@@ -28,13 +28,13 @@ then
 		{
 	    	$result.getEligibilityBeans().get(i).setActive("Y");
 	    	cmsQueryEligibility.changeEligibility($result,1,0);
-	    	System.out.println("This happened 1");
+	    	
 	   	}
 	}
     
 end
-
-rule "service user is eligible for outings/visits"
+//the service user has progressed, and are negative off all required substances
+rule "service user is eligible for Group Recreational Outing"
     no-loop true
 when
 	 $result : ServiceUserBean(streamDetails.supportLevel != 1)
@@ -47,7 +47,7 @@ then
 		{
 	    	$result.getEligibilityBeans().get(i).setActive("Y");
 	    	cmsQueryEligibility.changeEligibility($result,2,0);
-	    	System.out.println("This happened 2");
+	    	
 	   	}
 	}
 end
@@ -64,7 +64,7 @@ then
 		{
 	    	$result.getEligibilityBeans().get(i).setActive("N");
 	    	cmsQueryEligibility.changeEligibility($result,1,0);
-	    	System.out.println("This happened N");
+	    	
 	   	}
 	}
 end
@@ -77,8 +77,7 @@ then
     
     serviceUserService service = new serviceUserService();
     service.changeEligibility($result,"N");    
-    System.out.println("service user's account may not withdraw (substance abuse)");
-    update( $result );
+    
 end
 
 /*rule "unsupported stream for outings/visits "
@@ -109,20 +108,20 @@ then
 	serviceUserService service = new serviceUserService();
 	$result.getStreamDetails().setSupportLevel($result.getStreamDetails().getSupportLevel()-1);
     service.changeStream($result);   
-	System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!Regress to High Support Stream!!!!!!!!!!!!!!!!!!!!!!");
+	
 end
 
 rule "service user is entitled to NO weekday TA"
     lock-on-active true
     no-loop true
-    dialect "mvel"
+    dialect "java"
 when
 	  $result : ServiceUserBean()
-      $inter : SubstanceAccumBean(substance =="Opiate", accum <= 1) from $result.subAccums
+      $inter : SubstanceAccumBean(substance.equals("Opiate"), accum <= 1) from $result.subAccums
 then
  	
 	cmsQueryEligibility.changeEligibility($result,3,0);
-   System.out.println("service user get 1 TA- Service user Id="+$result.getId());
+   
     
 end
 
@@ -130,15 +129,14 @@ rule "service user is entitled to 1 weekday TA"
     lock-on-active true
     no-loop true
     dialect "mvel"
-    salience 10
+    
 when
 	  $result : ServiceUserBean()
       $inter : SubstanceAccumBean(substance =="Opiate", accum == 2) from $result.subAccums
 then
  	
 	cmsQueryEligibility.changeEligibility($result,3,1);
-   System.out.println("service user get 1 TA- Service user Id="+$result.getId());
-    
+       
 end
 
 rule "(Stream 1) service user is entitled to 1 weekend TA - Benzodiazepine positive"
@@ -154,7 +152,6 @@ then
 	 	if($result.getEligibilityBeans().get(i).getId().equals("4") && $result.getEligibilityBeans().get(i).getAmount() <2 )
 	 	{
 			cmsQueryEligibility.changeEligibility($result,4,$result.getEligibilityBeans().get(i).getAmount() + 1);
-			System.out.println("benzo +");
 		}
 	   
 	}
@@ -174,7 +171,7 @@ then
 	 	if($result.getEligibilityBeans().get(i).getId().equals("4") && $result.getEligibilityBeans().get(i).getAmount() <2 )
 	 	{
 			cmsQueryEligibility.changeEligibility($result,4,$result.getEligibilityBeans().get(i).getAmount() + 1);
-			System.out.println("stimo +");
+			
 		}
 	   
 	}
@@ -192,7 +189,7 @@ when
 then
  	
 	cmsQueryEligibility.changeEligibility($result,3,2);
-   System.out.println("service user get 2 TA- Service user Id="+$result.getId());
+   
     
 end
 
@@ -237,11 +234,11 @@ then
  		}
  		
  	}
- 	System.out.println(countReq+"   :    "+countHave);
+ 	
  	if(countReq == countHave)
 	{ 
 	   cmsQueryEligibility.changeEligibility($result,4,2);
-	   System.out.println("service user get 1 TA- Service user Id="+$result.getId());
+	   
 	 }
     
 end
@@ -249,14 +246,14 @@ end
 rule "(stream 2) service user is NOT entitled to weekend TA - Substance abuse"
     lock-on-active true
     no-loop true
-    dialect "mvel"
+   dialect "java"
     
 when
 	  $result : ServiceUserBean(streamDetails.supportLevel != 1 ,dateToClean.card != "none" )
 then
  	
    cmsQueryEligibility.changeEligibility($result,4,0);
-   System.out.println("service user get 1 TA- Service user Id="+$result.getId());
+   
     
 end
 
@@ -267,7 +264,7 @@ rule "service user looses a weekday TA due to alcohol intoxication"
     dialect "java"
 when
 	  $result : ServiceUserBean()
-      $inter : SubstanceAccumBean(substance =="Alcohol", accum == 0) from $result.subAccums
+      $inter : SubstanceAccumBean(substance.equals("Alcohol"), accum == 0) from $result.subAccums
 then
  	
  	int amount =0;
@@ -280,7 +277,7 @@ then
 	}
  	
    cmsQueryEligibility.changeEligibility($result,3,amount);
-   System.out.println("reduced TA- ALCOHOL Service user Id="+$result.getId());
+   
     
 end
 

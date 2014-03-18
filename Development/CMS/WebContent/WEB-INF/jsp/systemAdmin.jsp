@@ -1,6 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -37,7 +36,7 @@ function assignCheckBox(checkbox)
 	</th>
 	<th>Active
 	</th>
-	<th>Maximum accumalation
+	<th>Maximum Accumulation
 	</th>
 	<th>Reset value
 	</th>
@@ -63,10 +62,10 @@ function assignCheckBox(checkbox)
 			</td>
 			
 			<td>
-				<input type="number" name="maxVal${substance.substance}" maxLength="2" min="0" id="maxVal${substance.substance}" value="${substance.maxValue}" />
+				<input type="number" name="maxVal${substance.substance}" maxLength="2" pattern="^[0-9]*$" title="Numbers only" min="0" id="maxVal${substance.substance}" value="${substance.maxValue}" />
 			</td>
 			<td>
-				<input type="number" name="resetVal${substance.substance}" maxLength="2" min="0" id="resetVal${substance.substance}" value="${substance.resetValue}" />
+				<input type="number" name="resetVal${substance.substance}" maxLength="2"  pattern="^[0-9]*$" title="Numbers only" min="0" id="resetVal${substance.substance}" value="${substance.resetValue}" />
 			</td>
 			<td>
 			<c:choose>
@@ -106,11 +105,11 @@ function assignCheckBox(checkbox)
 		<tr>
 			
 			<td>
-				Maximum Accumalation:</td><td><input type="number" name="submax" maxLength="2" min="0"  value="0" />
+				Maximum Accumalation:</td><td><input type="number" name="submax" maxLength="2"  pattern="^[0-9]*$" title="Numbers only" min="0"  value="0" />
 			</td></tr>
 		<tr>
 			<td>
-				Reset Value:</td><td><input type="number" name="subreset" maxLength="2" min="0" i value="0" />
+				Reset Value:</td><td><input type="number" name="subreset" maxLength="2"  pattern="^[0-9]*$" title="Numbers only" min="0" i value="0" />
 			</td></tr>
 		<tr>
 			<td>
@@ -147,9 +146,9 @@ function assignCheckBox(checkbox)
 	</td>
 	<td> ${stream.supportLevel}
 	</td>
-	<td>	<input type="number" name="point${stream.streamId}" step="0.10"  min="0" id="point${stream.streamId}" value="${stream.pointConversion}" />
+	<td>	<input type="number" name="point${stream.streamId}" step="0.10"    pattern="^(?!\(.*[^)]$|[^(].*\)$)\(?\$?(0|[1-9]\d{0,2}(,?\d{3})?)(\.\d\d?)?\)?$" title="Enter Valid format" min="0" id="point${stream.streamId}" value="${stream.pointConversion}" />
 	</td>
-	<td>	<input type="number" name="max${stream.streamId}" step="1"  min="0" id="max${stream.streamId}" value="${stream.maxPoints}" />
+	<td>	<input type="number" name="max${stream.streamId}" step="1"    pattern="^(?!\(.*[^)]$|[^(].*\)$)\(?\$?(0|[1-9]\d{0,2}(,?\d{3})?)(\.\d\d?)?\)?$" title="Enter Valid Format" min="0" id="max${stream.streamId}" value="${stream.maxPoints}" />
 	</td>
 	
 	</tr>

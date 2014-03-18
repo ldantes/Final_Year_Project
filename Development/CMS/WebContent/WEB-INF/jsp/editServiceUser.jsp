@@ -4,12 +4,16 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Edit Service Users</title>
+<%@include file="/header.jsp"%>
+   
+	<script type="text/javascript" src="<c:url value="/resources/javascript/jsFunctions.js" />"></script>
+
 
 </head>
 <body>
-    <%@include file="/header.jsp"%>
-	<script type="text/javascript" src="<c:url value="/resources/javascript/jsFunctions.js" />"></script>
+    
 	
+
 	<h1>Edit Service User: </h1><h3>
 	<c:choose>
 		<c:when test="${serviceUser.id != null && serviceUser.id != ''}">
@@ -35,13 +39,13 @@
 	</form>
 	<div>
 		<nav>
-		<a href="javascript:document.newRequest.requestAction.value='newSubstanceEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add New Behavioural/Substance results</a>
+		<a href="javascript:document.newRequest.requestAction.value='newSubstanceEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add/View Tox History</a>
 		||
-		<a href="javascript:document.newRequest.requestAction.value='newEngagmentEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add New Engagement/Meeting</a>
+		<a href="javascript:document.newRequest.requestAction.value='newEngagmentEntry';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">Add/View Meeting Attendance</a>
 		||
 		<a href="javascript:document.newRequest.requestAction.value='viewAccount';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">View Account</a>
 		||
-		<a href="javascript:document.newRequest.requestAction.value='viewNotes';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">View notes</a>
+		<a href="javascript:document.newRequest.requestAction.value='viewNotes';document.newRequest.action='ServiceUserServlet';document.newRequest.submit();">View Notes</a>
 		</nav>
 	</div>	
 	</c:if>
@@ -59,24 +63,27 @@
 				First Name*: 
 			</td>
 			<td>
-				<input name="srvUserfname" required type="text" maxlength="20" value="${serviceUser.firstname}"/>
+				<input name="srvUserfname" required type="text" pattern="^[A-Za-z_ -][A-Za-z_ -]*$" title="No numbers or special characters permited" maxlength="20" minlength="2" value="${serviceUser.firstname}"/>
 			</td>
+			<td class="status"></td>
 		</tr>
 		<tr>
 			<td>
 				Surname*: 
 			</td>
 			<td>
-				<input name="srvUsersname" required type="text" maxlength="30" value="${serviceUser.surname}"/>
+				<input name="srvUsersname" required type="text" pattern="^[A-Za-z_ -][A-Za-z_ -]*$" title="No numbers or special characters permited" maxlength="30" minlength="2" value="${serviceUser.surname}"/>
 			</td>
+			<td class="status"></td>
 		</tr>
 		<tr>
 			<td>
 				Date of Birth*:
 			</td>
 			<td>
-				<input name="srvUserDOB" required type="date" value="${serviceUser.doB}"/>
+				<input name="srvUserDOB" required type="date" pattern="^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$" title="Date format YYYY-MM-DD required"  value="${serviceUser.doB}"/>
 			</td>
+			<td class="status"></td>
 		</tr>
 		<tr>
 			<td>
@@ -98,10 +105,11 @@
 				</c:otherwise>
 				</c:choose>
 							
-				Male:<input type="radio" name="srvUserGender" required id="genderM" onClick="assignmentRadio(this.name);" value="M" ${M}/>
-				Female:<input type="radio" name="srvUserGender" id="genderF" onClick="assignmentRadio(this.name);" value="F" ${F}/>
+				Male:<input  type="radio" name="srvUserGender"  id="genderM" onClick="assignmentRadio(this.name);" value="M" ${M}/>
+				Female:<input  type="radio" name="srvUserGender" id="genderF" onClick="assignmentRadio(this.name);" value="F" ${F} required/>
 				
 			</td>
+			<td class="status"></td>
 		</tr>
 		<tr>
 			<td>
@@ -111,14 +119,16 @@
 				<input name="srvPPS" required type="text" value="${serviceUser.pps}"/>
 				
 			</td>
+			<td class="status"></td>
 		</tr>
 		<tr>
 			<td>
 				Contact Number*: 
 			</td>
 			<td>
-				<input name="srvUserContactactNumber" required type="tel" value="${serviceUser.contactNumber}" maxlength ="14"/>
+				<input name="srvUserContactactNumber" pattern="^[+- 0-9]*$" title="Invalid characters present" required type="tel" value="${serviceUser.contactNumber}" maxlength ="14"/>
 			</td>
+			<td class="status"></td>
 		</tr>
 		<tr>
 			<td>
@@ -127,33 +137,37 @@
 			<td>
 				<textarea name="srvUserAddress" required maxLength="100" style="resize:none; overflow:hidden;" rows="4">${serviceUser.address}</textarea>
 			</td>
+			<td class="status"></td>
 		</tr>
 		<tr>
 			<td>
 				Ethnic Background: 
 			</td>
 			<td>
-				<input name="srvUserEthnicity" type="text" value="${serviceUser.ethnicity}"/>
+				<input name="srvUserEthnicity" type="text" pattern="^[A-Za-z_ -][A-Za-z_ -]*$" title="No numbers or special characters permited" value="${serviceUser.ethnicity}"/>
 				
 			</td>
+			<td class="status"></td>
 		</tr>
 		<tr>
 			<td>
 				Nationality: 
 			</td>
 			<td>
-				<input name="srvUserNationality" type="text" value="${serviceUser.nationality}"/>
+				<input name="srvUserNationality" type="text" pattern="^[A-Za-z_ -][A-Za-z_ -]*$" title="No numbers or special characters permited" value="${serviceUser.nationality}"/>
 				
 			</td>
+			<td class="status"></td>
 		</tr>
 			<tr>
 			<td>
 				Occupation: 
 			</td>
 			<td>
-				<input name="srvUserOccupation" type="text" value="${serviceUser.occupation}"/>
+				<input name="srvUserOccupation" type="text" pattern="^[A-Za-z_ -][A-Za-z_ -]*$" title="No numbers or special characters permited" value="${serviceUser.occupation}"/>
 				
 			</td>
+			
 		</tr>
 		<tr>
 			<td>
@@ -203,7 +217,7 @@
 	<td>
 	<table>
 	<tr>
-	<th> Substance Accumalations</th>
+	<th> Substance Accumulation</th>
 	</tr>
 	<c:forEach items="${serviceUser.subAccums}" var="subaccum">
 	<tr>
@@ -219,17 +233,17 @@
 	<td>
 	<table class="hor-zebra">
 	<tr>
-	<th> Date To Clean</th>
+	<th>Target Date for Negative Toxicology Screen</th>
 	</tr>
 	<c:if test="${serviceUser.dateToClean.card != null and serviceUser.dateToClean.card != ''}">
 	<tr>
 	<td>
-	Card issued: <FONT class="card" COLOR="${serviceUser.dateToClean.card}">${serviceUser.dateToClean.card}</FONT>
+	Caution Issued: <FONT class="card" COLOR="${serviceUser.dateToClean.card}">${serviceUser.dateToClean.card}</FONT>
 	</td>
 	</tr>
 	<tr>
 	<td>
-	Date to be Clean: ${serviceUser.dateToClean.dateToClean}
+	Target Date: ${serviceUser.dateToClean.dateToClean}
 	</td>
 	</tr>
 	<tr>

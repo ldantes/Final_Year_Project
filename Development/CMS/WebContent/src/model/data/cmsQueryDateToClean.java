@@ -108,7 +108,7 @@ private static Logger log = Logger.getLogger(cmsQueryUsers.class);
 								+ " Date_to_Clean= DATE_ADD(curdate(),INTERVAL "+serviceUserBean.getDateToClean().getNumDays()+" DAY) ";
 					}
 					query = query+ " where client_id ="+serviceUserBean.getId()+"";
-					System.out.print("QUERY"+query);
+					
 					stmt.executeUpdate(query);
 					
 				}

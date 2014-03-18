@@ -45,5 +45,6 @@
 	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/org.drools.eclipse_5.5.0.Final.jar"/>
 	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/gson-2.2.4-javadoc.jar"/>
 	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/gson-2.2.4-sources.jar"/>
+	<classpathentry kind="lib" path="C:/xampp/tomcat/webapps/CMS/WebContent/WEB-INF/lib/commons-lang3-3.3/commons-lang3-3.3.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

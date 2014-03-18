@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -45,24 +46,26 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 			
 			String xmlDbDetails = ConvertToXML(serviceuserbean);
 			
-			
-			connection = DataSourceManager.getDataSource().getConnection();		
-			stmt = connection.prepareCall("{call cm_system.update_service_user(?,?,?)}");			
-			stmt.setString(1, xmlDbDetails);			
-			stmt.registerOutParameter(2,java.sql.Types.VARCHAR);			
-			stmt.registerOutParameter(3,java.sql.Types.VARCHAR);
-			stmt.executeQuery();			
-			
-			//update bean with new/updated record
-			if (stmt.getString(3)!=null){
-				String ServiceUserId =stmt.getString(3);
-				returnBean = cmsQueryServiceUser.searchServiceUsersById(ServiceUserId);
-			}
-			
-			//db transaction returns OK if successful transaction. Otherwise it returns
-			//and error description.
-			if (stmt.getString(2).equals("OK")== false){
-						
+			if(xmlDbDetails!=null&&xmlDbDetails!="")
+			{
+				connection = DataSourceManager.getDataSource().getConnection();		
+				stmt = connection.prepareCall("{call cm_system.update_service_user(?,?,?)}");			
+				stmt.setString(1, xmlDbDetails);			
+				stmt.registerOutParameter(2,java.sql.Types.VARCHAR);			
+				stmt.registerOutParameter(3,java.sql.Types.VARCHAR);
+				stmt.executeQuery();			
+				
+				//update bean with new/updated record
+				if (stmt.getString(3)!=null){
+					String ServiceUserId =stmt.getString(3);
+					returnBean = cmsQueryServiceUser.searchServiceUsersById(ServiceUserId);
+				}
+				
+				//db transaction returns OK if successful transaction. Otherwise it returns
+				//and error description.
+				if (stmt.getString(2).equals("OK")== false){
+							
+				}
 			}
 		}
 		catch (SQLException  e) {							
@@ -600,6 +603,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 	        node3.appendChild(doc.createTextNode(serviceuserbean.getSurname()));
 	       	node4.appendChild(doc.createTextNode(serviceuserbean.getGender()));
 	        node5.appendChild(doc.createTextNode(serviceuserbean.getDoB()));
+	        
 	        node6.appendChild(doc.createTextNode(serviceuserbean.getAddress()));
 	        node7.appendChild(doc.createTextNode(serviceuserbean.getContactNumber()));
 	        node8.appendChild(doc.createTextNode(serviceuserbean.getEthnicity()));

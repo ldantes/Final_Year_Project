@@ -110,7 +110,7 @@ public class cmsQueryEligibility {
 					stmt = connection.createStatement();	
 					System.out.print("\n"+serviceuser.getEligibilityBeans().get(i).getActive()+" "+eleigibility+"\n");
 					String query = "update cm_client_eligibilities set active ='"+serviceuser.getEligibilityBeans().get(i).getActive()+"', amount="+amount+" where client_id ="+serviceuser.getId()+" and eligibility_id ="+ eleigibility+ "";
-					System.out.print(query+"\n\n\n");
+					
 					stmt.executeUpdate(query);
 					
 				}

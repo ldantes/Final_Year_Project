@@ -40,7 +40,8 @@ Create table CM_Users (
         REFERENCES CM_System.Cm_USERS (UserName)
 );
 
-insert into cm_users values('lducray','Leslie','Ducray','c10327999@mydit.ie','Psycologist','Y','5f4dcc3b5aa765d61d8327deb882cf99','lducray',sysdate(),'lducray',sysdate());
+insert into cm_users values('lducray','Leslie','Ducray','c10327999@mydit.ie','Psychologist','Y','5f4dcc3b5aa765d61d8327deb882cf99','lducray',sysdate(),'lducray',sysdate());
+insert into cm_users values('system','Rule','System','','System','Y','5f4dcc3b5aa765d61d8327deb882cf99','system',sysdate(),'system',sysdate());
 insert into cm_users values('jsmith','John','Smith','c10327784@mydit.ie','Lab technician','Y','5f4dcc3b5aa765d61d8327deb882cf99','lducray',sysdate(),'lducray',sysdate());
 
 Create table CM_Roles (
@@ -119,8 +120,8 @@ create table Cm_Streams (
         REFERENCES CM_System.Cm_USERS (UserName)
 );
 
-insert into cm_streams values(1,'High Support',1,'Y',5,null,16.50,0.40,'lducray',curdate());
-insert into cm_streams values(2,'Progression',2,'Y',null,3,22,0.60,'lducray',curdate());
+insert into cm_streams values(1,'Preliminary',1,'Y',5,null,16.50,0.40,'lducray',curdate());
+insert into cm_streams values(2,'Advanced',2,'Y',null,3,22,0.60,'lducray',curdate());
 
 create table CM_Client_Stream (
     Client_Id int Not NULL,

@@ -203,6 +203,7 @@ public class ServiceUserServlet extends HttpServlet {
 						userMessage =service.userMessage;
 						firedrules=service.firedrules;
 						request.setAttribute("userMsg",userMessage);
+						request.setAttribute("firedrules",firedrules);
 						destination="/editServiceUser.jsp";
 						break;
 						
@@ -235,24 +236,34 @@ public class ServiceUserServlet extends HttpServlet {
 						{
 							transaction.setAmount_Credited(new BigDecimal(request.getParameter("credit")));	
 						}
+						
+						transaction.setAmount_Withdrawn(new BigDecimal(0));	
 						if(service.serviceUserBean.getEligibilityBeans().get(0).getActive().equals("Y"))
 						{
 							if(request.getParameter("withdraw")!= null && request.getParameter("withdraw").length() != 0)
 							{
 								transaction.setAmount_Withdrawn(new BigDecimal(request.getParameter("withdraw")));	
 							}
+							
 						}
 						transaction.setApproved_By(request.getParameter("username"));
 							
-						///
-						service.adjustBalance(transaction);
-						id = request.getParameter("serviceUserId");
-						service.setReferenceInformation(id);
-						AccountBean accountDetails2 = cmsQueryAccount.srvUserAccount(id);
-						service.setReferenceInformation(id);
-						request.setAttribute("accountDetails", accountDetails2 );
-						request.setAttribute("serviceUser", service.getServiceUserBean() );
-						destination="/viewAccount.jsp";
+						if(transaction.getAmount_Withdrawn().floatValue() <= service.serviceUserBean.getAccountDetails().getAccount_Balance().floatValue())
+						{
+							service.adjustBalance(transaction);
+							id = request.getParameter("serviceUserId");
+							service.setReferenceInformation(id);
+							AccountBean accountDetails2 = cmsQueryAccount.srvUserAccount(id);
+							service.setReferenceInformation(id);
+							request.setAttribute("accountDetails", accountDetails2 );
+							request.setAttribute("serviceUser", service.getServiceUserBean() );
+							destination="/viewAccount.jsp";
+							request.setAttribute("userMsg","Transaction Successful");
+						}
+						else
+						{
+							request.setAttribute("userMsg","Requested withdraw amount exceeds current credit");
+						}
 						break;
 						
 					case viewNotes:

@@ -1,6 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -9,7 +8,7 @@
 <body>
     <%@include file="/header.jsp"%>
 	<script type="text/javascript" src="/resources/javascript/jsFunctions.js"></script>
-	
+	<div class="msg">${userMsg}</div>
 
 	
 	
@@ -27,7 +26,7 @@
 	<hr/>
 	
 		<div class="inline" >
-	<h1>Apply transaction</h1>
+	<h1>Apply Transaction</h1>
 	<form id ="newTransaction" method="post" action="ServiceUserServlet">
 	<input type="hidden" name="requestAction" value="newTransaction"/>
 	<input type="hidden" name="serviceUserId" value="${serviceUser.id}"/>
@@ -35,14 +34,14 @@
 		
 	<table class="hor-zebra">
 	<tr>
-		<td>Credited amount: </td>
-		<td><input type="number" maxLength="5" name="credit" value="0.00" step="0.50" min="0" max="${serviceUser.streamDetails['maxPoints']}"/></td>
+		<td>Award account (Points): </td>
+		<td><input type="number" maxLength="5" name="credit" value="0" step="1" pattern="^[0-9]*$" title="Numbers only" min="0" max="${serviceUser.streamDetails['maxPoints']/serviceUser.streamDetails['pointConversion']}"/></td>
 	</tr>
 	<tr>
 		<c:choose>
 		<c:when test="${serviceUser.eligibilityBeans.get(0).active=='Y'}">
-		<td>Withdrawn amount:</td>
-		<td><input type="number" maxLength="5" name="withdraw" value="0.00" step="0.50" min="0" max="${accountDetails.account_Balance}"/></td>
+		<td>Withdrawn amount (Currency):</td>
+		<td><input type="number" maxLength="5" name="withdraw" value="0.00" step="1.00" min="0" pattern="^(?!\(.*[^)]$|[^(].*\)$)\(?\$?(0|[1-9]\d{0,2}(,?\d{3})?)(\.\d\d?)?\)?$" title="Numbers only" max="${accountDetails.account_Balance}"/></td>
 		</c:when>
 		<c:otherwise>
 		<td><font color="Red"> Service user is NOT eligible to withdraw their credits</font></td>

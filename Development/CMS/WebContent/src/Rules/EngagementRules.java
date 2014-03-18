@@ -17,18 +17,18 @@ import org.drools.runtime.StatelessKnowledgeSession;
 public class EngagementRules {
 
 	private static Logger log = Logger.getLogger(SubstanceRules.class);
-	private static  Set<String> firedRules = new HashSet<String>();
+	private static  Set<String> firedRules = null;
 	public ServiceUserBean applyEngagmentRules(ServiceUserBean serviceUserBean, AttendanceBean attendanceBean)
 	{
-
+		firedRules = new HashSet<String>();
 		KnowledgeBase knowledgeBase = utilities.KnowledgeBaseManager.createKnowledgeBase("EngagementRules.drl");
 		StatelessKnowledgeSession ksession = knowledgeBase.newStatelessKnowledgeSession();
 		
 		ksession.addEventListener( new DefaultAgendaEventListener() {                            
 			   public void afterActivationFired(AfterActivationFiredEvent event) {
 			       super.afterActivationFired( event );
-			       System.out.println("Fired: "+ event.getActivation().getRule().getName() );
 			       getFiredRules().add(""+event.getActivation().getRule().getName()+"");
+			       System.out.print(event.getActivation().getRule().getName());
 			   }
 			});
 		

@@ -7,7 +7,8 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `update_service_user`(IN serviceUserXml varchar(1000) ,OUT okayReturn VARCHAR(2), OUT serviceuserID INT)
 BEGIN
 DECLARE _id int;
-Declare _name varchar(50);
+Declare _fname varchar(50);
+Declare _sname varchar(50);
 Declare _gender char(1);
 Declare _dob varchar(10);
 Declare _address varchar(100);
@@ -20,7 +21,8 @@ Declare _username varchar(30);
 Declare _pps varchar(10);
 
 select EXTRACTVALUE (serviceUserXml, '*/id') into _id  ;
-select EXTRACTVALUE (serviceUserXml, '*/name') into _name  ;
+select EXTRACTVALUE (serviceUserXml, '*/fname') into _fname  ;
+select EXTRACTVALUE (serviceUserXml, '*/sname') into _sname  ;
 select EXTRACTVALUE (serviceUserXml, '*/gender') into _gender  ;
 select EXTRACTVALUE (serviceUserXml, '*/dob') into _dob  ;
 select EXTRACTVALUE (serviceUserXml, '*/address') into _address  ;
@@ -34,7 +36,8 @@ select EXTRACTVALUE (serviceUserXml, '*/pps') into _pps  ;
 
 SET sql_safe_updates=0;
 
-update cm_clients set 	client_name = _name,
+update cm_clients set 	client_fname = CONCAT(UCASE(LEFT(_fname, 1)), SUBSTRING(_fname, 2)), 
+						client_sname =  CONCAT(UCASE(LEFT(_sname, 1)), SUBSTRING(_sname, 2)),
 						client_DOB = _dob,
 						client_gender = _gender,
 						client_contact_no = _contactnumber,

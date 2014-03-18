@@ -49,7 +49,7 @@
 							</c:forEach>
 						</select>
 		</td>
-		<td>Administered on: <input type="date"  required id="datePicker" name="administeredOn" value="${user.administedOn}"/>
+		<td>Administered on: <input type="date"  pattern="^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$" title="Date format YYYY-MM-DD required" required id="datePicker" name="administeredOn" value="${user.administedOn}"/>
 		</td>
 		</tr>
 		<tr>

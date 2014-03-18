@@ -24,7 +24,7 @@
 	
 	<div class="inline" >
 	<h2>NEW ATTENDANCE</h2>
-	<form id="newAttendance" action ="ServiceUserServlet" method="post" onsubmit="return confirm('Please confirm entry before continuing\n\'OK\' to CONTINUE ,\'Cancel\' to RETURN'); ">
+	<form id="newAttendance" action ="ServiceUserServlet" method="post" onsubmit="return confirm('Please confirm correct entry before continuing\n\'OK\' to CONTINUE ,\'Cancel\' to RETURN'); ">
 	<input type="hidden" name="requestAction" value="insertNewAttendance"/>
 	<input type="hidden" name="srvUserid" value="${serviceUser.id}"/> 
 	<input type="hidden" name="username" value="${username}"/>
@@ -32,25 +32,25 @@
 	<table class="hor-zebra">
 		
 		<tr>
-			<td>Time of meeting:</td>
-			<td><input type="time" name="attndTime" value="" required/>	</td>
+			<td>Time of meeting*:</td>
+			<td><input type="time" name="attndTime" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$" title="time format HH:MM (24h) required" value="" required/>	</td>
 		</tr>
 		<tr>
-			<td>Date of meeting:</td>
-			<td><input type="date" name="attndDate" value="" required/>	</td>
+			<td>Date of meeting*:</td>
+			<td><input type="date" name="attndDate" pattern="^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$" title="Date format YYYY-MM-DD required" value="" required/>	</td>
 		</tr>
 		<tr>
-			<td>Meeting attended:</td>
-			<td>Yes:<input type="radio" name="attended" id="passed" onClick="assignmentRadio(this.name);" value="Y"/>
+			<td>Meeting attended*:</td>
+			<td>Yes:<input type="radio" required name="attended" id="passed" onClick="assignmentRadio(this.name);" value="Y"/>
 				No:<input type="radio" name="attended" id="failed" onClick="assignmentRadio(this.name);" value="N" />
-				<input type="radio" name="attended" id="default" onClick="assignmentRadio(this.name);" value="" style="display:none" checked="checked"/></td>
+				</td>
 			
 		</tr>
 		<tr>
 			<td>Meaningful participation:</td>
 			<td>Yes:<input type="radio" name="particaption" id="passed" onClick="assignmentRadio(this.name);" value="Y"/>
 				No:<input type="radio" name="particaption" id="failed" onClick="assignmentRadio(this.name);" value="N" />
-				<input type="radio" name="particaption" id="default" onClick="assignmentRadio(this.name);" value="" style="display:none" checked="checked"/></td>
+				<input type="radio" name="particaption" id="default" onClick="assignmentRadio(this.name);" value="N" style="display:none" checked="checked"/></td>
 			
 		</tr>
 		<tr>
@@ -63,14 +63,14 @@
 			<td>Valid reason for absence:</td>
 			<td>Yes:<input type="radio" name="reasonValid" id="passed" onClick="assignmentRadio(this.name);" value="Y"/>
 				No:<input type="radio" name="reasonValid" id="failed" onClick="assignmentRadio(this.name);" value="N" />
-				<input type="radio" name="reasonValid" id="default" onClick="assignmentRadio(this.name);" value="" style="display:none" checked="checked"/></td>
+				<input type="radio" name="reasonValid" id="default" onClick="assignmentRadio(this.name);" value="N" style="display:none" checked="checked"/></td>
 				
 		</tr>
 		<tr>
-			<td>Review Meeting:</td>
-			<td>Yes:<input type="radio" name="reviewMeeting" id="passed" onClick="assignmentRadio(this.name);" value="Y"/>
+			<td>Review Meeting*:</td>
+			<td>Yes:<input type="radio" required name="reviewMeeting" id="passed" onClick="assignmentRadio(this.name);" value="Y"/>
 				No:<input type="radio" name="reviewMeeting" id="failed" onClick="assignmentRadio(this.name);" value="N" />
-				<input type="radio" name="reviewMeeting" id="default" onClick="assignmentRadio(this.name);" value="" style="display:none" checked="checked"/></td>
+				</td>
 			
 		</tr>
 		<tr>
@@ -78,7 +78,7 @@
 				<input class="button"  type="submit" value="Submit"/>
 			</td>
 			<td>
-				<input class="button"  type="button" value="Cancel" onClick="this.form.reset();"/>
+				<input class="button"  type="button" value="Cancel" />
 			</td>
 		</tr>
 	</table>

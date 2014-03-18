@@ -93,5 +93,52 @@ public class cmsQueryAttendance {
 		return attendanceDetails;
 		
 	}
+	
+	public static int awardedMeetingsThisWeek(String id)
+	{
+		String 	funcExceptionErrorMsg 	= "awardedMeetingsThisWeek. ";
+		Connection connection = null;		
+		Statement stmt = null;	
+		int rewardedAttendance = 0;
+			
+			try{
+				connection = DataSourceManager.getDataSource().getConnection();
+				stmt = connection.createStatement();			
+				String query = "select count(*) as count"+
+						" from cm_client_attnd where Client_Id = "+id+" and Attended='Y' and participated ='Y' "+
+							"	and TO_DAYS(time_date)> to_days(curdate())-7 ";
+				
+
+				ResultSet  results = stmt.executeQuery(query);
+				while (results.next())
+				{
+					rewardedAttendance = results.getInt("count");
+				}
+				
+				results.close();
+			}
+			catch (SQLException  e) {							
+				log.error(funcExceptionErrorMsg, e);
+							
+			} finally {
+				try {
+					if(stmt != null){
+						stmt.close();
+					}
+				} catch (SQLException sqle) {
+					log.error(funcExceptionErrorMsg, sqle);
+					
+				}
+				try {
+					if(connection != null){
+						connection.close();
+					}
+				} catch (SQLException sqle) {
+					log.error(funcExceptionErrorMsg, sqle);
+					
+				}
+			}
+		return rewardedAttendance;
+	}
 
 }

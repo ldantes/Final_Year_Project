@@ -237,13 +237,22 @@ public class serviceUserService{
 		String oldStreamId = serviceUserBean.getStreamDetails().getStreamId();
 		SubstanceRules sRules = new SubstanceRules();
 		sRules.adjustSubstanceAccumaltor(this.serviceUserBean);
-		System.out.print("*****************FIRED RULES****************\n");
+		
 		for (String s : sRules.getFiredRules())
 		{
 			this.firedrules=this.firedrules+"<br/>"+s;
-			System.out.print(s+"\n-");
+			
 		}
-		System.out.print("*********************************************");
+		
+		NoteBean note = new NoteBean();
+		note.setClient_Id(this.serviceUserBean.getId());
+		note.setUserName("system");
+		note.setNote(this.firedrules);
+		
+		
+		serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
+		serviceUserFacade.addNewNote(note);
+		
 		setReferenceInformation(id);
 		if (!oldStreamId.equals(this.serviceUserBean.getStreamDetails().getStreamId()))
 		{
@@ -270,15 +279,21 @@ public class serviceUserService{
 		setReferenceInformation(id);
 		EngagementRules eRules = new EngagementRules();
 		eRules.applyEngagmentRules(this.serviceUserBean, attendanceBean);
-		System.out.print("*****************FIRED RULES****************");
+		
 		for (String s : eRules.getFiredRules())
 		{
 			this.firedrules=this.firedrules+"<br/>"+s;
-			System.out.print(s);
+			
 		}
-		System.out.print("*********************************************");
+		NoteBean note = new NoteBean();
+		note.setClient_Id(this.serviceUserBean.getId());
+		note.setUserName("system");
+		note.setNote(this.firedrules);
+		
 		ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
 		serviceUserFacade.newAttendance(attendanceBean);
+		serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
+		serviceUserFacade.addNewNote(note);
 		
 		setReferenceInformation(id);
 		
@@ -289,11 +304,31 @@ public class serviceUserService{
 	
 	public void adjustBalance(TransactionBean transaction) 
 	{
+		float creditThisWeek =0;
+		float newCredits =0;
+		setReferenceInformation(transaction.getAccount_Id());
+		creditThisWeek = cmsQueryAccount.queryWeekCredit(transaction.getAccount_Id());
+		newCredits = transaction.getAmount_Credited().floatValue() * this.serviceUserBean.getStreamDetails().getPointConversion();
+		transaction.setAmount_Credited(new BigDecimal(newCredits));
+		if((creditThisWeek + transaction.getAmount_Credited().floatValue()) > this.serviceUserBean.getStreamDetails().getMaxPoints())
+		{
+			this.userMessage="Credit has reached weekly MAX <br/>";
+			transaction.setAmount_Credited(new BigDecimal(this.serviceUserBean.getStreamDetails().getMaxPoints() - creditThisWeek));
+			if(transaction.getAmount_Credited().floatValue()<=0)
+			{
+				transaction.setAmount_Credited(new BigDecimal(0));
+			}
+		}
+		if(transaction.getAmount_Withdrawn()==null || transaction.getAmount_Withdrawn().floatValue()==0)
+		{
+			transaction.setAmount_Withdrawn(new BigDecimal(0));
+		}
 		cmsQueryAccount.adjustBalance(transaction);
 		setReferenceInformation(transaction.getAccount_Id());		
 		this.userMessage="Account successfully adjusted";
 		SubstanceRules sRules = new SubstanceRules();
 		sRules.adjustSubstanceAccumaltor(this.serviceUserBean);
+		
 	
 			
 	}
@@ -365,7 +400,6 @@ public class serviceUserService{
 	
 	public void changeStream(ServiceUserBean serviceuser)
 	{
-		this.userMessage="Service Usser Stream has been updated to support level: "+serviceuser.getStreamDetails().getSupportLevel();
 		cmsQueryServiceUser.changeStream(serviceuser);
 		
 		serviceuser.getDateToClean().setOrderOfProgress(0);
@@ -396,7 +430,7 @@ public class serviceUserService{
 		ServiceUserFacade serviceUserFacade = (ServiceUserFacade) applicationContext.getBean("serviceUserFacade");
 		serviceUserFacade.adjustBalance(transaction);
 		
-		this.userMessage=this.userMessage+"Service Test results successfull added <br/> account credited :"+new BigDecimal(credit).setScale(2, RoundingMode.CEILING);
+		this.userMessage=this.userMessage+"Test results successfull added <br/> account credited :"+new BigDecimal(credit).setScale(2, RoundingMode.CEILING);
 	}
 	
 }

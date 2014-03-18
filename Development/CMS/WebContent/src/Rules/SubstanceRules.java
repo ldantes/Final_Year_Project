@@ -16,18 +16,18 @@ import org.drools.runtime.StatelessKnowledgeSession;
 public class SubstanceRules {
 
 	private static Logger log = Logger.getLogger(SubstanceRules.class);
-	private static Set<String> firedRules = new HashSet<String>();
+	private static Set<String> firedRules =null;
 	
 	public  ServiceUserBean adjustSubstanceAccumaltor(ServiceUserBean serviceUserBean)
 	{
-
+		firedRules =  new HashSet<String>();
 		KnowledgeBase knowledgeBase = utilities.KnowledgeBaseManager.createKnowledgeBase("rules.drl");
 		StatelessKnowledgeSession ksession = knowledgeBase.newStatelessKnowledgeSession();
 		
 		ksession.addEventListener( new DefaultAgendaEventListener() {                            
 			   public void afterActivationFired(AfterActivationFiredEvent event) {
 			       super.afterActivationFired( event );
-			       System.out.println("Fired: "+ event.getActivation().getRule().getName() );
+			       System.out.print(event.getActivation().getRule().getName());
 			       getFiredRules().add(""+event.getActivation().getRule().getName()+"");
 			   }
 			});

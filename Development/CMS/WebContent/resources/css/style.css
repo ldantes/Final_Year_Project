@@ -16,6 +16,21 @@ div.header {
 
 }
 
+input:invalid {
+	border: 1px solid #707070;
+	color: red
+	
+}
+
+
+input:valid {
+	font-weight: bold;
+}
+
+input:indeterminate {
+	background-color: grey;
+}
+
 #footer {
 	float:left; 
 clear: left;
