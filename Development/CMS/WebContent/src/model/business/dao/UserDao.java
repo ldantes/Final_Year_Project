@@ -8,7 +8,7 @@ import javax.naming.NamingException;
 import model.beans.UserBean;
 import model.beans.UserRoleBean;
 
-
+//method prototypes for user data abstract object methods
 public interface UserDao 
 {
 	

@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 
 import utilities.DataSourceManager;
@@ -20,6 +18,7 @@ import model.data.cmsQueryUsers;
 public class UserDaoImpl implements UserDao{
 	
 	private static Logger log = Logger.getLogger(cmsQueryUsers.class);
+	// below string can be reused for various user queries, each query can apply their own succeeding conditions.
 	private final String qryUsers ="select distinct"
 			+ "    username as userName,"
 			+ "    user_Fname as firstName, "
@@ -32,6 +31,7 @@ public class UserDaoImpl implements UserDao{
 	
 	public UserBean getUser(String userName, String password) 
 	{
+		// set user query is defined to query where username and password match
 		String qryCondition = " where username = '" + userName + "'" + " and user_password = '" + password + "' and user_active ='Y'";
 		return getUser(qryUsers +  qryCondition);
 	}

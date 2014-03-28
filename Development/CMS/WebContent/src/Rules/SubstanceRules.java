@@ -16,7 +16,7 @@ import org.drools.runtime.StatelessKnowledgeSession;
 public class SubstanceRules {
 
 	private static Logger log = Logger.getLogger(SubstanceRules.class);
-	private static Set<String> firedRules =null;
+	private static Set<String> firedRules =null; //firedRules will store a set (non duplicated list) of all rules which fired
 	
 	public  ServiceUserBean adjustSubstanceAccumaltor(ServiceUserBean serviceUserBean)
 	{
@@ -24,11 +24,11 @@ public class SubstanceRules {
 		KnowledgeBase knowledgeBase = utilities.KnowledgeBaseManager.createKnowledgeBase("rules.drl");
 		StatelessKnowledgeSession ksession = knowledgeBase.newStatelessKnowledgeSession();
 		
+		//An event listener is added to catch all rules which were matched and fired. these will be used to inform the user.	
 		ksession.addEventListener( new DefaultAgendaEventListener() {                            
 			   public void afterActivationFired(AfterActivationFiredEvent event) {
 			       super.afterActivationFired( event );
-			       System.out.print(event.getActivation().getRule().getName());
-			       getFiredRules().add(""+event.getActivation().getRule().getName()+"");
+			       getFiredRules().add("<li>"+event.getActivation().getRule().getName()+"</li>"); // each fired rule is added with HTML list tags
 			   }
 			});
 		

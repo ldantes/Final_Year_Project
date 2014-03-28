@@ -27,7 +27,7 @@ public class EngagementRules {
 		ksession.addEventListener( new DefaultAgendaEventListener() {                            
 			   public void afterActivationFired(AfterActivationFiredEvent event) {
 			       super.afterActivationFired( event );
-			       getFiredRules().add(""+event.getActivation().getRule().getName()+"");
+			       getFiredRules().add("<li>"+event.getActivation().getRule().getName());
 			       System.out.print(event.getActivation().getRule().getName());
 			   }
 			});

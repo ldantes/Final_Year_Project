@@ -13,8 +13,10 @@ import java.math.BigDecimal;
 
 import java.lang.Integer;
 
+//Ld March 2014
+//Rules govern the consequences for the user's attendandance
 
-rule "Service User attended AND participated during meeting/engagement"
+rule "Service user attended AND participated during meeting/engagement"
 	lock-on-active true
 	dialect "java"
 when
@@ -50,7 +52,7 @@ then
 	}
 end
 
-rule "Service User missed engagement BUT provided a valid excuse"
+rule "Service user missed engagement BUT provided a valid excuse"
 	lock-on-active true
 when
 	$result : AttendanceBean(attended == "N", validReason == "Y")
@@ -68,7 +70,7 @@ then
 	System.out.println("Service User is penalized");
 end
 
-rule "Service User missed a Key engagement without a valid reason"
+rule "Service user missed a key engagement without a valid reason"
 	lock-on-active true
 	 no-loop true
 

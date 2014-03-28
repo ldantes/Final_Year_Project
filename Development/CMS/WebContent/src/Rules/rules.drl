@@ -15,9 +15,11 @@ import java.lang.Integer;
 import java.util.ArrayList;
 import java.util.List;
 
+//Ld March 2014
+//Rules govern the consequences for the user's test result and amount creditted
 
 //The service user has tested negative for required substances and they have over 20 euro credit
-rule "service user's account has enough to withdraw AND is eligible for outings/visits"
+rule "Service user's account has enough to withdraw AND is eligible for outings/visits"
     no-loop true
 when
     $result: ServiceUserBean( accountDetails.Account_Balance >= 20 , dateToClean.card == "none")
@@ -34,7 +36,7 @@ then
     
 end
 //the service user has progressed, and are negative off all required substances
-rule "service user is eligible for Group Recreational Outing"
+rule "Service user is eligible for Group Recreational Outing"
     no-loop true
 when
 	 $result : ServiceUserBean(streamDetails.supportLevel != 1)
@@ -52,7 +54,7 @@ then
 	}
 end
 
-rule "service user's account does NOT have enough to withdraw"
+rule "Service user's account does NOT have enough to withdraw"
     no-loop true
 when
     $result: ServiceUserBean( accountDetails.Account_Balance < 20 )
@@ -69,7 +71,7 @@ then
 	}
 end
 
-rule "substance abuse therefor NO outings/visits/Credit withdraw"
+rule "Substance abuse therefor NO outings/visits/credit-withdraw"
     lock-on-active true
 when
     $result: ServiceUserBean(dateToClean.card != "none" )
@@ -158,7 +160,7 @@ then
     
 end
 
-rule "(Stream 1) service user is entitled to 1 weekend TA - Stimulant positive"
+rule "(Stream 1) Service user is entitled to 1 weekend TA - Stimulant positive"
     lock-on-active true
     no-loop true
     dialect "java"
@@ -178,7 +180,7 @@ then
     
 end
 
-rule "service user is entitled to 2 weekday TA"
+rule "Service user is entitled to 2 weekday TA"
     lock-on-active true
     no-loop true
     dialect "mvel"
@@ -208,7 +210,7 @@ then
     
 end*/
 
-rule "(stream 2)service user is entitled to weekend TA"
+rule "(Stream 2) Service user is entitled to weekend TA"
     lock-on-active true
     no-loop true
     dialect "java"
@@ -220,7 +222,6 @@ then
  	List<SubstanceBean> substances = cmsQuerySubstance.qrySubstances(null, "Y");
  	int countReq =0;
  	int countHave =0;
- 	System.out.println("SIZE   :    "+substances.size());
  	for(int i =0; i< substances.size(); i++)
  	{
  		
@@ -243,7 +244,7 @@ then
     
 end
 
-rule "(stream 2) service user is NOT entitled to weekend TA - Substance abuse"
+rule "(Stream 2) Service user is NOT entitled to weekend TA - Substance abuse"
     lock-on-active true
     no-loop true
    dialect "java"
@@ -258,7 +259,7 @@ then
 end
 
 
-rule "service user looses a weekday TA due to alcohol intoxication"
+rule "Service user looses a weekday TA due to alcohol intoxication"
     lock-on-active true
     no-loop true
     dialect "java"
@@ -275,8 +276,7 @@ then
 		    amount = $result.getEligibilityBeans().get(i).getAmount() - 1;
 		}
 	}
- 	
-   cmsQueryEligibility.changeEligibility($result,3,amount);
+ 	cmsQueryEligibility.changeEligibility($result,3,amount);
    
     
 end

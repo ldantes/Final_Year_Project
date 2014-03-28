@@ -1,16 +1,9 @@
 package model.business.dao.impl;
 
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -25,7 +18,6 @@ import model.beans.SubstanceBean;
 import model.beans.TransactionBean;
 import model.business.dao.ServiceUserDao;
 import model.data.cmsQueryServiceUser;
-import model.data.cmsQuerySubstance;
 import utilities.DataSourceManager;
 import utilities.XMLFunctions;
 
@@ -33,6 +25,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		
 	private static Logger log = Logger.getLogger(ServiceUserDaoImpl.class);
 	
+	//updateServiceUser updates an existing service user
 	public ServiceUserBean updateServiceUser(ServiceUserBean serviceuserbean) 
 	{
 		
@@ -44,15 +37,15 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		
 		try {
 			
-			String xmlDbDetails = ConvertToXML(serviceuserbean);
+			String xmlDbDetails = ConvertToXML(serviceuserbean);// The users details are converted into an XML string
 			
 			if(xmlDbDetails!=null&&xmlDbDetails!="")
 			{
 				connection = DataSourceManager.getDataSource().getConnection();		
-				stmt = connection.prepareCall("{call cm_system.update_service_user(?,?,?)}");			
-				stmt.setString(1, xmlDbDetails);			
-				stmt.registerOutParameter(2,java.sql.Types.VARCHAR);			
-				stmt.registerOutParameter(3,java.sql.Types.VARCHAR);
+				stmt = connection.prepareCall("{call cm_system.update_service_user(?,?,?)}");	//stored procedure is called, no. parameters declared				
+				stmt.setString(1, xmlDbDetails); // XML service user details are added as a parameter for a DB stored procedure			
+				stmt.registerOutParameter(2,java.sql.Types.VARCHAR);// confirmation is returned -'OK'			
+				stmt.registerOutParameter(3,java.sql.Types.VARCHAR);// service user Id is returned
 				stmt.executeQuery();			
 				
 				//update bean with new/updated record
@@ -64,7 +57,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 				//db transaction returns OK if successful transaction. Otherwise it returns
 				//and error description.
 				if (stmt.getString(2).equals("OK")== false){
-							
+					log.debug(fuctionName+ ": Stored procedure failed");		
 				}
 			}
 		}
@@ -95,7 +88,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		return returnBean;
 	}
 	
-	
+	//updateServiceUser enters a new service user into the system. similar process to updating. stored proceadure is different.
 	public ServiceUserBean addServiceUser(ServiceUserBean serviceuserbean) 
 	{
 		
@@ -111,11 +104,11 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 			
 			
 			connection = DataSourceManager.getDataSource().getConnection();		
-			stmt = connection.prepareCall("{call cm_system.add_service_user(?,?,?)}");			
-			stmt.setString(1, xmlDbDetails);			
-			stmt.registerOutParameter(2,java.sql.Types.VARCHAR);			
-			stmt.registerOutParameter(3,java.sql.Types.VARCHAR);
-			stmt.executeQuery();			
+			stmt = connection.prepareCall("{call cm_system.add_service_user(?,?,?)}");	//stored procedure is called, no. parameters declared		
+			stmt.setString(1, xmlDbDetails);	// XML string added		
+			stmt.registerOutParameter(2,java.sql.Types.VARCHAR);	//outputs defined	
+			stmt.registerOutParameter(3,java.sql.Types.VARCHAR); //outputs defined	
+			stmt.executeQuery();	//query is executed		
 			
 			//update bean with new/updated record
 			if (stmt.getString(3)!=null){
@@ -126,7 +119,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 			//db transaction returns OK if successful transaction. Otherwise it returns
 			//and error description.
 			if (stmt.getString(2).equals("OK")== false){
-						
+				log.debug(fuctionName+ ": Stored procedure failed");			
 			}
 		}
 		catch (SQLException  e) {							
@@ -156,6 +149,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		return returnBean;
 	}
 	
+	//inserts a new set of results for each active substance for a particular service user.
 	public void insertNewSubstanceResult(SubstanceBean substanceBean, int accum){
 		
 		String fuctionName ="insertNewSubstanceResult";
@@ -165,7 +159,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		
 		try {
 					
-				String xmlDbDetails = ConvertSubstanceToXML(substanceBean,accum);
+				String xmlDbDetails = ConvertSubstanceToXML(substanceBean,accum);// substance attributes are converted to an XML string.
 					
 					
 				connection = DataSourceManager.getDataSource().getConnection();		
@@ -175,7 +169,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 				stmt.executeQuery();			
 						
 				if (stmt.getString(2).equals("OK")== false){
-									
+					log.debug(fuctionName+ ": Stored procedure failed");						
 				}
 			}
 		catch (SQLException  e) {							
@@ -221,7 +215,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 				stmt.executeQuery();			
 						
 				if (stmt.getString(2).equals("OK")== false){
-									
+					log.debug(fuctionName+ ": Stored procedure failed");						
 				}
 			}
 		catch (SQLException  e) {							
@@ -256,9 +250,6 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		
 		
 		try {
-					
-				
-					
 					
 				connection = DataSourceManager.getDataSource().getConnection();		
 				stmt = connection.prepareCall("{call cm_system.adjust_balance(?,?,?,?,?)}");			
@@ -297,6 +288,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		
 	}
 	
+	//add new/edit existing note for service user
 	public void addNewNote(NoteBean note)
 	{
 		String fuctionName ="addNewNote";
@@ -309,16 +301,16 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 				connection = DataSourceManager.getDataSource().getConnection();		
 				stmt = connection.prepareCall("{call cm_system.newNote(?,?,?,?,?)}");			
 				stmt.setString(1, note.getClient_Id());	
-				if(note.getId() != null )
+				if(note.getId() != null )//if the note already exists
 				{
-					stmt.setString(2, note.getId());	
+					stmt.setString(2, note.getId());// set note id to be editted	
 				}
 				else
 				{
-					stmt.setString(2, "0");	
+					stmt.setString(2, "0");	//else "0" will identify it as new
 				}
-				stmt.setString(3, note.getNote());	
-				stmt.setString(4, note.getUserName());	
+				stmt.setString(3, note.getNote());	// note content
+				stmt.setString(4, note.getUserName());	// set staff user who composed the note
 				stmt.registerOutParameter(5,java.sql.Types.VARCHAR);			
 				stmt.executeQuery();			
 						
@@ -396,6 +388,9 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		
 	}
 
+	// date to clean are target dates for the user to test negative for substances.
+	// if they fail a date to be clean, they are issued the next severe "warning"
+	//else the issued card is removed
 	public void updateDTC(ServiceUserBean serviceUserBean)
 	{
 		String funcExceptionErrorMsg ="updateDTC";
@@ -411,11 +406,11 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 					String query = "update cm_client_date_to_clean"
 							+ " set card = (select id from cm_date_to_clean where Order_of_Progress ="+serviceUserBean.getDateToClean().getOrderOfProgress()+"),"
 									+ " set_on = curdate(),"
-									+ " Date_to_Clean= DATE_ADD(curdate(),INTERVAL 7 DAY), "
+									+ " Date_to_Clean= DATE_ADD(curdate(),INTERVAL 7 DAY), " // adds 7 days to current date
 									+ " set_by='"+serviceUserBean.getDateToClean().getSetBy()+"'"
 									+ " where client_id ="+serviceUserBean.getId()+"";
 					
-					stmt.executeUpdate(query);
+					stmt.executeUpdate(query);// execute update query
 					
 				}
 				catch (SQLException  e) {							
@@ -446,7 +441,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		
 	}
 	
-	
+	//attendance attributes are converted to an XML string
 	private String ConvertAttendanceeToXML(AttendanceBean attendanceBean) {
 		String xml ="";
 		Document doc = null;	
@@ -457,6 +452,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 		    doc = parser.newDocument();
 		    
 		    //node elements must match the db column names
+		    //nodes are created
 	        Node root = doc.createElement("attendance");
 	        doc.appendChild(root);
 	        Node node1 = doc.createElement("serviceuser");
@@ -480,7 +476,7 @@ public class ServiceUserDaoImpl implements ServiceUserDao {
 	               
 	        
 	       
-	        	        
+	        // node values are populated	        
 	        node1.appendChild(doc.createTextNode(attendanceBean.getSrvUserId()));
 	        node2.appendChild(doc.createTextNode(attendanceBean.getUsername()));
 	       	node3.appendChild(doc.createTextNode(attendanceBean.getTimeDate()));

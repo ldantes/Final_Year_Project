@@ -8,7 +8,7 @@ import model.beans.SubstanceBean;
 import model.beans.TransactionBean;
 
 
-
+// method prototypes for Service user data abstract object methods
 public interface ServiceUserDao 
 {
 	

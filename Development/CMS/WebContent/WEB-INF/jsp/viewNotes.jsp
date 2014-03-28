@@ -67,8 +67,9 @@
 	<h1>Notes History</h1>
 	<c:choose>
 	<c:when test="${notes.size() != 0}">
+	<c:set var="count" value="0"/>	
 	<c:forEach var="result" items="${notes}" >
-			
+		
 	<form id ="updateNote" method="post" action="ServiceUserServlet">
 		<input type="hidden" name="requestAction" value="updateNote"/>
 		<input type="hidden" name="serviceUserId" value="${serviceUser.id}"/>
@@ -77,11 +78,20 @@
 	
 		
 		<table class="hor-zebra">
-			<tr>
+			<c:choose>
+		<c:when test="${count % 2 ==0}">
+			<tr class="vzebra-even">
+		</c:when>
+		<c:otherwise>
+		<tr>
+		</c:otherwise>
+		</c:choose>
 								
 											
-								<td width="50%">
-								${result.userName}<br/>${result.updated_On}
+								<td width="15%">
+								<div>${result.userName}, ${result.updated_On}:</div>
+								</td>
+								<td>
 								<c:choose>
 									<c:when test="${username == result.userName }">
 										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -97,10 +107,13 @@
 										</div>
 									</c:when>
 									<c:otherwise>
-										${result.note}
+									
+										<div class="firedrules">${result.note}</div>
+									
 									</c:otherwise>
 								</c:choose>
 								</td>
+								<c:set var="count" value="${count +1}"/>
 			</tr>
 		</table>
 		</form>
