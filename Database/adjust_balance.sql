@@ -32,7 +32,10 @@ _credited,
 _username,
 curdate());
 
-update cm_accounts set account_Balance = (account_Balance + _credited - _withdrawn) where account_id = _serviceUser;
+update cm_accounts set account_Balance = (account_Balance + _credited - _withdrawn),
+						updated_by = _username,
+						updated_on = curdate() 
+					where account_id = _serviceUser;
 
 set okayReturn := 'OK';
 
