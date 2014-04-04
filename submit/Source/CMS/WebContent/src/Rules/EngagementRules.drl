@@ -1,0 +1,101 @@
+package com.comp.drools;
+
+import model.beans.ServiceUserBean;
+import model.beans.SubstanceAccumBean;
+import model.beans.AttendanceBean;
+import model.beans.TransactionBean;
+import Rules.SubstanceRules;
+import model.data.cmsQueryServiceUser;
+import model.data.cmsQueryEligibility;
+import model.data.cmsQueryAttendance;
+import web.services.serviceUserService;
+import java.math.BigDecimal;
+
+import java.lang.Integer;
+
+//Ld March 2014
+//Rules govern the consequences for the user's attendandance
+
+rule "Service user attended AND participated during meeting/engagement"
+	lock-on-active true
+	dialect "java"
+when
+	$result : AttendanceBean(attended == "Y", participation == "Y", treatmentReviewMeeting !="Y")
+then
+	if(cmsQueryAttendance.awardedMeetingsThisWeek($result.getSrvUserId()) <3)
+	{
+		TransactionBean transaction = new TransactionBean();
+		transaction.setAccount_Id($result.getSrvUserId());
+		transaction.setAmount_Credited(new BigDecimal(3));
+		transaction.setApproved_By($result.getUsername());
+		
+		serviceUserService service = new serviceUserService();
+		service.adjustBalance(transaction);
+	}
+end
+
+rule "Service user attended key worker meeting"
+	lock-on-active true
+	dialect "java"
+when
+	$result : AttendanceBean(treatmentReviewMeeting =="Y",attended != "N" , participation == "Y" )
+then
+ 	if(cmsQueryAttendance.awardedMeetingsThisWeek($result.getSrvUserId()) <3)
+	{
+		TransactionBean transaction = new TransactionBean();
+		transaction.setAccount_Id($result.getSrvUserId());
+		transaction.setAmount_Credited(new BigDecimal(3));
+		transaction.setApproved_By($result.getUsername());
+		
+		serviceUserService service = new serviceUserService();
+		service.adjustBalance(transaction);
+	}
+end
+
+rule "Service user missed engagement BUT provided a valid excuse"
+	lock-on-active true
+when
+	$result : AttendanceBean(attended == "N", validReason == "Y")
+then
+	System.out.println("Service User attended AND participated during meeting/engagement");
+	System.out.println("Service User is not penalized");
+end
+
+rule "Service User missed engagement without a valid reason"
+	lock-on-active true
+when
+	$result : AttendanceBean(attended == "N", treatmentReviewMeeting !="Y", validReason != "Y")
+then
+	System.out.println("Service User attended AND participated during meeting/engagement");
+	System.out.println("Service User is penalized");
+end
+
+rule "Service user missed a key engagement without a valid reason"
+	lock-on-active true
+	 no-loop true
+
+when
+	$result : AttendanceBean(treatmentReviewMeeting =="Y", attended != "Y", validReason == "N")
+then
+	
+	ServiceUserBean suser = new ServiceUserBean();
+	suser.setId($result.getSrvUserId());
+	serviceUserService service = new serviceUserService();
+	service.setReferenceInformation(suser.getId());
+	suser = service.getServiceUserBean();
+	int newTAAmount =0;
+	for(int i=0; i < suser.getEligibilityBeans().size(); i++)
+	{
+		if(suser.getEligibilityBeans().get(i).getId().toString().equals("3") && suser.getEligibilityBeans().get(i).getAmount()!=0 )
+		{
+		    newTAAmount = suser.getEligibilityBeans().get(i).getAmount() - 1;
+		   
+		}
+	}
+	
+	cmsQueryEligibility.changeEligibility(suser,3,newTAAmount);
+	
+	
+end
+
+
